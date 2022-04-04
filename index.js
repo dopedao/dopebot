@@ -40,13 +40,13 @@ client.on('messageCreate', async message => {
 
         if (!command) return;
         if (command.validator && command.validator(args)) {
-                const invaliedInvocationEmbed = new MessageEmbed()
+                const invalidInvocationEmbed = new MessageEmbed()
                         .setTitle("⚠️ Invalid arguments provided")
                         .setColor("YELLOW")
                         .setDescription(`\`${botPrefix}${command.name} ${command.args ?? ''}\`\n${command.description}`)
                         .setThumbnail(dWThumbnailPic);
                 
-                await message.reply({ embeds: [invaliedInvocationEmbed]});
+                await message.reply({ embeds: [invalidInvocationEmbed]});
                 return;
         } 
 
