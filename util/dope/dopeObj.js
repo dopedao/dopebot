@@ -1,14 +1,12 @@
-module.exports = {
-    dopeObject: {
-        neck: String,
-        ring: String,
-        clothes: String,
-        hand: String,
-        waist: String,
-        weapon: String,
-        foot: String,
-        drugs: String,
-        vehicle: String,
-        accessory: String
-    }
+exports.dopeObject = {
+    neck: null,
+    ring: null,
+    clothes: null,
+    hand: null,
+    waist: null,
+    weapon: null,
+    foot: null,
+    drugs: null,
+    vehicle: null,
+    accessory: null
 }

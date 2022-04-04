@@ -1,18 +1,16 @@
-module.exports = {
-    hustlerObject: {
-        neck: String,
-        ring: String,
-        clothes: String,
-        hand: String,
-        waist: String,
-        weapon: String,
-        foot: String,
-        drug: String,
-        vehicle: String,
-        accessory: String,
-        type: String,
-        name: String,
-        type: String,
-        title: String
-    }
+exports.hustlerObject = {
+    neck: null,
+    ring: null,
+    clothes: null,
+    hand: null,
+    waist: null,
+    weapon: null,
+    foot: null,
+    drug: null,
+    vehicle: null,
+    accessory: null,
+    type: null,
+    name: null,
+    type: null,
+    title: null
 }
