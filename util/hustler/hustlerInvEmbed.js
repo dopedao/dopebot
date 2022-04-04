@@ -10,7 +10,6 @@ module.exports = {
         for (const keypair of hustlerMap) {
             hustlerObject[keypair[0]] = keypair[1]?.fullname ?? keypair[1];
         }
-        console.log(hustlerObject)
 
         const hustlerInvEmbed = new MessageEmbed()
             .setTitle(`Hustler #${id} Inventory`)
