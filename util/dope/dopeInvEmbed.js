@@ -2,8 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const { dWThumbnailPic } = require('../../constants');
 const { dopeObject } = require('./dopeObj');
 
-module.exports = {
-    fillDopeInvEmbed(dope, id) {
+exports.fillDopeInvEmbed = (dope, id) => {
         const dopeRoot = dope.data.dopes.edges[0].node;
         const dopeMap = new Map(Object.entries(dopeRoot.items));
 
@@ -35,5 +34,3 @@ module.exports = {
         
             return dopeEmbed;
     }
-
-}

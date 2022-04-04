@@ -1,15 +1,13 @@
 const fetch = require('node-fetch');
 
-module.exports = {
-    async sfetch(url, payload) {
-        const fetchRes = await fetch(url, payload);
-        const result = await fetchRes.json()
+exports.sfetch = async (url, payload) => {
+    const fetchRes = await fetch(url, payload);
+    const result = await fetchRes.json()
 
-        if (!result) {
-            const error = (result && result.message) || fetchRes.status;
-            return Promise.reject(error)
-        } else {
-            return result;
-        }
+    if (!result) {
+        const error = (result && result.message) || fetchRes.status;
+        return Promise.reject(error)
+    } else {
+        return result;
     }
 }
