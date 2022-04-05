@@ -7,6 +7,6 @@ module.exports = {
     quixoticDwApi : "https://api.quixotic.io/api/v1/opt/collection/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E/",
     twitterMetricsLink : "https://api.twitter.com/2/users/1433092276843057154?user.fields=public_metrics",
     qxEthConvValue : 1000000000,
-    osEthConvValue : 1000000000,
+    dwApiEthConvValue : 1000000000000000000,
     botPrefix : "!",
 }
