@@ -8,29 +8,39 @@ const { svgRenderer } = require('../../util/svgRenderer');
 module.exports = {
     name: "hustler",
     description: `\`inv\` - Outputs the hustler's inv\n\`img\` - Shows the rendered hustler\n\`all\` - Executes all available commands`,
-    args: "[inv | img | all] (1-8000)",
+    args: `[inv | img | all] (1-)`,
     validator: ([option, id]) => !option || !["inv", "img", "all"].includes(option) || !parseInt(id),
     async execute(message, [option, id]) {
-        const hustlerCountRes = await sfetch(dWApi, { method: "POST", body: hustlerTotalCountQuery(), headers: { "content-type" : "application/json"}});
-        if (hustlerCountRes && parseInt(id) > hustlerCountRes.data.hustlers.totalCount) {
+        const hustlerCount = await getTotalHustlerCount();
+        if (parseInt(id) > hustlerCount) {
             const invalidIdEmbed = new MessageEmbed()
                 .setTitle("⚠️")
                 .setColor("YELLOW")
-                .setDescription(`Please provide an id between 0 - ${hustlerCountRes.data.hustlers.totalCount}`);
+                .setDescription(`Please provide an id between 0 - ${hustlerCount}`);
 
             await message.channel.send({ embeds: [invalidIdEmbed] });
             return;
         }
-        
+
         let embedToSend = {
-            "inv" : await getHustlerInvEmbed(id),
-            "img" : await getHustlerImgEmbed(id),
-            "all" : await getAllHustlerEmbeds(id)
+            "inv": await getHustlerInvEmbed(id),
+            "img": await getHustlerImgEmbed(id),
+            "all": await getAllHustlerEmbeds(id)
         };
 
         await message.channel.send(embedToSend[option]);
     }
 };
+
+const getTotalHustlerCount = async () => {
+    const hustlerCountRes = await sfetch(dWApi, { method: "POST", body: hustlerTotalCountQuery(), headers: { "content-type": "application/json" } });
+    console.log(hustlerCountRes);
+    if (!hustlerCountRes?.data?.hustlers?.totalCount) {
+        return Promise.reject()
+    }
+
+    return hustlerCountRes.data.hustlers.totalCount;
+}
 
 const getAllHustlerEmbeds = async (id) => {
     const invEmbed = await getHustlerInvEmbed(id);
@@ -40,7 +50,7 @@ const getAllHustlerEmbeds = async (id) => {
 }
 
 const getHustlerImgEmbed = async (id) => {
-    const hustler = await sfetch(dWApi, { method: "POST", body: hustlerImageQuery(id), headers: { "content-type": "application/json"}});
+    const hustler = await sfetch(dWApi, { method: "POST", body: hustlerImageQuery(id), headers: { "content-type": "application/json" } });
     if (!hustler.data.hustlers.edges) {
         return Promise.reject({ customError: "Id not found" });
     }
@@ -53,7 +63,7 @@ const getHustlerImgEmbed = async (id) => {
         .setImage("attachment://hustler.png")
         .setColor("#FF0420")
         .setTimestamp();
-        
+
     return { embeds: [hustlerPictureEmbed], files: [discImage] };
 }
 
