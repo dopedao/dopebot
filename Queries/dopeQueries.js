@@ -15,6 +15,11 @@ module.exports = {
                     ) {
                       edges {
                         node {
+                          listings {
+                            inputs {
+                              amount
+                            }
+                          }
                           items {
                             fullname
                             type
