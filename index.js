@@ -25,9 +25,13 @@ client.once('ready', () => {
         client.user.setStatus("idle");
 
         setInterval(async () => {
-                client.user.setActivity(`Floor: ${await getOsFloor()} ETH`, { type: "WATCHING" })
-                client.channels.cache.find(channel => channel.name.includes("Twitter:"))?.setName(`Twitter: ${await getTwitterFollowers()}`);
-                client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
+                try {
+                        client.user.setActivity(`Floor: ${await getOsFloor()} ETH`, { type: "WATCHING" })
+                        client.channels.cache.find(channel => channel.name.includes("Twitter:"))?.setName(`Twitter: ${await getTwitterFollowers()}`);
+                        client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
+                } catch(error) {
+                        console.log(error);
+                }
         }, 10000);
 });
 
