@@ -7,7 +7,7 @@ module.exports = {
     name: "os",
     description: "\`daily\` - Shows daily OpenSea stats\n\`weekly\` - Shows weekly OpenSea stats",
     args: "[daily | weekly ]",
-    validator: (option) => !option || !["daily", "weekly"].includes(option),
+    validator: ([option]) => !option || !["daily", "weekly"].includes(option),
     async execute(message, option) {
         let embedToSend = {
             "daily" : await dailyOsStats(),
