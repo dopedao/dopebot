@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js');
 const { sfetch } = require('../../util/sfetch');
 const { dWApi } = require('../../constants');
 const { dopeInvQuery, dopeStatusQuery } = require('../../Queries/dopeQueries');
-const { fillDopeInvEmbed } = require('../../util/dope/dopeInvEmbed');
+const { fillDopeInvEmbed } = require('../../util/dope/fillDopeInvEmbed');
 
 module.exports = {
     name: "dope",

@@ -2,7 +2,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { sfetch } = require('../../util/sfetch');
 const { dWApi } = require('../../constants');
 const { hustlerQuery, hustlerImageQuery, hustlerTotalCountQuery } = require('../../Queries/hustlerQueries');
-const { fillHustlerEmbed } = require('../../util/hustler/hustlerInvEmbed');
+const { fillHustlerEmbed } = require('../../util/hustler/fillHustlerInvEmbed');
 const { svgRenderer } = require('../../util/svgRenderer');
 
 module.exports = {

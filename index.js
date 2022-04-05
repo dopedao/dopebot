@@ -29,7 +29,7 @@ client.once('ready', () => {
                         client.user.setActivity(`Floor: ${await getOsFloor()} ETH`, { type: "WATCHING" })
                         client.channels.cache.find(channel => channel.name.includes("Twitter:"))?.setName(`Twitter: ${await getTwitterFollowers()}`);
                         client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
-                } catch(error) {
+                } catch (error) {
                         console.log(error);
                 }
         }, 10000);
@@ -49,23 +49,23 @@ client.on('messageCreate', async message => {
                         .setColor("YELLOW")
                         .setDescription(`\`${botPrefix}${command.name} ${command.args ?? ''}\`\n${command.description}`)
                         .setThumbnail(dWThumbnailPic);
-                
-                await message.reply({ embeds: [invalidInvocationEmbed]});
+
+                await message.reply({ embeds: [invalidInvocationEmbed] });
                 return;
-        } 
+        }
 
         try {
                 await command.execute(message, args);
         } catch (error) {
                 const errorEmbed = new MessageEmbed()
-                .setTitle("🚨 Error 🚨")
-                .setFields(
-                        { name: `Error Message`, value: `${wrap(error)}` },
-                        { name: `Command`, value: `${wrap(command.name)}` },
-                        { name: `Arguments`, value: `${wrap(args.join())}` },
-                        { name: `User`, value: `${wrap(message.author.tag)}` }
-                )
-                .setTimestamp();
+                        .setTitle("🚨 Error 🚨")
+                        .setFields(
+                                { name: `Error Message`, value: `${wrap(error)}` },
+                                { name: `Command`, value: `${wrap(command.name)}` },
+                                { name: `Arguments`, value: `${wrap(args.join())}` },
+                                { name: `User`, value: `${wrap(message.author.tag)}` }
+                        )
+                        .setTimestamp();
 
                 await client.channels.cache.get(errorChannel).send({ embeds: [errorEmbed] });
                 await message.reply({ content: error?.customError ?? "There was an error while executing this command!", ephemeral: true });
