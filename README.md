@@ -4,6 +4,23 @@ A very dope bot for the DopeWars discord ;)
 
 ## Build
 
+## Scopes And Permissions
+
+### Scopes
+
+- [x] bot
+
+### Permission
+
+- [x] Manage Channels
+- [x] Read Messages/View Channels
+- [x] Send Messages
+- [x] Send Messages in Threads
+- [x] Manage Messages
+- [x] Embed Links
+- [x] Attach Files
+- [x] Add Reactions
+
 ## Config File
 
 In order for the bot to work correctly, you need a `config.json` file as follows:
