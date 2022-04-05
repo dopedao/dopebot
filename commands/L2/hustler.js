@@ -34,7 +34,6 @@ module.exports = {
 
 const getTotalHustlerCount = async () => {
     const hustlerCountRes = await sfetch(dWApi, { method: "POST", body: hustlerTotalCountQuery(), headers: { "content-type": "application/json" } });
-    console.log(hustlerCountRes);
     if (!hustlerCountRes?.data?.hustlers?.totalCount) {
         return Promise.reject()
     }
