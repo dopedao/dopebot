@@ -70,5 +70,16 @@ module.exports = {
                     }
                   }`
             })
+    },
+    hustlerTotalCountQuery() {
+      return JSON.stringify(
+        {
+          query: `query Hustler {
+            hustlers {
+              totalCount
+            }
+          }`
+        }
+      )
     }
 }
