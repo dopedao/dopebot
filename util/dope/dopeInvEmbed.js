@@ -1,9 +1,8 @@
 const { MessageEmbed } = require('discord.js');
-const { dWThumbnailPic } = require('../../constants');
+const { dWThumbnailPic, dwApiEthConvValue } = require('../../constants');
 const { dopeObject } = require('./dopeObj');
 
 exports.fillDopeInvEmbed = (dope, id) => {
-    const osEthConvValue = 1000000000000000000;
         const dopeRoot = dope.data.dopes.edges[0].node;
         const lastSale = dopeRoot?.listings[0]?.inputs[0]?.amount;
         const dopeMap = new Map(Object.entries(dopeRoot.items));
@@ -29,7 +28,7 @@ exports.fillDopeInvEmbed = (dope, id) => {
                 { name: "\u200b", value: "\u200b", inline: true },
                 { name: "🐊 Drugs", value: `${dopeObject.drugs}`, inline: true },
                 { name: "🚓 Vehicle", value: `${dopeObject.vehicle}`, inline: false },
-                { name: "💸 Last sale", value: `${lastSale ? `\`${parseInt(lastSale / osEthConvValue)} ETH\`` : "none"}`, inline: true},
+                { name: "💸 Last sale", value: `${lastSale ? `\`${parseInt(lastSale / dwApiEthConvValue)} ETH\`` : "none"}`, inline: true},
                 { name: "\u200b", value: "\u200b", inline: true},
                 { name: "⛵ OpenSea", value: `[Listing](https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${id})`, inline: true },
             )
