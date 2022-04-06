@@ -28,7 +28,7 @@ exports.fillDopeInvEmbed = (dope, id) => {
                 { name: "\u200b", value: "\u200b", inline: true },
                 { name: "🐊 Drugs", value: `${dopeObject.drugs}`, inline: true },
                 { name: "🚓 Vehicle", value: `${dopeObject.vehicle}`, inline: false },
-                { name: "💸 Last sale", value: `${lastSale ? `\`${parseInt(lastSale / dwApiEthConvValue)} ETH\`` : "none"}`, inline: true},
+                { name: "💸 Last sale", value: `${lastSale ? `\`${lastSale / dwApiEthConvValue} ETH\`` : "none"}`, inline: true},
                 { name: "\u200b", value: "\u200b", inline: true},
                 { name: "⛵ OpenSea", value: `[Listing](https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${id})`, inline: true },
             )
