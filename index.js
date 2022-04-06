@@ -37,7 +37,8 @@ client.once('ready', () => {
 
 client.on('messageCreate', async message => {
         if (message.author.username === client.user.username
-                || !message.content.startsWith(botPrefix)) return;
+                || !message.content.startsWith(botPrefix) 
+                || !message.member.roles.cache.find(role => role.name === "packing heat")) return;
 
         const command = client.commands.get(message.content.replace(botPrefix, '').toLowerCase().split(' ')[0]);
         const args = message.content.split(' ').slice(1);
