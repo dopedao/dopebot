@@ -4,7 +4,7 @@ const { hustlerObject } = require("./hustlerObj");
 
 module.exports = {
     fillHustlerEmbed(hustler, id) {
-        const hustlerRoot = hustler.data.hustlers.edges[0].node;
+        const hustlerRoot = hustler.hustlers.edges[0].node;
         const hustlerMap = new Map(Object.entries(hustlerRoot));
 
         for (const keypair of hustlerMap) {

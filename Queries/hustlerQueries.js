@@ -1,13 +1,6 @@
-module.exports = {
-    hustlerQuery(id) {
-        return JSON.stringify(
-            {
-                variables: {
-                    where : {
-                        id : id
-                    }
-                },
-                query: `query Hustler($where: HustlerWhereInput) {
+const { gql } = require("graphql-request")
+
+const hustlerQuery = gql`query Hustler($where: HustlerWhereInput) {
                     hustlers(where: $where) {
                       edges {
                         node {
@@ -47,18 +40,8 @@ module.exports = {
                         }
                       }
                     }
-                  }`
-            })
-    },
-    hustlerImageQuery(id) {
-        return JSON.stringify(
-            {
-                variables: {
-                    where : {
-                        id : id
-                    }
-                },
-                query: `query Hustler($where: HustlerWhereInput) {
+                  }`;
+const hustlerImageQuery = gql`query Hustler($where: HustlerWhereInput) {
                     hustlers(where: $where) {
                       edges {
                         node {
@@ -68,18 +51,15 @@ module.exports = {
                         }
                       }
                     }
-                  }`
-            })
-    },
-    hustlerTotalCountQuery() {
-      return JSON.stringify(
-        {
-          query: `query Hustler {
+                  }`;
+const hustlerTotalCountQuery = gql`query Hustler {
             hustlers {
               totalCount
             }
-          }`
-        }
-      )
-    }
+          }`;
+
+module.exports = {
+  hustlerQuery: hustlerQuery,
+  hustlerImageQuery: hustlerImageQuery,
+  hustlerTotalCountQuery: hustlerTotalCountQuery
 }
