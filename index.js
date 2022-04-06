@@ -63,13 +63,13 @@ client.on('messageCreate', async message => {
                         .setFields(
                                 { name: `Error Message`, value: `${wrap(error)}` },
                                 { name: `Command`, value: `${wrap(command.name)}` },
-                                { name: `Arguments`, value: `${wrap(args.join())}` },
+                                { name: `Arguments`, value: `${wrap(args.join(' '))}` },
                                 { name: `User`, value: `${wrap(message.author.tag)}` }
                         )
                         .setTimestamp();
 
                 await client.channels.cache.get(errorChannel).send({ embeds: [errorEmbed] });
-                await message.reply({ content: error?.customError ?? "There was an error while executing this command!", ephemeral: true });
+                await message.react("❌");
         }
 })
 
