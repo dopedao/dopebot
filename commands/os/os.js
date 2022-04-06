@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js');
 const { sfetch } = require('../../util/sfetch');
-const { dWOpenSeaApiLink, dWThumbnailPic } = require('../../constants');
+const { dWOpenSeaApiLink, dWThumbnailPic, osBlue, openseaCollectionLink } = require('../../constants');
 const { wrap } = require('../../util/wrap');
 
 module.exports = {
@@ -22,9 +22,9 @@ const dailyOsStats = async () => {
         const ethPriceDecimals = 4;
         const osStats = await sfetch(dWOpenSeaApiLink);
         const dailyStatsEmbed = new MessageEmbed()
-            .setTitle("⛵ **OpenSea Stats**")
-            .setURL("https://opensea.io/collection/dope-v4")
-            .setColor("#2081E2")
+            .setTitle("⛵ **OpenSea Stats** - DopeWars")
+            .setURL(openseaCollectionLink)
+            .setColor(osBlue)
             .addFields(
                 { name: "🥇 24h Volume", value: wrap(`${osStats.stats.one_day_volume.toFixed(ethPriceDecimals)} ETH`), inline: true },
                 { name: "💸 Sales", value: wrap(`${osStats.stats.one_day_sales}`), inline: true },
@@ -43,9 +43,9 @@ const dailyOsStats = async () => {
 const weeklyOsStats = async () => {
         const osStats = await sfetch(dWOpenSeaApiLink);
         const weeklyStatsEmbed = new MessageEmbed()
-            .setTitle("⛵ **OpenSea Stats**")
-            .setURL("https://opensea.io/collection/dope-v4")
-            .setColor("#2081E2")
+            .setTitle("⛵ **OpenSea Stats** - DopeWars")
+            .setURL(openseaCollectionLink)
+            .setColor(osBlue)
             .addFields(
                 { name: "🥇 7d Volume", value: wrap(`${osStats.stats.seven_day_volume.toFixed(4)} ETH`), inline: true },
                 { name: "💸 Sales", value: wrap(`${osStats.stats.seven_day_sales}`), inline: true },
