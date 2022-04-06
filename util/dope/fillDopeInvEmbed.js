@@ -3,7 +3,7 @@ const { dWThumbnailPic, dwApiEthConvValue } = require('../../constants');
 const { dopeObject } = require('./dopeObj');
 
 exports.fillDopeInvEmbed = (dope, id) => {
-        const dopeRoot = dope.data.dopes.edges[0].node;
+        const dopeRoot = dope.dopes.edges[0].node;
         const lastSale = dopeRoot?.listings[0]?.inputs[0]?.amount;
         const dopeMap = new Map(Object.entries(dopeRoot.items));
 

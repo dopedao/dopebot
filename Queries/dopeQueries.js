@@ -1,13 +1,6 @@
-module.exports = {
-    dopeInvQuery(id) {
-        return JSON.stringify(
-            {
-                variables: {
-                    where: {
-                        id: id
-                    }
-                },
-                query: `query Dopes(
+const { gql } = require("graphql-request")
+
+const dopeInvQuery = gql`query Dopes(
                     $where: DopeWhereInput
                   ) {
                     dopes(
@@ -27,18 +20,9 @@ module.exports = {
                         }
                       }
                     }
-                  }`
-            })
-    },
-    dopeStatusQuery(id) {
-        return JSON.stringify(
-            {
-                variables: {
-                    where: {
-                        id: id
-                    }
-                },
-                query: `query Dopes(
+                  }`;
+
+const dopeStatusQuery = gql`query Dopes(
                     $where: DopeWhereInput
                   ) {
                     dopes(
@@ -51,7 +35,9 @@ module.exports = {
                         }
                       }
                     }
-                  }`
-            })
-    }
+                  }`;
+
+module.exports = {
+  dopeInvQuery: dopeInvQuery,
+  dopeStatusQuery: dopeStatusQuery
 }

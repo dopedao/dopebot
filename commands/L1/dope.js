@@ -1,8 +1,8 @@
 const { MessageEmbed } = require('discord.js');
-const { sfetch } = require('../../util/sfetch');
 const { dWApi } = require('../../constants');
 const { dopeInvQuery, dopeStatusQuery } = require('../../Queries/dopeQueries');
 const { fillDopeInvEmbed } = require('../../util/dope/fillDopeInvEmbed');
+const { default: request } = require('graphql-request');
 
 module.exports = {
     name: "dope",
@@ -28,7 +28,7 @@ const getAllDopeEmbeds = async (id) => {
 }
 
 const getDopeInvEmbed = async (id) => {
-    const dope = await sfetch(dWApi, { method: "POST", body: dopeInvQuery(id), headers: { "content-type": "application/json"} })
+    const dope = await request(dWApi, dopeInvQuery, { "where": { "id": id } } );
     if (!dope) {
         return Promise.reject()
     }
@@ -38,11 +38,11 @@ const getDopeInvEmbed = async (id) => {
 }
 
 const getDopeCheckEmbed = async (id) => {
-    const dope = await sfetch(dWApi, { method: "POST", body: dopeStatusQuery(id), headers: { "content-type": "application/json" } });
+    const dope = await request(dWApi, dopeStatusQuery, { "where": { "id": id } } );
     if (!dope) {
         return Promise.reject()
     }
-    const dopeRoot = dope.data.dopes.edges[0].node;
+    const dopeRoot = dope.dopes.edges[0].node;
 
     const claimed = dopeRoot.claimed ? '✅' : '❌';
     const opened = dopeRoot.opened ? '✅' : '❌';
