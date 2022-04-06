@@ -28,7 +28,7 @@ module.exports = {
             "all": await getAllHustlerEmbeds(id)
         };
 
-        await message.channel.send(embedToSend[option]);
+        await message.channel.send("Loading...").then(m => m.edit(embedToSend[option]));
     }
 };
 
@@ -67,9 +67,9 @@ const getHustlerImgEmbed = async (id) => {
 }
 
 const getHustlerInvEmbed = async (id) => {
-    const hustler = await request(dWApi, hustlerQuery, { "where": { "id": id } });
+    const hustler = await request(dWApi, hustlerQuery, { "where": { "id": id}});
     if (!hustler?.hustlers?.edges[0]?.node) {
-        return Promise.reject("Id not found");
+        return Promise.reject();
     }
     const hustlerInvEmbed = fillHustlerEmbed(hustler, id);
 

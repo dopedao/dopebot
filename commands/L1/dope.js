@@ -16,7 +16,7 @@ module.exports = {
             "all" : await getAllDopeEmbeds(id)
         }
 
-        await message.channel.send(embedToSend[option]);
+        await message.channel.send("Loading...").then(m => m.edit(embedToSend[option]));
     }
 };
 
