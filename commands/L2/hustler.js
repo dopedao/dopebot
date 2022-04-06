@@ -8,6 +8,7 @@ const { default: request } = require('graphql-request');
 module.exports = {
     name: "hustler",
     description: `\`inv\` - Outputs the hustler's inv\n\`img\` - Shows the rendered hustler\n\`all\` - Executes all available commands`,
+    //Fetch totalCount and store in memory to dynamically update?
     args: `[inv | img | all] (1-1600)`,
     validator: ([option, id]) => !option || !["inv", "img", "all"].includes(option) || !parseInt(id),
     async execute(message, [option, id]) {
@@ -51,7 +52,7 @@ const getAllHustlerEmbeds = async (id) => {
 const getHustlerImgEmbed = async (id) => {
     const hustler = await request(dWApi, hustlerImageQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]) {
-        return Promise.reject({ customError: "Id not found" });
+        return Promise.reject();
     }
     const hustlerRoot = hustler.hustlers.edges[0].node;
     const hustlerPng = await svgRenderer(hustlerRoot.svg);
