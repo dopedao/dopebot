@@ -1,7 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
-const { dWApi } = require('../../constants');
+const { dWApi, dWThumbnailPic, quixoticCollectionLink } = require('../../constants');
 const { hustlerQuery, hustlerImageQuery, hustlerTotalCountQuery } = require('../../Queries/hustlerQueries');
-const { fillHustlerEmbed } = require('../../util/hustler/fillHustlerInvEmbed');
 const { svgRenderer } = require('../../util/svgRenderer');
 const { default: request } = require('graphql-request');
 
@@ -32,6 +31,23 @@ module.exports = {
         await message.channel.send("Loading...").then(m => m.edit(embedToSend[option]));
     }
 };
+
+hustlerObject = {
+    neck: null,
+    ring: null,
+    clothes: null,
+    hand: null,
+    waist: null,
+    weapon: null,
+    foot: null,
+    drug: null,
+    vehicle: null,
+    accessory: null,
+    type: null,
+    name: null,
+    type: null,
+    title: null
+}
 
 const getTotalHustlerCount = async () => {
     const hustlerCountRes = await request(dWApi, hustlerTotalCountQuery);
@@ -68,11 +84,40 @@ const getHustlerImgEmbed = async (id) => {
 }
 
 const getHustlerInvEmbed = async (id) => {
-    const hustler = await request(dWApi, hustlerQuery, { "where": { "id": id}});
+    const hustler = await request(dWApi, hustlerQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]?.node) {
         return Promise.reject();
     }
-    const hustlerInvEmbed = fillHustlerEmbed(hustler, id);
+    const hustlerRoot = hustler.hustlers.edges[0].node;
+    const hustlerMap = new Map(Object.entries(hustlerRoot));
+
+    for (const keypair of hustlerMap) {
+        hustlerObject[keypair[0]] = keypair[1]?.fullname ?? keypair[1];
+    }
+
+    const hustlerInvEmbed = new MessageEmbed()
+        .setTitle(`Hustler #${id} Inventory`)
+        .setColor("#FF0420")
+        .setDescription(`**Name:** \`${hustlerObject.name}\`\n**Title:** \`${hustlerObject.title}\`\n**Type:** \`${hustlerObject.type}\``)
+        .setFields(
+            { name: "⛓️ Neck", value: `${hustlerObject.neck}`, inline: true },
+            { name: "\u200b", value: "\u200b", inline: true },
+            { name: "💍 Ring", value: `${hustlerObject.ring}`, inline: true },
+            { name: "🦺 Clothes", value: `${hustlerObject.clothes}`, inline: true },
+            { name: "\u200b", value: "\u200b", inline: true },
+            { name: "🥊 Hand", value: `${hustlerObject.hand}`, inline: true },
+            { name: "🩲 Waist", value: `${hustlerObject.waist}`, inline: true },
+            { name: "\u200b", value: "\u200b", inline: true },
+            { name: "🗡️ Weapon", value: `${hustlerObject.weapon}`, inline: true },
+            { name: "👞 Foot", value: `${hustlerObject.foot}`, inline: true },
+            { name: "\u200b", value: "\u200b", inline: true },
+            { name: "🐊 Drug", value: `${hustlerObject.drug}`, inline: true },
+            { name: "🚓 Vehicle", value: `${hustlerObject.vehicle}`, inline: true },
+            { name: "\u200b", value: "\u200b", inline: true },
+            { name: "🎭 Accessory", value: `${hustlerObject.accessory ?? 'none :('}`, inline: true },
+            { name: "🔴✨ Quixotic", value: `[Listing](${quixoticCollectionLink}/${id})`, inline: true }
+        )
+        .setThumbnail(dWThumbnailPic);
 
     return { embeds: [hustlerInvEmbed] };
 }

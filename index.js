@@ -26,9 +26,10 @@ client.once('ready', () => {
 
         setInterval(async () => {
                 try {
-                        client.user.setActivity(`Floor: ${await getOsFloor()} ETH`, { type: "WATCHING" })
-                        client.channels.cache.find(channel => channel.name.includes("Twitter:"))?.setName(`Twitter: ${await getTwitterFollowers()}`);
-                        client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
+                        client.user.setActivity(`Floor: ${await getOsFloor()} ETH`, { type: "WATCHING" });
+                        const twitterFollowers = await getTwitterFollowers();
+                        await client.channels.cache.filter(channel => channel.name.includes("Twitter:")).map(channel => channel.setName(`Twitter: ${twitterFollowers}`));
+                        await client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
                 } catch (error) {
                         console.log(error);
                 }
