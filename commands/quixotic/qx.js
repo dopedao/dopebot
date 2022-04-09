@@ -13,15 +13,16 @@ module.exports = {
             return Promise.reject();
         }
 
-    const qxStatsEmbed = new MessageEmbed()
-        .setTitle("🔴✨ Quixotic Stats - DopeWars")
-        .setURL(quixoticCollectionLink)
-        .setThumbnail(dWThumbnailPic)
-        .setColor(qxRed)
-        .setFields(
-            {name: "🥇 Trading Volume", value: `${wrap((collectionData.volume_traded / qxApiEthConvValue).toFixed(2) + " ETH")}`, inline:true},
-            {name: "🧹 Floor", value: `${wrap((collectionData.floor_price / qxApiEthConvValue).toFixed(4) + " ETH")}`, inline:true}
-        )
+        const qxStatsEmbed = new MessageEmbed()
+            .setTitle("🔴✨ Quixotic Stats - DopeWars")
+            .setURL(quixoticCollectionLink)
+            .setThumbnail(dWThumbnailPic)
+            .setColor(qxRed)
+            .setFields(
+                { name: "🥇 Trading Volume", value: `${wrap((collectionData.volume_traded / qxApiEthConvValue).toFixed(2) + " ETH")}`, inline: true },
+                { name: "🧹 Floor", value: `${wrap((collectionData.floor_price / qxApiEthConvValue).toFixed(4) + " ETH")}`, inline: true }
+            )
+
         await message.channel.send({ embeds: [qxStatsEmbed] });
     }
 };
