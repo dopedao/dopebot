@@ -9,13 +9,20 @@ module.exports = {
     args: "[inv | check | all] (1-8000)",
     validator: ([option, id]) => !option || !["inv", "check", "all"].includes(option) || !parseInt(id) || 0 > parseInt(id) > 8000,
     async execute(message, [option, id]) {
-        let embedToSend = {
-            "inv": await getDopeInvEmbed(id),
-            "check": await getDopeCheckEmbed(id),
-            "all": await getAllDopeEmbeds(id)
+        switch(option) {
+            case "inv":
+                await getDopeInvEmbed(message, id);
+                break;
+            case "check":
+                await getDopeCheckEmbed(message, id);
+                break;
+            case "all":
+                await getDopeInvEmbed(message, id);
+                await getDopeCheckEmbed(message, id);
+                break;
+            default:
+                break;
         }
-
-        await message.channel.send("Loading...").then(m => m.edit(embedToSend[option]));
     }
 };
 
@@ -32,14 +39,7 @@ dopeObject = {
     accessory: null
 }
 
-const getAllDopeEmbeds = async (id) => {
-    const invEmbed = await getDopeInvEmbed(id);
-    const checkEmbed = await getDopeCheckEmbed(id);
-
-    return { embeds: [invEmbed.embeds[0], checkEmbed.embeds[0]] };
-}
-
-const getDopeInvEmbed = async (id) => {
+const getDopeInvEmbed = async (message, id) => {
     const dope = await request(dWApi, dopeInvQuery, { "where": { "id": id } });
     if (!dope) {
         return Promise.reject()
@@ -75,10 +75,10 @@ const getDopeInvEmbed = async (id) => {
         )
         .setThumbnail(dWThumbnailPic);
 
-    return { embeds: [dopeInventoryEmbed] }
+    await message.channel.send({ embeds: [dopeInventoryEmbed] });
 }
 
-const getDopeCheckEmbed = async (id) => {
+const getDopeCheckEmbed = async (message, id) => {
     const dope = await request(dWApi, dopeStatusQuery, { "where": { "id": id } });
     if (!dope) {
         return Promise.reject()
@@ -98,5 +98,5 @@ const getDopeCheckEmbed = async (id) => {
         )
         .setTimestamp()
 
-    return { embeds: [dopeCheckEmbed] }
+    await message.channel.send({ embeds: [dopeCheckEmbed] });
 }

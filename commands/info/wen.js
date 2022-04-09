@@ -6,15 +6,17 @@ module.exports = {
     args: "[moon]",
     validator: ([option]) => !option || !["moon"].includes(option),
     async execute(message, [option]) {
-        let embedToSend = {
-           "moon" : await getMoonDate()
+        switch(option) {
+            case "moon":
+                await getMoonDate(message);
+                break;
+            default:
+                break;
         }
-
-        await message.channel.send(embedToSend[option]);
     }
 };
 
-const getMoonDate = () => {
+const getMoonDate = async (message) => {
     const moonDate = new Date(+(new Date()) + Math.floor(Math.random() * 10000000000)).toLocaleDateString('en-US');
 
     const moonEmbed = new MessageEmbed()
@@ -22,5 +24,5 @@ const getMoonDate = () => {
         .setTitle("Secret Moon Date 👀")
         .setDescription(`${moonDate} 🚀 🌑`);
 
-    return { embeds: [moonEmbed] };
+    await message.channel.send({ embeds: [moonEmbed] });
 }

@@ -22,13 +22,20 @@ module.exports = {
             return;
         }
 
-        let embedToSend = {
-            "inv": await getHustlerInvEmbed(id),
-            "img": await getHustlerImgEmbed(id),
-            "all": await getAllHustlerEmbeds(id)
-        };
-
-        await message.channel.send("Loading...").then(m => m.edit(embedToSend[option]));
+        switch(option) {
+            case "inv":
+                await getHustlerInvEmbed(message, id);
+                break;
+            case "img":
+                await getHustlerImgEmbed(message, id);
+                break;
+            case "all":
+                await getHustlerInvEmbed(message, id);
+                await getHustlerImgEmbed(message, id);
+                break;
+            default:
+                break;
+        }
     }
 };
 
@@ -58,14 +65,7 @@ const getTotalHustlerCount = async () => {
     return hustlerCountRes.hustlers.totalCount;
 }
 
-const getAllHustlerEmbeds = async (id) => {
-    const invEmbed = await getHustlerInvEmbed(id);
-    const imgEmbed = await getHustlerImgEmbed(id);
-
-    return { embeds: [invEmbed.embeds[0], imgEmbed.embeds[0]], files: [imgEmbed.files[0]] };
-}
-
-const getHustlerImgEmbed = async (id) => {
+const getHustlerImgEmbed = async (message, id) => {
     const hustler = await request(dWApi, hustlerImageQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]) {
         return Promise.reject();
@@ -80,10 +80,10 @@ const getHustlerImgEmbed = async (id) => {
         .setColor("#FF0420")
         .setTimestamp();
 
-    return { embeds: [hustlerPictureEmbed], files: [discImage] };
+    await message.channel.send({ embeds: [hustlerPictureEmbed], files: [discImage] });
 }
 
-const getHustlerInvEmbed = async (id) => {
+const getHustlerInvEmbed = async (message, id) => {
     const hustler = await request(dWApi, hustlerQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]?.node) {
         return Promise.reject();
@@ -118,6 +118,6 @@ const getHustlerInvEmbed = async (id) => {
             { name: "🔴✨ Quixotic", value: `[Listing](${quixoticCollectionLink}/${id})`, inline: true }
         )
         .setThumbnail(dWThumbnailPic);
-
-    return { embeds: [hustlerInvEmbed] };
+    
+    await message.channel.send({ embeds: [hustlerInvEmbed]});
 }
