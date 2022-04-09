@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { dWApi, dwApiEthConvValue, dWThumbnailPic } = require('../../constants');
 const { dopeInvQuery, dopeStatusQuery } = require('../../Queries/dopeQueries');
 const { default: request } = require('graphql-request');
@@ -87,7 +87,8 @@ const getDopeCheckEmbed = async (message, id) => {
 
     const claimed = dopeRoot.claimed ? '✅' : '❌';
     const opened = dopeRoot.opened ? '✅' : '❌';
-    const color = dopeRoot.claimed && dopeRoot.opened ? "GREEN" : !dopeRoot.claimed && !dopeRoot.opened ? "RED" : "ORANGE";
+    const fullyClaimed = dopeRoot.claimed && dopeRoot.opened;
+    const color = fullyClaimed ? "GREEN" : !dopeRoot.claimed && !dopeRoot.opened ? "RED" : "ORANGE";
 
     const dopeCheckEmbed = new MessageEmbed()
         .setTitle(`Dope #${id} Status`)
@@ -97,6 +98,15 @@ const getDopeCheckEmbed = async (message, id) => {
             `**Opened:** ${opened}\n`
         )
         .setTimestamp()
+    
+        if (fullyClaimed) {
+            const claimedImage = new MessageAttachment("./images/vote_female.png", "vote_female.png")
+            dopeCheckEmbed.setImage("attachment://vote_female.png")
+            dopeCheckEmbed.setDescription("This DOPE NFT has been \`fully claimed\`.\nIt serves as a DAO voting token, and will be eligible for future airdrops.")
 
-    await message.channel.send({ embeds: [dopeCheckEmbed] });
+            await message.channel.send({ embeds: [dopeCheckEmbed], files: [claimedImage] });
+            return;
+        }
+        
+        await message.channel.send({ embeds: [dopeCheckEmbed] });
 }
