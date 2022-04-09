@@ -2,8 +2,6 @@
 
 A very dope bot for the DopeWars discord ;)
 
-## Build
-
 ## Scopes And Permissions
 
 ### Scopes
@@ -33,11 +31,16 @@ In order for the bot to work correctly, you need a `config.json` file as follows
 }
 ```
 
-## Starting The Bot
+## Running the bot
 
-To start the bot simply type `node .`
+Build the image first:
 
-You should see some general information printed to the console.
+```docker build . -t dopebot```
+
+Then run it with:
+
+```docker run -d dopebot```
+
 
 ## Adding Commands
 
@@ -52,12 +55,16 @@ module.exports = {
     args: "[daily | weekly ]",
     validator: ([option]) => !option || !["daily", "weekly"].includes(option),
     async execute(message, option) {
-        let embedToSend = {
-            "daily" : await dailyOsStats(),
-            "weekly" : await weeklyOsStats()
-        };
-
-        await message.channel.send({ embeds: [embedToSend[option]] })
+        switch(option) {
+            case "daily":
+                await dailyOsStats();
+                break;
+            case "weekly":
+                await weeklyOsStats();
+                break;
+            default:
+                break;
+        }
     }
 }
 
