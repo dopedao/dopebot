@@ -11,5 +11,6 @@ module.exports = {
     openseaCollectionLink: "https://opensea.io/collection/dope-v4",
     twitterMetricsLink: "https://api.twitter.com/2/users/1433092276843057154?user.fields=public_metrics",
     dWThumbnailPic: "https://lh3.googleusercontent.com/3Y3ysx1pfeF7tCEa5FXzIXsaueN3DqQ97eQL9eGTsp0XtAU8tjSta0sK85xfJxyTN6JzjzofitdNgyRsVM-9f1VA4J92u1mGhtwVd-U=s120",
+    hustlerGif: "https://fanbase-1.s3.amazonaws.com/quixotic-collection-profile/ezgif.com-gif-maker.gif",
     botPrefix: "!",
 }
