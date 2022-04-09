@@ -5,9 +5,21 @@ const { botPrefix, errorChannel, dWThumbnailPic } = require("./constants");
 const { wrap } = require("./util/wrap");
 const { getTwitterFollowers } = require("./util/twitterFollowers");
 const { getOsFloor } = require("./util/osFloor");
+const { createLogger, transports, format } = require('winston');
+const { combine, timestamp, label, json } = format;
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 client.commands = new Collection();
+
+const logger = createLogger({
+        level: "info",
+        format: combine(
+                timestamp(),
+                label({ label: "dopebot"}),
+                json()
+                ),
+        transports: [ new transports.Console() ]
+})
 
 const commandFolders = fs.readdirSync("./commands");
 for (const folder of commandFolders) {
@@ -17,11 +29,10 @@ for (const folder of commandFolders) {
         }
 }
 
+client.on('error', error => logger.error(error))
+
 client.once('ready', () => {
-        console.log(`${client.user.username}@${client.user.discriminator} is online\n`
-                + `Start time: ${new Date()}\n`
-                + `Guilds: ${client.guilds.cache.size}\n`
-                + `User count: ${client.guilds.cache.reduce((a, g) => a + g.memberCount, 0)}`);
+        logger.info(`${client.user.username}@${client.user.discriminator} is online`);
         client.user.setStatus("idle");
 
         setInterval(async () => {
@@ -31,7 +42,7 @@ client.once('ready', () => {
                         await client.channels.cache.filter(channel => channel.name.includes("Twitter:")).map(channel => channel.setName(`Twitter: ${twitterFollowers}`));
                         await client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
                 } catch (error) {
-                        console.log(error);
+                        logger.error(error);
                 }
         }, 10000);
 });
@@ -57,6 +68,7 @@ client.on('messageCreate', async message => {
         }
 
         try {
+                logger.info(`${message.author.tag}/${message.author.id}: ${command.name} ${args.join(' ')}`);
                 await command.execute(message, args);
         } catch (error) {
                 const errorEmbed = new MessageEmbed()
@@ -69,6 +81,7 @@ client.on('messageCreate', async message => {
                         )
                         .setTimestamp();
 
+                logger.error(error);
                 await client.channels.cache.get(errorChannel).send({ embeds: [errorEmbed] });
                 await message.react("❌");
         }
