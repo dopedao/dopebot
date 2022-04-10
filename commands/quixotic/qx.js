@@ -6,7 +6,7 @@ const { wrap } = require("../../util/wrap");
 
 module.exports = {
     name: "qx",
-    description: "\`hustler\` - Hustler stats\n\`gear\` - Gear stats",
+    description: "\`hustler\` - Quixotic Hustler stats\n\`gear\` - QuixoticGear stats",
     args: "[hustler | gear]",
     validator: ([option]) => !option || !["hustler", "gear"].includes(option),
     async execute(message, [option]) {
