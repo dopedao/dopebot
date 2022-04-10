@@ -9,7 +9,7 @@ module.exports = {
     async execute(message, [option]) {
         switch(option) {
             case "moon":
-                await getMoonDate(message);
+                await sendMoonDate(message);
                 break;
             case "game":
                 await sendGameEmbed(message);
@@ -20,7 +20,7 @@ module.exports = {
     }
 };
 
-const getMoonDate = async (message) => {
+const sendMoonDate = async (message) => {
     const moonDate = new Date(+(new Date()) + Math.floor(Math.random() * 10000000000)).toLocaleDateString('en-US');
 
     const moonEmbed = new MessageEmbed()
