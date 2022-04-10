@@ -3,6 +3,7 @@ module.exports = {
     dWApi: "http://api.dopewars.gg/query",
     dWOpenSeaApiLink: "https://api.opensea.io/api/v1/collection/dope-v4/stats",
     quixoticDwApi: "https://api.quixotic.io/api/v1/opt/collection/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E/",
+    quixoticDwGearApi: "https://api.quixotic.io/api/v1/opt/collection/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110",
     qxApiEthConvValue: 1000000000,
     dwApiEthConvValue: 1000000000000000000,
     qxRed: "#FF0420",
