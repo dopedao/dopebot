@@ -102,7 +102,7 @@ const getDopeCheckEmbed = async (message, id) => {
         if (fullyClaimed) {
             const claimedImage = new MessageAttachment("./images/vote_female.png", "vote_female.png")
             dopeCheckEmbed.setImage("attachment://vote_female.png")
-            dopeCheckEmbed.setDescription("This DOPE NFT has been \`fully claimed\`.\nIt serves as a DAO voting token, and will be eligible for future airdrops.")
+            dopeCheckEmbed.setDescription("This **Dope NFT** has been \`fully claimed\`.\nIt serves as a DAO voting token, and will be eligible for future airdrops.")
 
             await message.channel.send({ embeds: [dopeCheckEmbed], files: [claimedImage] });
             return;
