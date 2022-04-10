@@ -35,7 +35,7 @@ const dailyOsStats = async (message) => {
             { name: "🚬 Average Price", value: wrap(`${osStats.stats.one_day_average_price.toFixed(ethPriceDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${osStats.stats.total_sales}`), inline: true },
             { name: "👥 Hodlers", value: wrap(`${osStats.stats.num_owners}`), inline: true },
-            { name: "🏷️ Market Cap", value: wrap(`${osStats.stats.market_cap.toFixed(2)} ETH`), inline: true },
+            { name: "🏷️ Total Volume", value: wrap(`${osStats.stats.total_volume.toFixed(2)} ETH`), inline: true },
             { name: "🧹 Floor", value: wrap(`${osStats.stats.floor_price} ETH`), inline: true }
         )
         .setThumbnail(dWThumbnailPic)
@@ -56,7 +56,7 @@ const weeklyOsStats = async (message) => {
             { name: "🚬 Average Price", value: wrap(`${osStats.stats.seven_day_average_price.toFixed(4)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${osStats.stats.total_sales}`), inline: true },
             { name: "👥 Hodlers", value: wrap(`${osStats.stats.num_owners}`), inline: true },
-            { name: "🏷️ Market Cap", value: wrap(`${osStats.stats.market_cap.toFixed(2)} ETH`), inline: true },
+            { name: "🏷️ Total Volume", value: wrap(`${osStats.stats.total_volume.toFixed(2)} ETH`), inline: true },
             { name: "🧹 Floor", value: wrap(`${osStats.stats.floor_price} ETH`), inline: true }
         )
         .setThumbnail(dWThumbnailPic)
