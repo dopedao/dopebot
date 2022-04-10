@@ -37,7 +37,7 @@ client.once('ready', () => {
 
         setInterval(async () => {
                 try {
-                        client.user.setActivity(`Floor: ${await getOsFloor()} ETH`, { type: "WATCHING" });
+                        client.user.setActivity(`Floor: ${await getOsFloor()} ETH | !help`, { type: "WATCHING" });
                         const twitterFollowers = await getTwitterFollowers();
                         await client.channels.cache.filter(channel => channel.name.includes("Twitter:")).map(channel => channel.setName(`Twitter: ${twitterFollowers}`));
                         await client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
