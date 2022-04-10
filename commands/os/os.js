@@ -6,7 +6,7 @@ const { wrap } = require('../../util/wrap');
 module.exports = {
     name: "os",
     description: "\`daily\` - Shows daily OpenSea stats\n\`weekly\` - Shows weekly OpenSea stats",
-    args: "[daily | weekly ]",
+    args: "[daily | weekly]",
     validator: ([option]) => !option || !["daily", "weekly"].includes(option),
     async execute(message, [option]) {
         switch (option) {
