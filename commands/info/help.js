@@ -3,8 +3,10 @@ const { botPrefix, dWThumbnailPic } = require('../../constants');
 const fs = require('node:fs');
 
 module.exports = {
-    name: "help",
+    name: "dw",
     description: "Displays all available commands, with their description",
+    args: "help",
+    validator: ([option]) => !["help"].includes(option),
     async execute(message) {
         const commands = [];
         const commandFolders = fs.readdirSync("./commands");
@@ -23,7 +25,7 @@ module.exports = {
 
         commands.forEach(command => {
             helpEmbed.addField(`${botPrefix}${command.name} ${command.args ?? ""}`, `${command.description}`, false);
-        })
+        });
 
         await message.channel.send({ embeds: [helpEmbed] });
     }
