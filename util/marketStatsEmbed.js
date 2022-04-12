@@ -8,12 +8,12 @@ const getChangeEmoji = (num) => {
 
 const ethDecimals = 4;
 const volumeDecimals = 2;
-//const changeDecimals = 3;
+const changeDecimals = 3;
 
 exports.getDailyMarketStatsEmbed = (stats) => {
     return new MessageEmbed()
         .addFields(
-            { name: `🥇 Daily Volume`, value: wrap(`${stats.one_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.one_day_change)}`), inline: true },
+            { name: `🥇 Daily Volume`, value: wrap(`${stats.one_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.one_day_change)}(${stats.one_day_change.toFixed(changeDecimals)}%)`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.one_day_sales}`), inline: true },
             { name: "🚬 Average Price", value: wrap(`${stats.one_day_average_price.toFixed(ethDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${stats.total_sales}`), inline: true },
@@ -28,7 +28,7 @@ exports.getDailyMarketStatsEmbed = (stats) => {
 exports.getWeeklyMarketStatsEmbed = (stats) => {
     return new MessageEmbed()
         .addFields(
-            { name: `🥇 Weekly Volume`, value: wrap(`${stats.seven_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.seven_day_change)}`), inline: true },
+            { name: `🥇 Weekly Volume`, value: wrap(`${stats.seven_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.seven_day_change)}(${stats.seven_day_change.toFixed(changeDecimals)}%)`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.seven_day_sales}`), inline: true },
             { name: "🚬 Average Price", value: wrap(`${stats.seven_day_average_price.toFixed(ethDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${stats.total_sales}`), inline: true },
@@ -43,7 +43,7 @@ exports.getWeeklyMarketStatsEmbed = (stats) => {
 exports.getMonthlyStatsEmbed = (stats) => {
     return new MessageEmbed()
         .addFields(
-            { name: `🥇 Monthly Volume`, value: wrap(`${stats.thirty_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.thirty_day_change)}`), inline: true },
+            { name: `🥇 Monthly Volume`, value: wrap(`${stats.thirty_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.thirty_day_change)}(${stats.thirty_day_change.toFixed(changeDecimals)}%)`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.thirty_day_sales}`), inline: true },
             { name: "🚬 Average Price", value: wrap(`${stats.thirty_day_average_price.toFixed(ethDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${stats.total_sales}`), inline: true },
