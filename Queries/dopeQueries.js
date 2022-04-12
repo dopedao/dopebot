@@ -8,6 +8,7 @@ const dopeInvQuery = gql`query Dopes(
                     ) {
                       edges {
                         node {
+                          rank
                           listings {
                             inputs {
                               amount
@@ -16,6 +17,8 @@ const dopeInvQuery = gql`query Dopes(
                           items {
                             fullname
                             type
+                            tier
+                            count
                           }
                         }
                       }
@@ -37,7 +40,27 @@ const dopeStatusQuery = gql`query Dopes(
                     }
                   }`;
 
+const dopeRarityQuery = gql`query Dopes(
+                    $where: DopeWhereInput
+                  ) {
+                    dopes(
+                      where: $where
+                    ) {
+                      edges {
+                        node {
+                          items {
+                            fullname
+                            type
+                            tier
+                            greatness
+                            count
+                          }
+                        }
+                      }
+                    }
+                  }`;
+
 module.exports = {
   dopeInvQuery: dopeInvQuery,
-  dopeStatusQuery: dopeStatusQuery
+  dopeStatusQuery: dopeStatusQuery,
 }
