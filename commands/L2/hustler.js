@@ -6,13 +6,13 @@ const { default: request } = require('graphql-request');
 
 module.exports = {
     name: "hustler",
-    description: `\`inv\` - Outputs the hustler's inv\n\`img\` - Shows the rendered hustler\n\`all\` - Executes all available commands`,
+    description: `\`inv\` - Outputs the hustler's inv\n\`img\` - Shows the rendered hustler`,
     //Fetch totalCount and store in memory to dynamically update?
-    args: `[inv | img | all] (1-1600)`,
-    validator: ([option, id]) => !option || !["inv", "img", "all"].includes(option) || !parseInt(id),
+    args: `[inv | img] (0-1637)`,
+    validator: ([option, id]) => !option || !["inv", "img"].includes(option) || !parseInt(id) && id != 0,
     async execute(message, [option, id]) {
         const hustlerCount = await getTotalHustlerCount();
-        if (parseInt(id) > hustlerCount) {
+        if (parseInt(id) < 0 || parseInt(id) > hustlerCount) {
             const invalidIdEmbed = new MessageEmbed()
                 .setTitle("⚠️")
                 .setColor("YELLOW")
@@ -22,20 +22,12 @@ module.exports = {
             return;
         }
 
-        switch(option) {
-            case "inv":
-                await getHustlerInvEmbed(message, id);
-                break;
-            case "img":
-                await getHustlerImgEmbed(message, id);
-                break;
-            case "all":
-                await getHustlerInvEmbed(message, id);
-                await getHustlerImgEmbed(message, id);
-                break;
-            default:
-                break;
+        const fnMap = {
+            "inv": getHustlerInvEmbed,
+            "img": getHustlerImgEmbed
         }
+        
+        await fnMap[option](message, id);
     }
 };
 
