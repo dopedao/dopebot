@@ -5,7 +5,6 @@ module.exports = {
     name: "links",
     description: "Collection of helpful links",
     async execute(message) {
-
         const linkEmbed = new MessageEmbed()
             .setTitle("Links")
             .setColor("PURPLE")
