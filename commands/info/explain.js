@@ -8,35 +8,18 @@ module.exports = {
     args: "[dope | claimed | opened | hustler | ogs | gear | turf | paper]",
     validator: ([option]) => !option || !["dope", "claimed", "opened", "hustler", "gear", "turf", "ogs", "paper"].includes(option),
     async execute(message, [option]) {
-        switch (option) {
-            case "dope":
-                await explainDope(message);
-                break;
-            case "claimed":
-                await explainClaimed(message);
-                break;
-            case "opened":
-                await explainOpened(message);
-                break;
-            case "hustler":
-                await explainHustler(message);
-                break;
-            case "gear":
-                await explainGear(message);
-                break;
-            case "turf":
-                await explainTurf(message);
-                break;
-            case "ogs":
-                await explaingOgs(message);
-                break;
-            case "paper":
-                await explainPaper(message);
-                break;
-            default:
-                await message.channel.send(`${option} has not been implemented yet :((`);
-                break;
+        const fnMap = {
+            "dope": explainDope,
+            "claimed": explainClaimed,
+            "opened": explainOpened,
+            "hustler": explainHustler,
+            "gear": explainGear,
+            "turf": explainTurf,
+            "ogs": explaingOgs,
+            "paper": explainPaper
         }
+
+        await fnMap[option](message);
     }
 };
 
@@ -48,7 +31,7 @@ const explainDope = async (message) => {
         .setTitle("What is a \"Dope\"❓")
         .setColor(osBlue)
         .setImage("attachment://dope.png")
-        .setDescription("A limited-edition of \`8.000\` **Dope NFTs** were created in __September 2021__. These **Dope NFTs** contain eight pieces of wearable equipment with randomized attributes, rarity scores and one vehicle. Each **Dope NFT** allows you to \"Claim **Paper**\", \"Claim **Gear**\" and \"Initiate a **Hustler**\", only **once** to be used in-game, while also providing an equal **Governance Vote** on [Proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7) from the **DAO**. The **Dope NFT** will server as a **Dope Pass** for future additions to the game and metaverse, including eligibility for future airdops, staking and features.");
+        .setDescription("A limited-edition of \`8.000\` **Dope NFTs** were created in __September 2021__. These **Dope NFTs** contain eight pieces of wearable equipment with randomized attributes, rarity scores and one vehicle. Each **Dope NFT** allows you to \"Claim **Paper**\", \"Claim **Gear**\" and \"Initiate a **Hustler**\", only **once** to be used in-game, while also providing an equal **Governance Vote** on [Proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7) from the **DAO**. The **Dope NFT** will serve as a **Dope Pass** for future additions to the game and metaverse, including eligibility for future airdops, staking and features.");
 
     message.channel.send({ embeds: [dopeEmbed], files: [imageFile] });
 }

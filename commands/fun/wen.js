@@ -7,16 +7,12 @@ module.exports = {
     args: "[moon | game]",
     validator: ([option]) => !option || !["moon", "game"].includes(option),
     async execute(message, [option]) {
-        switch(option) {
-            case "moon":
-                await sendMoonDate(message);
-                break;
-            case "game":
-                await sendGameEmbed(message);
-                break;
-            default:
-                break;
+        const fnMap = {
+            "moon": sendMoonDate,
+            "game": sendGameEmbed
         }
+
+        await fnMap[option](message);
     }
 };
 
