@@ -1,62 +1,73 @@
 const { sfetch } = require("../../util/sfetch");
-const { quixoticDwApi, qxRed, quixoticCollectionLink, dWThumbnailPic, qxApiEthConvValue, quixoticDwGearApi } = require("../../constants");
+const { quixoticGearStats, qxRed, quixoticCollectionLink, quixoticHustlerStats } = require("../../constants");
 const { quixoticApiKey } = require("../../config.json");
-const { MessageEmbed } = require("discord.js");
-const { wrap } = require("../../util/wrap");
+const { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } = require("../../util/marketStatsEmbed");
 
 module.exports = {
     name: "qx",
-    description: "\`hustler\` - Quixotic Hustler stats\n\`gear\` - QuixoticGear stats",
-    args: "[hustler | gear]",
-    validator: ([option]) => !option || !["hustler", "gear"].includes(option),
-    async execute(message, [option]) {
-        switch (option) {
-            case "hustler":
-                await getHustlerStats(message);
-                break;
-            case "gear":
-                await getGearStats(message)
-                break;
-            default:
-                break;
+    description: "\`hustler\` - Quixotic Hustler stats\n\`gear\` - Quixotic Gear stats",
+    args: "[hustler | gear] (daily | weekly | monthly)",
+    validator: ([collection, timeFrame]) => !collection || !["hustler", "gear"].includes(collection) || !timeFrame || !["daily", "weekly", "monthly"].includes(timeFrame),
+    async execute(message, [collection, timeFrame]) {
+        const fnMap = {
+            "hustler": getHustlerStats,
+            "gear": getGearStats
         }
+
+        await fnMap[collection](message, timeFrame, collection[0].toUpperCase() + collection.slice(1));
     }
 };
 
-const getHustlerStats = async (message) => {
-    const collectionData = await sfetch(quixoticDwApi, { headers: { "X-API-KEY": quixoticApiKey } });
-    if (!collectionData) {
+const getHustlerStats = async (message, timeFrame, type) => {
+    const qxHustlerStats = await sfetch(quixoticHustlerStats, { headers: { "X-API-KEY": quixoticApiKey } });
+    if (!qxHustlerStats) {
         return Promise.reject();
     }
-
-    const qxHustlerStatsEmbed = new MessageEmbed()
-        .setTitle("🔴✨ Quixotic Hustler Stats - DopeWars")
-        .setURL(quixoticCollectionLink)
-        .setThumbnail(dWThumbnailPic)
-        .setColor(qxRed)
-        .setFields(
-            { name: "🥇 Trading Volume", value: `${wrap((collectionData.volume_traded / qxApiEthConvValue).toFixed(2) + " ETH")}`, inline: true },
-            { name: "🧹 Floor", value: `${wrap((collectionData.floor_price / qxApiEthConvValue).toFixed(4) + " ETH")}`, inline: true }
-        )
-
-    await message.channel.send({ embeds: [qxHustlerStatsEmbed] });
+    await chooseEmbed(message, timeFrame, qxHustlerStats, type);
 }
 
-const getGearStats = async (message) => {
-    const gearData = await sfetch(quixoticDwGearApi, { headers: { "X-API-KEY": quixoticApiKey } });
-    if (!gearData) {
+const getGearStats = async (message, timeFrame, type) => {
+    const qxGearStats = await sfetch(quixoticGearStats, { headers: { "X-API-KEY": quixoticApiKey } });
+    if (!qxGearStats) {
         return Promise.reject();
     }
+    await chooseEmbed(message, timeFrame, qxGearStats, type);
+}
 
-    const qxGearStatsEmbed = new MessageEmbed()
-        .setTitle("🔴✨ Quixotic Gear Stats - DopeWars")
+const chooseEmbed = async (message, timeFrame, data, type) => {
+    const embedToSend = {
+        "daily": sendDailyStatsEmbed,
+        "weekly": sendWeeklyStatsEmbed,
+        "monthly": sendMonthlyStatsEmbed
+    }
+    
+    await embedToSend[timeFrame](message, data, type)
+}
+
+
+const sendDailyStatsEmbed = async (message, qxHustlerStats, type) => {
+    const dailyStatsEmbed = getDailyMarketStatsEmbed(qxHustlerStats.stats)
+        .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(quixoticCollectionLink)
-        .setThumbnail(dWThumbnailPic)
         .setColor(qxRed)
-        .setFields(
-            { name: "🥇 Trading Volume", value: `${wrap((gearData.volume_traded / qxApiEthConvValue).toFixed(2) + " ETH")}`, inline: true },
-            { name: "🧹 Floor", value: `${wrap((gearData.floor_price / qxApiEthConvValue).toFixed(4) + " ETH")}`, inline: true },
-        )
 
-    await message.channel.send({ embeds: [qxGearStatsEmbed] });
+    await message.channel.send({ embeds: [dailyStatsEmbed] });
+}
+
+const sendWeeklyStatsEmbed = async (message, qxHustlerStats, type) => {
+    const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(qxHustlerStats.stats)
+        .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
+        .setURL(quixoticCollectionLink)
+        .setColor(qxRed)
+
+    await message.channel.send({ embeds: [weeklyStatsEmbed] });
+}
+
+const sendMonthlyStatsEmbed = async (message, qxHustlerStats, type) => {
+    const monthlyStatsEmbed = getMonthlyStatsEmbed(qxHustlerStats.stats)
+        .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
+        .setURL(quixoticCollectionLink)
+        .setColor(qxRed)
+
+    await message.channel.send({ embeds: [monthlyStatsEmbed] });
 }
