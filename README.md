@@ -50,32 +50,28 @@ For your new command to be correctly picked up, you should use an header like th
 
 ```js
 module.exports = {
-    name: "os",
-    description: "\`daily\` - Shows daily OpenSea stats\n\`weekly\` - Shows weekly OpenSea stats",
-    args: "[daily | weekly ]",
-    validator: ([option]) => !option || !["daily", "weekly"].includes(option),
-    async execute(message, option) {
-        switch(option) {
-            case "daily":
-                await dailyOsStats();
-                break;
-            case "weekly":
-                await weeklyOsStats();
-                break;
-            default:
-                break;
+    name: "qx",
+    description: "\`hustler\` - Quixotic Hustler stats\n\`gear\` - Quixotic Gear stats",
+    args: "[hustler | gear] (daily | weekly | monthly)",
+    validator: ([collection, timeFrame]) => !collection || !["hustler", "gear"].includes(collection) || !timeFrame || !["daily", "weekly", "monthly"].includes(timeFrame),
+    async execute(message, [collection, timeFrame]) {
+        const fnMap = {
+            "hustler": getHustlerStats,
+            "gear": getGearStats
         }
+
+        await fnMap[collection](message, collection, timeFrame);
     }
-}
+};
 
 ...
 ```
-`name` -> !name
+`name` -> !name of command
 
-`description` -> Needed for the !help and wrong arguments embed
+`description` -> Needed for the `!dw help` and wrong arguments embed
 
 `args` -> Same as above, but optional
 
 `validator` -> It validates the received arguments, which happens before the execute method is run (optional)
 
-`async execute(message, option)` -> The actual method that gets executed, if valid arguments are provided
+`async execute(message, [args])` -> The actual method that gets executed, if valid arguments are provided
