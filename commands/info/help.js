@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const { botPrefix, dWThumbnailPic } = require('../../constants');
+const { DW_THUMBNAIL, BOT_PREFIX } = require('../../constants');
 const fs = require('node:fs');
 
 module.exports = {
@@ -21,10 +21,10 @@ module.exports = {
             .setTitle("Command Overview")
             .setColor("#36393F")
             .setTimestamp()
-            .setThumbnail(dWThumbnailPic);
+            .setThumbnail(DW_THUMBNAIL);
 
         commands.forEach(command => {
-            helpEmbed.addField(`${botPrefix}${command.name} ${command.args ?? ""}`, `${command.description}`, false);
+            helpEmbed.addField(`${BOT_PREFIX}${command.name} ${command.args ?? ""}`, `${command.description}`, false);
         });
 
         await message.channel.send({ embeds: [helpEmbed] });

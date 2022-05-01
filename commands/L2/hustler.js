@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
-const { dWApi, dWThumbnailPic, quixoticCollectionLink } = require('../../constants');
+const { DW_GRAPHQL_API, DW_THUMBNAIL, QX_LINK, HUSTLER_CONTRACT } = require('../../constants');
 const { hustlerQuery, hustlerImageQuery, hustlerTotalCountQuery } = require('../../Queries/hustlerQueries');
 const { svgRenderer } = require('../../util/svgRenderer');
 const { default: request } = require('graphql-request');
@@ -48,7 +48,7 @@ hustlerObject = {
 }
 
 const getTotalHustlerCount = async () => {
-    const hustlerCountRes = await request(dWApi, hustlerTotalCountQuery);
+    const hustlerCountRes = await request(DW_GRAPHQL_API, hustlerTotalCountQuery);
     if (!hustlerCountRes?.hustlers?.totalCount) {
         return Promise.reject()
     }
@@ -57,7 +57,7 @@ const getTotalHustlerCount = async () => {
 }
 
 const getHustlerImgEmbed = async (message, id) => {
-    const hustler = await request(dWApi, hustlerImageQuery, { "where": { "id": id } });
+    const hustler = await request(DW_GRAPHQL_API, hustlerImageQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]) {
         return Promise.reject();
     }
@@ -75,7 +75,7 @@ const getHustlerImgEmbed = async (message, id) => {
 }
 
 const getHustlerInvEmbed = async (message, id) => {
-    const hustler = await request(dWApi, hustlerQuery, { "where": { "id": id } });
+    const hustler = await request(DW_GRAPHQL_API, hustlerQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]?.node) {
         return Promise.reject();
     }
@@ -106,12 +106,13 @@ const getHustlerInvEmbed = async (message, id) => {
             { name: "🚓 Vehicle", value: `${hustlerObject.vehicle}`, inline: true },
             { name: "\u200b", value: "\u200b", inline: true },
             { name: "🎭 Accessory", value: `${hustlerObject.accessory ?? 'none :('}`, inline: true },
-            { name: "🔴✨ Quixotic", value: `[Listing](${quixoticCollectionLink}/${id})`, inline: true }
+            { name: "🔴✨ Quixotic", value: `[Listing](${QX_LINK}/asset/${HUSTLER_CONTRACT}/${id})`, inline: true }
         )
-        .setThumbnail(dWThumbnailPic);
+        .setThumbnail(DW_THUMBNAIL);
     
     await message.channel.send({ embeds: [hustlerInvEmbed]});
 }
+
 
 const setField = (name, obj) => {
     return obj ? `${name} \`${obj}\`\n` : '';

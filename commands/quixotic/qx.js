@@ -1,7 +1,11 @@
 const { sfetch } = require("../../util/sfetch");
-const { quixoticGearStats, qxRed, quixoticCollectionLink, quixoticHustlerStats } = require("../../constants");
+const { QX_API, HUSTLER_CONTRACT, GEAR_CONTRACT, QX_LINK, QX_RED } = require("../../constants");
 const { quixoticApiKey } = require("../../config.json");
 const { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } = require("../../util/marketStatsEmbed");
+
+const setContract = (type) => {
+    return type == "Hustler" ? HUSTLER_CONTRACT : GEAR_CONTRACT;
+}
 
 module.exports = {
     name: "qx",
@@ -19,7 +23,7 @@ module.exports = {
 };
 
 const getHustlerStats = async (message, timeFrame, type) => {
-    const qxHustlerStats = await sfetch(quixoticHustlerStats, { headers: { "X-API-KEY": quixoticApiKey } });
+    const qxHustlerStats = await sfetch(`${QX_API}/collection/${HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": quixoticApiKey } });
     if (!qxHustlerStats) {
         return Promise.reject();
     }
@@ -27,7 +31,7 @@ const getHustlerStats = async (message, timeFrame, type) => {
 }
 
 const getGearStats = async (message, timeFrame, type) => {
-    const qxGearStats = await sfetch(quixoticGearStats, { headers: { "X-API-KEY": quixoticApiKey } });
+    const qxGearStats = await sfetch(`${QX_API}/collection/${GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": quixoticApiKey } });
     if (!qxGearStats) {
         return Promise.reject();
     }
@@ -48,8 +52,8 @@ const chooseEmbed = async (message, timeFrame, data, type) => {
 const sendDailyStatsEmbed = async (message, qxHustlerStats, type) => {
     const dailyStatsEmbed = getDailyMarketStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
-        .setURL(quixoticCollectionLink)
-        .setColor(qxRed)
+        .setURL(`${QX_LINK}/collection/${setContract(type)}`)
+        .setColor(QX_RED)
 
     await message.channel.send({ embeds: [dailyStatsEmbed] });
 }
@@ -57,8 +61,8 @@ const sendDailyStatsEmbed = async (message, qxHustlerStats, type) => {
 const sendWeeklyStatsEmbed = async (message, qxHustlerStats, type) => {
     const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
-        .setURL(quixoticCollectionLink)
-        .setColor(qxRed)
+        .setURL(`${QX_LINK}/collection/${setContract(type)}`)
+        .setColor(QX_RED)
 
     await message.channel.send({ embeds: [weeklyStatsEmbed] });
 }
@@ -66,8 +70,8 @@ const sendWeeklyStatsEmbed = async (message, qxHustlerStats, type) => {
 const sendMonthlyStatsEmbed = async (message, qxHustlerStats, type) => {
     const monthlyStatsEmbed = getMonthlyStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
-        .setURL(quixoticCollectionLink)
-        .setColor(qxRed)
+        .setURL(`${QX_LINK}/collection/${setContract(type)}`)
+        .setColor(QX_RED)
 
     await message.channel.send({ embeds: [monthlyStatsEmbed] });
 }

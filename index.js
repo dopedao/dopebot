@@ -1,7 +1,7 @@
 const fs = require('node:fs');
 const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
 const { token } = require("./config.json");
-const { botPrefix, errorChannel, dWThumbnailPic } = require("./constants");
+const { BOT_PREFIX, DW_THUMBNAIL, ERROR_CHANNEL } = require("./constants");
 const { wrap } = require("./util/wrap");
 const { getTwitterFollowers } = require("./util/twitterFollowers");
 const { getOsFloor } = require("./util/osFloor");
@@ -54,11 +54,11 @@ client.once('ready', async () => {
 
 client.on('messageCreate', async message => {
         if (message.author.username === client.user.username
-                || !message.content.startsWith(botPrefix) 
+                || !message.content.startsWith(BOT_PREFIX) 
                 || message.member.roles.cache.find(role => role.name === "packing heat")?.position > message.member.roles.highest.position
-                || !/^[a-zA-Z0-9- ]+$/.test(message.content.replace(botPrefix, ''))) return;
+                || !/^[a-zA-Z0-9- ]+$/.test(message.content.replace(BOT_PREFIX, ''))) return;
 
-        const command = client.commands.get(message.content.replace(botPrefix, '').toLowerCase().split(' ')[0]);
+        const command = client.commands.get(message.content.replace(BOT_PREFIX, '').toLowerCase().split(' ')[0]);
         const args = message.content.split(' ').slice(1);
         logger.info(`${message.author.tag}/${message.author.id}: ${message.content}`);
 
@@ -67,8 +67,8 @@ client.on('messageCreate', async message => {
                 const invalidInvocationEmbed = new MessageEmbed()
                         .setTitle("⚠️ Invalid arguments provided")
                         .setColor("YELLOW")
-                        .setDescription(`\`${botPrefix}${command.name} ${command.args ?? ''}\`\n${command.description}`)
-                        .setThumbnail(dWThumbnailPic);
+                        .setDescription(`\`${BOT_PREFIX}${command.name} ${command.args ?? ''}\`\n${command.description}`)
+                        .setThumbnail(DW_THUMBNAIL);
 
                 await message.reply({ embeds: [invalidInvocationEmbed] });
                 return;
@@ -88,7 +88,7 @@ client.on('messageCreate', async message => {
                         )
                         .setTimestamp();
 
-                await client.channels.cache.get(errorChannel).send({ embeds: [errorEmbed] });
+                await client.channels.cache.get(ERROR_CHANNEL).send({ embeds: [errorEmbed] });
                 await message.react("❌");
         }
 })

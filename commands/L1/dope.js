@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
-const { dWApi, dwApiEthConvValue, dWThumbnailPic } = require('../../constants');
+const { DW_GRAPHQL_API, dwApiEthConvValue, DW_THUMBNAIL} = require('../../constants');
 const { dopeStatusQuery, dopeRarityQuery, dopeInvQuery } = require('../../Queries/dopeQueries');
 const { default: request } = require('graphql-request');
 
@@ -31,7 +31,7 @@ dopeObject = {
 }
 
 const getDopeInvEmbed = async (message, id) => {
-    const dope = await request(dWApi, dopeInvQuery, { "where": { "id": id } });
+    const dope = await request(DW_GRAPHQL_API, dopeInvQuery, { "where": { "id": id } });
     if (!dope) {
         return Promise.reject()
     }
@@ -64,7 +64,7 @@ const getDopeInvEmbed = async (message, id) => {
             { name: "\u200b", value: "\u200b", inline: true },
             { name: "⛵ OpenSea", value: `[Listing](https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${id})`, inline: true },
         )
-        .setThumbnail(dWThumbnailPic);
+        .setThumbnail(DW_THUMBNAIL);
 
     await message.channel.send({ embeds: [dopeInventoryEmbed] });
 
@@ -103,7 +103,7 @@ const getDopeInvEmbed = async (message, id) => {
 }
 
 const getDopeCheckEmbed = async (message, id) => {
-    const dope = await request(dWApi, dopeStatusQuery, { "where": { "id": id } });
+    const dope = await request(DW_GRAPHQL_API, dopeStatusQuery, { "where": { "id": id } });
     if (!dope) {
         return Promise.reject()
     }

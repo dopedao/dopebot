@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const Sharp = require("sharp");
-const { osBlue, qxRed, hustlerGif } = require("../../constants");
+const { OS_BLUE, QX_RED, HUSTLER_GIF } = require("../../constants");
 
 module.exports = {
     name: "explain",
@@ -27,7 +27,7 @@ const explainDope = async (message) => {
 
     const dopeEmbed = new MessageEmbed()
         .setTitle("What is a \"Dope\"❓")
-        .setColor(osBlue)
+        .setColor(OS_BLUE)
         .setImage("attachment://dope.png")
         .setDescription("A limited-edition of \`8.000\` **Dope NFTs** were created in __September 2021__. These **Dope NFTs** contain eight pieces of wearable equipment with randomized attributes, rarity scores and one vehicle. Each **Dope NFT** allows you to \"Claim **Paper**\", \"Claim **Gear**\" and \"Initiate a **Hustler**\", only **once** to be used in-game, while also providing an equal **Governance Vote** on [Proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7) from the **DAO**. The **Dope NFT** will serve as a **Dope Pass** for future additions to the game and metaverse, including eligibility for future airdops, staking and features.");
 
@@ -37,9 +37,9 @@ const explainDope = async (message) => {
 const explainHustler = async (message) => {
     const hustlerEmbed = new MessageEmbed()
         .setTitle("What is a \"Hustler\"❓")
-        .setColor(qxRed)
+        .setColor(QX_RED)
         .setDescription("**Hustlers** are the in-game and in-ecosystem characters in the Dope Wars universe. **Hustlers** undergo a process of initiation, or character customization, prior to mint. This can be done using the [Swap Meet](https://dopewars.gg/swap-meet).")
-        .setImage(hustlerGif);
+        .setImage(HUSTLER_GIF);
 
     message.channel.send({ embeds: [hustlerEmbed] });
 }
@@ -50,7 +50,7 @@ const explaingOgs = async (message) => {
 
     const ogsEmbed = new MessageEmbed()
         .setTitle("What are \"OGs\"❓")
-        .setColor(qxRed)
+        .setColor(QX_RED)
         .setDescription("**OGs** are a limited set of \`500\` **OG Hustlers**, which were initiated and minted in __November 2021__. **OGs** have maxed \`100\` **Respect**, can have exclusive **Alien Skin** and will be able to form **Gangs** in the upcoming game.")
         .setImage("attachment://og.png")
 
@@ -63,7 +63,7 @@ const explainGear = async (message) => {
 
     const gearEmbed = new MessageEmbed()
         .setTitle("What is \"Gear\"❓")
-        .setColor(qxRed)
+        .setColor(QX_RED)
         .setImage("attachment://gear.png")
         .setDescription("Dope **Gear** is any individual piece that can be equipped on a **Hustler**. Hustlers have 10 slots for **Dope Gear**. Each piece of **Dope Gear** exists on the *L2 Optimistic Ethereum Blockchain*, just like your **Hustler**.")
 

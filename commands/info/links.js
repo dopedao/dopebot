@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { dWThumbnailPic } = require("../../constants");
+const { DW_THUMBNAIL } = require("../../constants");
 
 module.exports = {
     name: "links",
@@ -16,7 +16,7 @@ module.exports = {
                 { name: "\u200b", value: "\u200b", inline: true},
                 { name: "📑 Guides", value:"[Dope](https://dope-wars.notion.site/DOPE-NFT-Rarity-Guide-aecf604653894d789899321cc7242775)\n[Hustlers](https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf) | [OGs](https://dope-wars.notion.site/OG-Hustler-Guide-25c6dfb9dca64196aedf8def6297c51a)\n[Gear](https://dope-wars.notion.site/Dope-Gear-Guide-bab6001d5af2469f8790d8a1f156b3f4)\n[$PAPER](https://dope-wars.notion.site/PAPER-Token-Guide-beb98b5800404762968515b9b9aecf1e)\n[Swap Meet](https://dope-wars.notion.site/Swap-Meet-Guide-9d2f661813c44b1dbfe35c49eb89c59b)", inline: true},
             )
-            .setThumbnail(dWThumbnailPic);
+            .setThumbnail(DW_THUMBNAIL);
 
         await message.channel.send({ embeds: [linkEmbed] });
     }

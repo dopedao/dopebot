@@ -1,9 +1,9 @@
 const { sfetch } = require("./sfetch");
-const { twitterMetricsLink } = require('../constants');
+const { TWITTER_METRICS_LINK } = require('../constants');
 const { twitterBearerToken } = require("../config.json")
 
 exports.getTwitterFollowers = async () => {
-    const response = await sfetch(twitterMetricsLink, { headers: { authorization: twitterBearerToken } })
+    const response = await sfetch(TWITTER_METRICS_LINK, { headers: { authorization: twitterBearerToken } })
     if (!response) {
         return Promise.reject(response.statusText);
     }

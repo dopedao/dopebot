@@ -1,4 +1,4 @@
-const { openSeaApi, dwApiEthConvValue, errorChannel, dWApi, DOPE_CONTRACT } = require("../constants")
+const { dwApiEthConvValue, ERROR_CHANNEL, DOPE_CONTRACT, OS_API, DW_GRAPHQL_API } = require("../constants")
 const { sfetch } = require("./sfetch")
 const { openseaApiKey } = require("../config.json");
 const moment = require("moment");
@@ -25,7 +25,7 @@ const getSells = async (client) => {
 
     setInterval(async () => {
         try {
-            const data = await sfetch(openSeaApi + new URLSearchParams({
+            const data = await sfetch(`${OS_API}/events?`+ new URLSearchParams({
                 only_opensea: "false",
                 asset_contract_address: DOPE_CONTRACT,
                 event_type: "successful",
@@ -57,7 +57,7 @@ const getSells = async (client) => {
                     }
                     logger.info(`LastSell: ${sellObj.timestamp}`);
 
-                    const dope = await request(dWApi, dopeStatusQuery, { "where": { "id": sellObj.id } });
+                    const dope = await request(DW_GRAPHQL_API, dopeStatusQuery, { "where": { "id": sellObj.id } });
                     const dopeRoot = dope.dopes.edges[0].node;
                     const claimed = dopeRoot.claimed ? '✅' : '❌';
                     const opened = dopeRoot.opened ? '✅' : '❌';
@@ -75,7 +75,7 @@ const getSells = async (client) => {
                         .setDescription(`DopeId: ${sell.asset.token_id}\n${sell.transaction.timestamp}\n${(sell.total_price / dwApiEthConvValue).toFixed(4)} ETH (${usdSellPrice.toFixed(2)} $)\nGear Claimed: ${opened}\nPaper Claimed: ${claimed}`)
                         .setImage("attachment://dope.png");
 
-                    await client.channels.cache.get(errorChannel).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
+                    await client.channels.cache.get(ERROR_CHANNEL).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
                 });
 
                 cache.forEach(sell => {

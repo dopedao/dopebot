@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const { osBlue, dWThumbnailPic } = require("../../constants");
+const { DW_THUMBNAIL, OS_BLUE } = require("../../constants");
 
 module.exports = {
     name: "contribute",
@@ -7,8 +7,8 @@ module.exports = {
     async execute(message) {
         const contributeEmbed = new MessageEmbed()
             .setTitle("How to contribute")
-            .setColor(osBlue)
-            .setDescription("The thing that makes the \`Dope\` community so amazing is taht the entire project is being built by the community. The \`Dope DAO's\` design intention was that anyone can build freely on top of it. It's an open ecosystem, by the people, for the people.")
+            .setColor(OS_BLUE)
+            .setDescription("The thing that makes the \`Dope\` community so amazing is that the entire project is being built by the community. The \`Dope DAO's\` design intention was that anyone can build freely on top of it. It's an open ecosystem, by the people, for the people.")
             .setFields(
                 { name: "Objectives 🎯", value: "[Link](https://dope-wars.notion.site/0ff426feb38d4bfa88c756f63d59f8f7?v=2cef1361705640d3a196d66a9d8c60b8)", inline: true},
                 { name: "Tasks ✅", value: "[Link](https://dope-wars.notion.site/e21dd530d94e4420a1d7afdd40c8ed78?v=db96e8dc48e945f4a2c23bd64b22bc2b)", inline: true},
@@ -18,7 +18,7 @@ module.exports = {
                 { name: "🤸 Character + Copy Style Guide", value: "[Link](https://dope-wars.notion.site/Character-Copy-Style-Guide-Copy-54fbf798c4c340b2aef1999e6ad7e671)", inline: true},
                 { name: "🎨 Design Style Guide", value: "[Link](https://dope-wars.notion.site/Design-Style-Guide-60d4bdf736994a2094ce253739a1adb3)", inline: true},
             )
-            .setThumbnail(dWThumbnailPic);
+            .setThumbnail(DW_THUMBNAIL);
 
         await message.channel.send({ embeds: [contributeEmbed] });
     }
