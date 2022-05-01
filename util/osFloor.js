@@ -3,7 +3,7 @@ const { dWOpenSeaApiLink } = require("../constants");
 
 exports.getOsFloor = async () => {
     const response = await sfetch(dWOpenSeaApiLink)
-    if (!response) {
+    if (!response?.stats?.floor_price) {
         return Promise.reject(response.statusText);
     }
 
