@@ -1,9 +1,10 @@
 module.exports = {
-    errorChannel: "959196473097060372",
+    errorChannel: "963389800080097330",
     dWApi: "http://api.dopewars.gg/query",
     dWOpenSeaApiLink: "https://api.opensea.io/api/v1/collection/dope-v4/stats",
     quixoticHustlerStats: "https://api.quixotic.io/api/v1/opt/collection/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E/stats/",
     quixoticGearStats: "https://api.quixotic.io/api/v1/opt/collection/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110/stats/",
+    openSeaApi: "https://api.opensea.io/api/v1/events?",
     qxApiEthConvValue: 1000000000,
     dwApiEthConvValue: 1000000000000000000,
     qxRed: "#FF0420",
@@ -14,4 +15,7 @@ module.exports = {
     dWThumbnailPic: "https://lh3.googleusercontent.com/3Y3ysx1pfeF7tCEa5FXzIXsaueN3DqQ97eQL9eGTsp0XtAU8tjSta0sK85xfJxyTN6JzjzofitdNgyRsVM-9f1VA4J92u1mGhtwVd-U=s120",
     hustlerGif: "https://fanbase-1.s3.amazonaws.com/quixotic-collection-profile/ezgif.com-gif-maker.gif",
     botPrefix: "!",
+    DOPE_CONTRACT: "0x8707276DF042E89669d69A177d3DA7dC78bd8723",
+    HUSTLER_CONTRACT: "",
+    GEAR_CONTRACT: ""
 }
