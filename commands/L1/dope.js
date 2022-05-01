@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
-const { dWApi, dwApiEthConvValue, osBlue, dWThumbnailPic } = require('../../constants');
+const { dWApi, dwApiEthConvValue, dWThumbnailPic } = require('../../constants');
 const { dopeStatusQuery, dopeRarityQuery, dopeInvQuery } = require('../../Queries/dopeQueries');
 const { default: request } = require('graphql-request');
 
@@ -7,7 +7,7 @@ module.exports = {
     name: "dope",
     description: `\`inv\` - Outputs the dope's inv\n\`check\` - Checks the dope's status`,
     args: "[inv | check] (1-8000)",
-    validator: ([option, id]) => !option || !["inv", "check"].includes(option) || !parseInt(id) || 0 > parseInt(id) > 8000,
+    validator: ([option, id]) => !option || !["inv", "check"].includes(option) || !parseInt(id) || 0 > parseInt(id) || parseInt(id) > 8000,
     async execute(message, [option, id]) {
         const fnMap = {
             "inv": getDopeInvEmbed,
@@ -109,8 +109,8 @@ const getDopeCheckEmbed = async (message, id) => {
     }
     const dopeRoot = dope.dopes.edges[0].node;
 
-    const claimed = dopeRoot.claimed ? '✅' : '❌';
-    const opened = dopeRoot.opened ? '✅' : '❌';
+    const claimed = !dopeRoot.claimed ? '✅' : '❌';
+    const opened = !dopeRoot.opened ? '✅' : '❌';
     const fullyClaimed = dopeRoot.claimed && dopeRoot.opened;
     const color = fullyClaimed ? "GREEN" : !dopeRoot.claimed && !dopeRoot.opened ? "RED" : "ORANGE";
 
@@ -118,8 +118,8 @@ const getDopeCheckEmbed = async (message, id) => {
         .setTitle(`Dope #${id} Status`)
         .setColor(color)
         .setDescription(
-            `**Claimed $PAPER:** ${claimed}\n` +
-            `**Claimed Gear:** ${opened}\n`
+            `**Can Claim $PAPER:** ${claimed}\n` +
+            `**Can Claim Gear:** ${opened}\n`
         )
         .setTimestamp()
 
