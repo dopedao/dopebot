@@ -7,16 +7,15 @@ const { default: request } = require('graphql-request');
 module.exports = {
     name: "hustler",
     description: `\`inv\` - Outputs the hustler's inv\n\`img\` - Shows the rendered hustler`,
-    //Fetch totalCount and store in memory to dynamically update?
     args: `[inv | img] (0-1637)`,
     validator: ([option, id]) => !option || !["inv", "img"].includes(option) || !parseInt(id) && id != 0,
     async execute(message, [option, id]) {
         const hustlerCount = await getTotalHustlerCount();
-        if (parseInt(id) < 0 || parseInt(id) > hustlerCount) {
+        if (parseInt(id) < 0 || parseInt(id) > hustlerCount - 1) {
             const invalidIdEmbed = new MessageEmbed()
                 .setTitle("⚠️")
                 .setColor("YELLOW")
-                .setDescription(`Please provide an id between 0 - ${hustlerCount}`);
+                .setDescription(`Please provide an id between 0 - ${hustlerCount - 1}`);
 
             await message.channel.send({ embeds: [invalidIdEmbed] });
             return;
@@ -90,7 +89,7 @@ const getHustlerInvEmbed = async (message, id) => {
     const hustlerInvEmbed = new MessageEmbed()
         .setTitle(`Hustler #${id} Inventory`)
         .setColor("#FF0420")
-        .setDescription(`**Name:** \`${hustlerObject.name}\`\n**Title:** \`${hustlerObject.title}\`\n**Type:** \`${hustlerObject.type}\``)
+        .setDescription(`${setField("**Name:**", hustlerObject.name)}${setField("**Title:**", hustlerObject.title)}${setField("**Type:**", hustlerObject.type)}`)
         .setFields(
             { name: "⛓️ Neck", value: `${hustlerObject.neck}`, inline: true },
             { name: "\u200b", value: "\u200b", inline: true },
@@ -112,4 +111,8 @@ const getHustlerInvEmbed = async (message, id) => {
         .setThumbnail(dWThumbnailPic);
     
     await message.channel.send({ embeds: [hustlerInvEmbed]});
+}
+
+const setField = (name, obj) => {
+    return obj ? `${name} \`${obj}\`\n` : '';
 }
