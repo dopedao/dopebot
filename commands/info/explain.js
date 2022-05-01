@@ -5,13 +5,11 @@ const { osBlue, qxRed, hustlerGif } = require("../../constants");
 module.exports = {
     name: "explain",
     description: `\`Explains what each term stands for\``,
-    args: "[dope | claimed | opened | hustler | ogs | gear | turf | paper]",
-    validator: ([option]) => !option || !["dope", "claimed", "opened", "hustler", "gear", "turf", "ogs", "paper"].includes(option),
+    args: "[dope | hustler | ogs | gear | turf | paper]",
+    validator: ([option]) => !option || !["dope", "hustler", "gear", "turf", "ogs", "paper"].includes(option),
     async execute(message, [option]) {
         const fnMap = {
             "dope": explainDope,
-            "claimed": explainClaimed,
-            "opened": explainOpened,
             "hustler": explainHustler,
             "gear": explainGear,
             "turf": explainTurf,
@@ -34,22 +32,6 @@ const explainDope = async (message) => {
         .setDescription("A limited-edition of \`8.000\` **Dope NFTs** were created in __September 2021__. These **Dope NFTs** contain eight pieces of wearable equipment with randomized attributes, rarity scores and one vehicle. Each **Dope NFT** allows you to \"Claim **Paper**\", \"Claim **Gear**\" and \"Initiate a **Hustler**\", only **once** to be used in-game, while also providing an equal **Governance Vote** on [Proposals](https://dope-wars.notion.site/626df3ff9e4d47da98ea23abc4b6e7a7) from the **DAO**. The **Dope NFT** will serve as a **Dope Pass** for future additions to the game and metaverse, including eligibility for future airdops, staking and features.");
 
     message.channel.send({ embeds: [dopeEmbed], files: [imageFile] });
-}
-
-const explainClaimed = async (message) => {
-    const claimedEmbed = new MessageEmbed()
-        .setTitle("What does \"Claimed\" mean❓")
-        .setColor(osBlue);
-
-    message.channel.send({ embeds: [claimedEmbed] });
-}
-
-const explainOpened = async (message) => {
-    const openedEmbed = new MessageEmbed()
-        .setTitle("What does \"Opened\" mean❓")
-        .setColor(qxRed);
-
-    message.channel.send({ embeds: [openedEmbed] });
 }
 
 const explainHustler = async (message) => {
