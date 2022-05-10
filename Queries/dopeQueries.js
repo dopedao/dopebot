@@ -60,7 +60,24 @@ const dopeRarityQuery = gql`query Dopes(
                     }
                   }`;
 
+const dopeSellQuery = gql`query Dopes(
+                    $where: DopeWhereInput
+                  ) {
+                    dopes(
+                      where: $where
+                    ) {
+                      edges {
+                        node {
+                          claimed
+                          opened
+                          rank
+                        }
+                      }
+                    }
+                  }`
+
 module.exports = {
   dopeInvQuery: dopeInvQuery,
   dopeStatusQuery: dopeStatusQuery,
+  dopeSellQuery: dopeSellQuery
 }
