@@ -1,10 +1,12 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const { DW_THUMBNAIL, OS_BLUE } = require("../../constants");
 
 module.exports = {
-    name: "contribute",
-    description: `Some helpful tips to contribute :)`,
-    async execute(message) {
+    data: new SlashCommandBuilder()
+    .setName("contribute")
+    .setDescription("Helpful resources on contributing"),
+    async execute(interaction) {
         const contributeEmbed = new MessageEmbed()
             .setTitle("How to contribute")
             .setColor(OS_BLUE)
@@ -20,6 +22,6 @@ module.exports = {
             )
             .setThumbnail(DW_THUMBNAIL);
 
-        await message.channel.send({ embeds: [contributeEmbed] });
+        await interaction.reply({ embeds: [contributeEmbed] });
     }
 };

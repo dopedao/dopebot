@@ -3,21 +3,38 @@ const { DW_GRAPHQL_API, DW_THUMBNAIL, QX_LINK, HUSTLER_CONTRACT } = require('../
 const { hustlerQuery, hustlerImageQuery, hustlerTotalCountQuery } = require('../../Queries/hustlerQueries');
 const { svgRenderer } = require('../../util/svgRenderer');
 const { default: request } = require('graphql-request');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-    name: "hustler",
-    description: `\`inv\` - Outputs the hustler's inv\n\`img\` - Shows the rendered hustler`,
-    args: `[inv | img] (0-1637)`,
-    validator: ([option, id]) => !option || !["inv", "img"].includes(option) || !parseInt(id) && id != 0,
-    async execute(message, [option, id]) {
+    data: new SlashCommandBuilder()
+        .setName("hustler")
+        .setDescription("Gives various hustler info")
+        .addSubcommand(subcommand =>
+            subcommand.setName("inv")
+            .setDescription("Outputs the inv")
+            .addIntegerOption(option =>
+                option.setName("hustlerid")
+                .setDescription("Specify the id")
+                .setMinValue(0)
+                .setRequired(true)))
+
+        .addSubcommand(subcommand =>
+            subcommand.setName("img")
+            .setDescription("Shows your hustler")
+            .addIntegerOption(option =>
+                option.setName("hustlerid")
+                .setDescription("Specify the id")
+                .setMinValue(0)
+                .setRequired(true))),
+    async execute(interaction) {
         const hustlerCount = await getTotalHustlerCount();
-        if (parseInt(id) < 0 || parseInt(id) > hustlerCount - 1) {
+        if (interaction.options.getInteger("hustlerid") > hustlerCount - 1) {
             const invalidIdEmbed = new MessageEmbed()
                 .setTitle("⚠️")
                 .setColor("YELLOW")
                 .setDescription(`Please provide an id between 0 - ${hustlerCount - 1}`);
 
-            await message.channel.send({ embeds: [invalidIdEmbed] });
+            await interaction.reply({ embeds: [invalidIdEmbed] });
             return;
         }
 
@@ -25,8 +42,8 @@ module.exports = {
             "inv": getHustlerInvEmbed,
             "img": getHustlerImgEmbed
         }
-        
-        await fnMap[option](message, id);
+        const id = interaction.options.getInteger("hustlerid");
+        await fnMap[interaction.options.getSubcommand()](interaction, id);
     }
 };
 
@@ -56,7 +73,7 @@ const getTotalHustlerCount = async () => {
     return hustlerCountRes.hustlers.totalCount;
 }
 
-const getHustlerImgEmbed = async (message, id) => {
+const getHustlerImgEmbed = async (interaction, id) => {
     const hustler = await request(DW_GRAPHQL_API, hustlerImageQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]) {
         return Promise.reject();
@@ -71,10 +88,10 @@ const getHustlerImgEmbed = async (message, id) => {
         .setColor("#FF0420")
         .setTimestamp();
 
-    await message.channel.send({ embeds: [hustlerPictureEmbed], files: [discImage] });
+    await interaction.reply({ embeds: [hustlerPictureEmbed], files: [discImage] });
 }
 
-const getHustlerInvEmbed = async (message, id) => {
+const getHustlerInvEmbed = async (interaction, id) => {
     const hustler = await request(DW_GRAPHQL_API, hustlerQuery, { "where": { "id": id } });
     if (!hustler?.hustlers?.edges[0]?.node) {
         return Promise.reject();
@@ -110,7 +127,7 @@ const getHustlerInvEmbed = async (message, id) => {
         )
         .setThumbnail(DW_THUMBNAIL);
     
-    await message.channel.send({ embeds: [hustlerInvEmbed]});
+    await interaction.reply({ embeds: [hustlerInvEmbed]});
 }
 
 
