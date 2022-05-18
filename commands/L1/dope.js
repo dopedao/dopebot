@@ -13,7 +13,7 @@ module.exports = {
             .setDescription("Outputs the inv")
             .addIntegerOption(option =>
                 option.setName("dopeid")
-                .setDescription("Specify the id")
+                .setDescription("Id of Dope to print inventory of")
                 .setMinValue(1)
                 .setMaxValue(8000)
                 .setRequired(true)))
@@ -23,7 +23,7 @@ module.exports = {
             .setDescription("Checks the claim status")
             .addIntegerOption(option =>
                 option.setName("dopeid")
-                .setDescription("Specify the id")
+                .setDescription("Id of Dope to check")
                 .setMinValue(1)
                 .setMaxValue(8000)
                 .setRequired(true))),

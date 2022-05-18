@@ -1,4 +1,5 @@
 module.exports = {
+    SALE_CHANNEL: "884178498518921286",
     DW_GRAPHQL_API: "http://api.dopewars.gg/query",
 
     OS_API: "https://api.opensea.io/api/v1",

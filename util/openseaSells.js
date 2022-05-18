@@ -1,4 +1,4 @@
-const { dwApiEthConvValue, ERROR_CHANNEL, DOPE_CONTRACT, OS_API, DW_GRAPHQL_API } = require("../constants")
+const { dwApiEthConvValue, SALE_CHANNEL, DOPE_CONTRACT, OS_API, DW_GRAPHQL_API } = require("../constants")
 const { sfetch } = require("./sfetch")
 const { openseaApiKey } = require("../config.json");
 const moment = require("moment");
@@ -6,18 +6,19 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
 const { svgRenderer } = require("./svgRenderer");
 const { createLogger, transports, format } = require('winston');
 const { default: request } = require("graphql-request");
-const { dopeStatusQuery } = require("../Queries/dopeQueries");
+const { array } = require("zod");
+const { dopeSellQuery } = require("../Queries/dopeQueries");
 const { combine, timestamp, label, json } = format;
 
 const logger = createLogger({
-        level: "info",
-        format: combine(
-                timestamp(),
-                label({ label: "OpenSea Sells"}),
-                json()
-                ),
-        transports: [ new transports.Console() ]
-})
+    level: "info",
+    format: combine(
+        timestamp(),
+        label({ label: "OpenSea Sells" }),
+        json()
+    ),
+    transports: [new transports.Console()]
+});
 
 const getSells = async (client) => {
     let lastSellDate = moment.utc(moment()).unix();
@@ -25,7 +26,7 @@ const getSells = async (client) => {
 
     setInterval(async () => {
         try {
-            const data = await sfetch(`${OS_API}/events?`+ new URLSearchParams({
+            const data = await sfetch(`${OS_API}/events?` + new URLSearchParams({
                 only_opensea: "false",
                 asset_contract_address: DOPE_CONTRACT,
                 event_type: "successful",
@@ -38,7 +39,7 @@ const getSells = async (client) => {
             });
 
             if (data.asset_events) {
-                data.asset_events.forEach(async sell =>  {
+                data.asset_events.forEach(async sell => {
                     const sellObj = {
                         id: sell.asset.token_id,
                         timestamp: sell.transaction.timestamp,
@@ -53,14 +54,15 @@ const getSells = async (client) => {
                     logger.info("Sell -> Cache");
                     logger.info(`OpenSea sell cache size: ${cache.length}`)
                     if (moment(sellObj.timestamp).unix() > lastSellDate) {
-                        lastSellDate = moment(sellObj.timestamp).unix() + 1;
+                        lastSellDate = moment(sellObj.timestamp).unix();
                     }
                     logger.info(`LastSell: ${sellObj.timestamp}`);
 
-                    const dope = await request(DW_GRAPHQL_API, dopeStatusQuery, { "where": { "id": sellObj.id } });
+                    const dope = await request(DW_GRAPHQL_API, dopeSellQuery, { "where": { "id": sellObj.id } });
                     const dopeRoot = dope.dopes.edges[0].node;
                     const claimed = dopeRoot.claimed ? '✅' : '❌';
                     const opened = dopeRoot.opened ? '✅' : '❌';
+                    const dopeRank = dopeRoot.rank;
                     const metadataString = sell.asset.token_metadata.split(',')[1];
                     const decodedMetadataString = new Buffer.from(metadataString, "base64").toString("utf-8");
                     const metadataObject = JSON.parse(decodedMetadataString);
@@ -71,19 +73,24 @@ const getSells = async (client) => {
 
                     const dopePNG = new MessageAttachment(dopeSVG, "dope.png");
                     const openseaSellEmbed = new MessageEmbed()
-                        .setTitle("⛵ New Sell")
-                        .setDescription(`DopeId: ${sell.asset.token_id}\n${sell.transaction.timestamp}\n${(sell.total_price / dwApiEthConvValue).toFixed(4)} ETH (${usdSellPrice.toFixed(2)} $)\nGear Claimed: ${opened}\nPaper Claimed: ${claimed}`)
-                        .setImage("attachment://dope.png");
+                        .setImage("attachment://dope.png")
+                        .setTitle(`⛵ Dope #${sellObj.id} (Rank: ${dopeRank}) sold!`)
+                        .setURL(`https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${sellObj.id}`)
+                        .setFields(
+                            { name: `🔹 ${(sell.total_price / dwApiEthConvValue).toFixed(4)}Ξ (${usdSellPrice.toFixed(2)}$)`, value: "\u200b" },
+                            { name: `🔹 Claimed Gear ${opened}`, value: "\u200b" },
+                            { name: `🔹 Claimed Paper ${claimed}`, value: "\u200b" }
+                        );
 
-                    await client.channels.cache.get(ERROR_CHANNEL).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
+                    await client.channels.cache.get(SALE_CHANNEL).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
                 });
+            }
 
-                cache.forEach(sell => {
-                    if (moment(sell.timestamp).unix < lastSellDate) {
-                        logger.info(`Old sell found ${sell.id}, ${sell.timestamp}, ${sell.price}: deleting...`);
-                        delete cache[sell];
-                    }
-                })
+            for (let i = array.length - 1; i >= 0; i--) {
+                if (moment(array[i].timestamp).unix() < lastSellDate) {
+                    logger.info(`Old sell found ${array[i].id} ${sale.price}: deleting...`);
+                    array.splice(i, 1);
+                }
             }
         } catch (error) {
             logger.error(`${error}`);

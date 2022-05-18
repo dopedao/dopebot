@@ -7,23 +7,22 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("os")
         .setDescription("Shows various Dope OpenSea stats")
-        .addSubcommand(subcommand =>
-            subcommand.setName("daily")
-            .setDescription("Daily OpenSea stats"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("weekly")
-            .setDescription("Weekly OpenSea stats"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("monthly")
-            .setDescription("Monthly OpenSea stats")),
+        .addStringOption(option =>
+            option.setName("timeframe")
+                .setDescription("Timeframe to show stats of")
+                .setRequired(true)
+                .addChoices(
+                    { name: "Daily", value: "daily" },
+                    { name: "Weekly", value: "weekly" },
+                    { name: "Monthly", value: "monthly" }
+                )),
     async execute(interaction) {
         const fnMap = {
             "daily": dailyOsStats,
             "weekly": weeklyOsStats,
             "monthly": monthlyOsStats
         }
-
-        await fnMap[interaction.options.getSubcommand()](interaction);
+        await fnMap[interaction.options.getString("timeframe")](interaction);
     }
 }
 
@@ -33,7 +32,7 @@ const dailyOsStats = async (interaction) => {
         .setTitle("⛵ **OpenSea Stats** - Dopes")
         .setURL(`${OS_LINK}/collection/${OS_SLUG}`)
         .setColor(OS_BLUE);
-        
+
     await interaction.reply({ embeds: [dailyStatsEmbed] });
 }
 

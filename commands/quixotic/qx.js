@@ -17,7 +17,7 @@ module.exports = {
                 .setDescription("Shows Hustler stats")
                 .addStringOption(option =>
                     option.setName("timeframe")
-                        .setDescription("Specify the timeframe")
+                        .setDescription("Timeframe to show stats of")
                         .setRequired(true)
                         .addChoices(
                             { name: "Daily", value: "daily" },

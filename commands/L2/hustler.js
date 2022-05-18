@@ -14,7 +14,7 @@ module.exports = {
             .setDescription("Outputs the inv")
             .addIntegerOption(option =>
                 option.setName("hustlerid")
-                .setDescription("Specify the id")
+                .setDescription("Id of the Hustler")
                 .setMinValue(0)
                 .setRequired(true)))
 
@@ -23,7 +23,7 @@ module.exports = {
             .setDescription("Shows your hustler")
             .addIntegerOption(option =>
                 option.setName("hustlerid")
-                .setDescription("Specify the id")
+                .setDescription("Id of the Hustler")
                 .setMinValue(0)
                 .setRequired(true))),
     async execute(interaction) {
