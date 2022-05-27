@@ -6,7 +6,6 @@ const { MessageEmbed, MessageAttachment } = require("discord.js");
 const { svgRenderer } = require("./svgRenderer");
 const { createLogger, transports, format } = require('winston');
 const { default: request } = require("graphql-request");
-const { array } = require("zod");
 const { dopeSellQuery } = require("../Queries/dopeQueries");
 const { combine, timestamp, label, json } = format;
 
@@ -46,17 +45,14 @@ const getSells = async (client) => {
                         price: sell.total_price
                     }
 
-                    if (cache.some(newSell => newSell.id == sellObj.id && newSell.timestamp == sellObj.timestamp && newSell.price == sellObj.price)) {
+                    if (moment(sellObj.timestamp).unix() < lastSellDate || cache.some(newSell => newSell.id == sellObj.id && newSell.timestamp == sellObj.timestamp && newSell.price == sellObj.price)) {
                         return;
                     }
 
-                    cache.push(sellObj);
-                    logger.info("Sell -> Cache");
-                    logger.info(`OpenSea sell cache size: ${cache.length}`)
-                    if (moment(sellObj.timestamp).unix() > lastSellDate) {
-                        lastSellDate = moment(sellObj.timestamp).unix();
-                    }
+                    lastSellDate = moment(sellObj.timestamp).unix();
                     logger.info(`LastSell: ${sellObj.timestamp}`);
+                    cache.push(sellObj);
+                    logger.info(`OpenSea sell cache size: ${cache.length}`)
 
                     const dope = await request(DW_GRAPHQL_API, dopeSellQuery, { "where": { "id": sellObj.id } });
                     const dopeRoot = dope.dopes.edges[0].node;
@@ -86,14 +82,16 @@ const getSells = async (client) => {
                 });
             }
 
-            for (let i = array.length - 1; i >= 0; i--) {
-                if (moment(array[i].timestamp).unix() < lastSellDate) {
-                    logger.info(`Old sell found ${array[i].id} ${sale.price}: deleting...`);
-                    array.splice(i, 1);
+            if (cache.length > 0) {
+                for (let i = cache.length - 1; i >= 0; i--) {
+                    if (moment(cache[i].timestamp).unix() < lastSellDate) {
+                        logger.info(`Old sell found ${cache[i].id}: deleting...`);
+                        cache.splice(i, 1);
+                    }
                 }
             }
         } catch (error) {
-            logger.error(`${error}`);
+            logger.error(`${error.message}`);
         }
     }, 10000);
 }
