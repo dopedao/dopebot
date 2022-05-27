@@ -29,16 +29,20 @@ for (const folder of commandFolders) {
 }
 
 client.on('interactionCreate', async interaction => {
-        if (!interaction.isCommand()) return;
-        
+        if (!interaction.isCommand()
+        || interaction.member.roles.cache.find(role => role.name === "packing heat")?.position > interaction.member.roles.highest.position) {
+                return;
+        }
+
         const command = client.commands.get(interaction.commandName);
         if (!command) return;
 
         try {
                 await command.execute(interaction);
+                logger.info(`${interaction.user.username}#${interaction.user.discriminator} (ID: ${interaction.member.id}) executed ${interaction.commandName}`)
         } catch(error) {
                 logger.error(`${error}`);
-                interaction.reply("There was an error executing the command");
+                await interaction.reply("There was an error executing the command");
         }
 });
 
@@ -55,7 +59,7 @@ client.once('ready', async () => {
                         const osFloor = await getOsFloor();
                         const twitterFollowers = await getTwitterFollowers();
 
-                        client.user.setActivity(`Floor: ${osFloor} ETH | !dw help`, { type: "WATCHING" });
+                        client.user.setActivity(`Floor: ${osFloor} ETH`, { type: "WATCHING" });
                         client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
                         client.channels.cache.filter(channel => channel.name.includes("Twitter:")).map(channel => channel.setName(`Twitter: ${twitterFollowers}`));
                 } catch (error) {
