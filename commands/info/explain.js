@@ -7,24 +7,18 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("explain")
         .setDescription("Explains each term")
-        .addSubcommand(subcommand =>
-            subcommand.setName("dope")
-            .setDescription("Explains what dope means"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("hustler")
-            .setDescription("Explains what hustler means"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("gear")
-            .setDescription("Explains what gear means"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("turf")
-            .setDescription("Explains what turf means"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("ogs")
-            .setDescription("Explains what og mean"))
-        .addSubcommand(subcommand =>
-            subcommand.setName("paper")
-            .setDescription("Explains what paper mean")),
+        .addStringOption(option =>
+            option.setName("term")
+            .setDescription("Term to explain")
+            .setRequired(true)
+            .addChoices(
+                { name: "Dope", value: "dope"},
+                { name: "Hustler", value: "hustler"},
+                { name: "Gear", value: "gear"},
+                { name: "Turf", value: "turf"},
+                { name: "OGs", value: "ogs"},
+                { name: "Paper", value: "paper"}
+            )),
     async execute(interaction) {
         const fnMap = {
             "dope": explainDope,
@@ -35,7 +29,7 @@ module.exports = {
             "paper": explainPaper
         }
 
-        await fnMap[interaction.options.getSubcommand()](interaction);
+        await fnMap[interaction.options.getString("term")](interaction);
     }
 };
 
