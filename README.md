@@ -48,6 +48,7 @@ If your command does not match an existing command type, you can simply create a
 
 For your new command to be correctly picked up, you should use an header like this:
 
+# ⚠️ DEPRECATED ⚠️
 ```js
 module.exports = {
     name: "qx",
