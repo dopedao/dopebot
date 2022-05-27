@@ -27,13 +27,24 @@ for (const folder of commandFolders) {
 
 const rest = new REST({ version: '9' }).setToken(token);
 
+/* Delete slash commands (globally)
+rest.get(Routes.applicationCommands(clientId))
+    .then(data => {
+        const promises = [];
+        for (const command of data) {
+            const delURL = `${Routes.applicationCommands(clientId)}/${command.id}`;
+            promises.push(rest.delete(delURL));
+        }
+        return Promise.all(promises)
+    })
+*/
+
 (async () => {
 	try {
         logger.info("Refreshing slash commands");
-
+        
 		await rest.put(
 			Routes.applicationGuildCommands(clientId, guildId),
-            //Routes.applicationCommands(clientId),
 			{ body: commands },
 		);
 
