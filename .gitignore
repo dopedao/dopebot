@@ -1,4 +1,5 @@
-config.json
+secrets.ts
 node_modules
 .vscode
 .yarn/*
+build/*

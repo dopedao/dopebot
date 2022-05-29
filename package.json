@@ -2,11 +2,15 @@
   "name": "dopebot",
   "version": "1.0.0",
   "description": "A very dope discord bot",
-  "main": "index.js",
+  "main": "./build/src/index.js",
   "repository": "git@github.com:dopedao/dopebot.git",
   "author": "Oscar Guertler <oscarguertler@gmail.com>",
   "license": "MIT",
   "private": true,
+  "scripts": {
+    "build": "tsc --build",
+    "clean": "tsc --clean"
+  },
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
@@ -17,6 +21,10 @@
     "moment": "^2.29.3",
     "node-fetch": "2.0",
     "sharp": "^0.30.3",
+    "typescript": "^4.7.2",
     "winston": "^3.7.2"
+  },
+  "devDependencies": {
+    "@types/sharp": "^0.30.2"
   }
 }
