@@ -1,6 +1,7 @@
 FROM node:18
-WORKDIR /usr/src/app
+WORKDIR /usr/src
 COPY package*.json ./
 RUN yarn install --production==true
 COPY . .
-CMD ["node", "."]
+RUN yarn build
+CMD ["node", "build/src"]
