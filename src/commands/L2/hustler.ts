@@ -11,66 +11,75 @@ export default {
         .setDescription("Gives various hustler info")
         .addSubcommand(subcommand =>
             subcommand.setName("inv")
-            .setDescription("Outputs the inv")
-            .addIntegerOption(option =>
-                option.setName("hustlerid")
-                .setDescription("Id of the Hustler")
-                .setMinValue(0)
-                .setRequired(true)))
+                .setDescription("Outputs the inv")
+                .addIntegerOption(option =>
+                    option.setName("hustlerid")
+                        .setDescription("Id of the Hustler")
+                        .setMinValue(0)
+                        .setRequired(true)))
 
         .addSubcommand(subcommand =>
             subcommand.setName("img")
-            .setDescription("Shows your hustler")
-            .addIntegerOption(option =>
-                option.setName("hustlerid")
-                .setDescription("Id of the Hustler")
-                .setMinValue(0)
-                .setRequired(true))),
+                .setDescription("Shows your hustler")
+                .addIntegerOption(option =>
+                    option.setName("hustlerid")
+                        .setDescription("Id of the Hustler")
+                        .setMinValue(0)
+                        .setRequired(true))),
     async execute(interaction: CommandInteraction): Promise<void> {
-        const hustlerCount = await getTotalHustlerCount();
-        if (interaction.options.getInteger("hustlerid")!> hustlerCount - 1) {
-            const invalidIdEmbed = new MessageEmbed()
-                .setTitle("⚠️")
-                .setColor("YELLOW")
-                .setDescription(`Please provide an id between 0 - ${hustlerCount - 1}`);
+        try {
+            const hustlerCount = await getTotalHustlerCount();
+            if (interaction.options.getInteger("hustlerid")! > hustlerCount - 1) {
+                const invalidIdEmbed = new MessageEmbed()
+                    .setTitle("⚠️")
+                    .setColor("YELLOW")
+                    .setDescription(`Please provide an id between 0 - ${hustlerCount - 1}`);
 
-            return await interaction.reply({ embeds: [invalidIdEmbed] });
-        }
+                return await interaction.reply({ embeds: [invalidIdEmbed] });
+            }
 
-        const fnMap: any = {
-            "inv": getHustlerInvEmbed,
-            "img": getHustlerImgEmbed
+            const fnMap: any = {
+                "inv": getHustlerInvEmbed,
+                "img": getHustlerImgEmbed
+            }
+            const id = interaction.options.getInteger("hustlerid");
+            await fnMap[interaction.options.getSubcommand()](interaction, id);
+        } catch (error: unknown) {
+            return Promise.reject(error);
         }
-        const id = interaction.options.getInteger("hustlerid");
-        await fnMap[interaction.options.getSubcommand()](interaction, id);
     }
 };
 
 const getTotalHustlerCount = async (): Promise<number> => {
-    const hustlerCountRes = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerTotalCountQuery) as Hustler;
-    if (!hustlerCountRes?.hustlers?.totalCount) {
-        return Promise.reject()
-    }
+    try {
+        const hustlerCountRes = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerTotalCountQuery) as Hustler;
+        return hustlerCountRes.hustlers.totalCount;
 
-    return hustlerCountRes.hustlers.totalCount;
+    } catch (error: unknown) {
+        return Promise.reject(error);
+    }
 }
 
 const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
-    const hustler = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerImageQuery, { "where": { "id": id } }) as Hustler;
-    if (!hustler?.hustlers?.edges[0]) {
-        return Promise.reject();
+    try {
+        const hustler = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerImageQuery, { "where": { "id": id } }) as Hustler;
+        if (!hustler?.hustlers?.edges[0]) {
+            return Promise.reject();
+        }
+        const hustlerRoot = hustler.hustlers.edges[0].node;
+        const hustlerPng = await svgRenderer(hustlerRoot.svg);
+        const discImage = new MessageAttachment(hustlerPng, "hustler.png");
+
+        const hustlerPictureEmbed = new MessageEmbed()
+            .setTitle(`${hustlerRoot.name} : ${hustlerRoot.title}`)
+            .setImage("attachment://hustler.png")
+            .setColor("#FF0420")
+            .setTimestamp();
+
+        await interaction.reply({ embeds: [hustlerPictureEmbed], files: [discImage] });
+    } catch (error) {
+        return Promise.reject(error);
     }
-    const hustlerRoot = hustler.hustlers.edges[0].node;
-    const hustlerPng = await svgRenderer(hustlerRoot.svg);
-    const discImage = new MessageAttachment(hustlerPng, "hustler.png");
-
-    const hustlerPictureEmbed = new MessageEmbed()
-        .setTitle(`${hustlerRoot.name} : ${hustlerRoot.title}`)
-        .setImage("attachment://hustler.png")
-        .setColor("#FF0420")
-        .setTimestamp();
-
-    await interaction.reply({ embeds: [hustlerPictureEmbed], files: [discImage] });
 }
 
 interface Hustler {
@@ -106,7 +115,7 @@ interface Edge {
         },
         clothes: {
             fullname: string
-        }, 
+        },
         vehicle: {
             fullname: string
         },
@@ -121,37 +130,38 @@ interface Edge {
 
 
 const getHustlerInvEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
-    const hustler = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerQuery, { "where": { "id": id } }) as Hustler;
-    if (!hustler?.hustlers?.edges[0]?.node) {
-        return Promise.reject();
-    }
-    const hustlerRoot = hustler.hustlers.edges[0].node;
+    try {
+        const hustler = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerQuery, { "where": { "id": id } }) as Hustler;
+        const hustlerRoot = hustler.hustlers.edges[0].node;
 
-    const hustlerInvEmbed = new MessageEmbed()
-        .setTitle(`Hustler #${id} Inventory`)
-        .setColor("#FF0420")
-        .setDescription(`${setField("**Name:**", hustlerRoot.name)}${setField("**Title:**", hustlerRoot.title)}${setField("**Type:**", hustlerRoot.type)}`)
-        .setFields(
-            { name: "⛓️ Neck", value: `${ hustlerRoot.neck}`, inline: true },
-            { name: "\u200b", value: "\u200b", inline: true },
-            { name: "💍 Ring", value: `${ hustlerRoot.ring}`, inline: true },
-            { name: "🦺 Clothes", value: `${ hustlerRoot.clothes}`, inline: true },
-            { name: "\u200b", value: "\u200b", inline: true },
-            { name: "🥊 Hand", value: `${ hustlerRoot.hand}`, inline: true },
-            { name: "🩲 Waist", value: `${ hustlerRoot.waist}`, inline: true },
-            { name: "\u200b", value: "\u200b", inline: true },
-            { name: "🗡️ Weapon", value: `${ hustlerRoot.weapon}`, inline: true },
-            { name: "👞 Foot", value: `${ hustlerRoot.foot}`, inline: true },
-            { name: "\u200b", value: "\u200b", inline: true },
-            { name: "🐊 Drug", value: `${ hustlerRoot.drug}`, inline: true },
-            { name: "🚓 Vehicle", value: `${ hustlerRoot.vehicle}`, inline: true },
-            { name: "\u200b", value: "\u200b", inline: true },
-            { name: "🎭 Accessory", value: `${ hustlerRoot.accessory ?? 'none :('}`, inline: true },
-            { name: "🔴✨ Quixotic", value: `[Listing](${Constants.QX_LINK}/asset/${Constants.HUSTLER_CONTRACT}/${id})`, inline: true }
-        )
-        .setThumbnail(Constants.DW_THUMBNAIL);
-    
-    await interaction.reply({ embeds: [hustlerInvEmbed]});
+        const hustlerInvEmbed = new MessageEmbed()
+            .setTitle(`Hustler #${id} Inventory`)
+            .setColor("#FF0420")
+            .setDescription(`${setField("**Name:**", hustlerRoot.name)}${setField("**Title:**", hustlerRoot.title)}${setField("**Type:**", hustlerRoot.type)}`)
+            .setFields(
+                { name: "⛓️ Neck", value: `${hustlerRoot.neck}`, inline: true },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "💍 Ring", value: `${hustlerRoot.ring}`, inline: true },
+                { name: "🦺 Clothes", value: `${hustlerRoot.clothes}`, inline: true },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "🥊 Hand", value: `${hustlerRoot.hand}`, inline: true },
+                { name: "🩲 Waist", value: `${hustlerRoot.waist}`, inline: true },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "🗡️ Weapon", value: `${hustlerRoot.weapon}`, inline: true },
+                { name: "👞 Foot", value: `${hustlerRoot.foot}`, inline: true },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "🐊 Drug", value: `${hustlerRoot.drug}`, inline: true },
+                { name: "🚓 Vehicle", value: `${hustlerRoot.vehicle}`, inline: true },
+                { name: "\u200b", value: "\u200b", inline: true },
+                { name: "🎭 Accessory", value: `${hustlerRoot.accessory ?? 'none :('}`, inline: true },
+                { name: "🔴✨ Quixotic", value: `[Listing](${Constants.QX_LINK}/asset/${Constants.HUSTLER_CONTRACT}/${id})`, inline: true }
+            )
+            .setThumbnail(Constants.DW_THUMBNAIL);
+
+        await interaction.reply({ embeds: [hustlerInvEmbed] });
+    } catch (error: unknown) {
+        return Promise.reject(error);
+    }
 }
 
 

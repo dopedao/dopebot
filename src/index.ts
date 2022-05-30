@@ -1,5 +1,4 @@
-const getSells = require('./util/openseaSells');
-
+import { getSells } from './util/openseaSells';
 import fs from 'node:fs';
 import { Client, Collection, GuildMemberRoleManager, Intents, Interaction, VoiceChannel } from 'discord.js';
 import { getTwitterFollowers } from './util/twitterFollowers';
@@ -43,18 +42,20 @@ client.on('interactionCreate', async (interaction: Interaction): Promise<void> =
         if (!command) return;
 
         try {
-                await command.execute(interaction);
                 logger.info(`${interaction.user.username}#${interaction.user.discriminator} (ID: ${interaction.user.id}) executed ${interaction.commandName}`)
-        } catch(error) {
-                logger.error(`${error}`);
-                await interaction.reply("There was an error executing the command");
+                await command.execute(interaction);
+        } catch(error: unknown) {
+                if (error instanceof Error) {
+                        logger.error(error);
+                        await interaction.reply("There was an error executing the command");
+                }
         }
 });
 
 client.once('ready', async (): Promise<void> => {
         logger.info(`${client!.user!.username}@${client!.user!.discriminator} is online`);
         client!.user!.setStatus("idle");
-        //await getSells(client);
+        await getSells(client);
 
         setInterval(async () => {
                 try {
@@ -64,8 +65,8 @@ client.once('ready', async (): Promise<void> => {
                         client!.user!.setActivity(`Floor: ${osFloor} ETH`, { type: "WATCHING" });
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Discord:")).map(channel => (channel as VoiceChannel).setName(`Discord: ${(channel as VoiceChannel).guild.memberCount}`));
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
-                } catch (error) {
-                        logger.error(`Update err: ${error}`);
+                } catch(error: unknown) {
+                        logger.error(error);
                 }
         }, 10000);
 });

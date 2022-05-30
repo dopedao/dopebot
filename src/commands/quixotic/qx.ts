@@ -39,29 +39,35 @@ export default {
                             { name: "Monthly", value: "monthly" }
                         ))),
     async execute(interaction: CommandInteraction): Promise<void> {
-        const fnMap: any = {
-            "hustler": getHustlerStats,
-            "gear": getGearStats
-        }
+        try {
+            const fnMap: any = {
+                "hustler": getHustlerStats,
+                "gear": getGearStats
+            }
 
-        await fnMap[interaction.options.getSubcommand()!](interaction, interaction.options.getString("timeframe"), interaction.options.getSubcommand()[0].toUpperCase() + interaction.options.getSubcommand().slice(1));
+            await fnMap[interaction.options.getSubcommand()!](interaction, interaction.options.getString("timeframe"), interaction.options.getSubcommand()[0].toUpperCase() + interaction.options.getSubcommand().slice(1));
+        } catch (error: unknown) {
+            return Promise.reject(error);
+        }
     }
 };
 
 const getHustlerStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
-    const qxHustlerStats = await sfetch(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": secrets.quixoticApiKey } });
-    if (!qxHustlerStats) {
-        return Promise.reject();
+    try {
+        const qxHustlerStats = await sfetch(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": secrets.quixoticApiKey } });
+        await chooseEmbed(interaction, timeFrame, qxHustlerStats, type);
+    } catch (error: unknown) {
+        return Promise.reject(error);
     }
-    await chooseEmbed(interaction, timeFrame, qxHustlerStats, type);
 }
 
 const getGearStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
-    const qxGearStats = await sfetch(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": secrets.quixoticApiKey } });
-    if (!qxGearStats) {
-        return Promise.reject();
+    try {
+        const qxGearStats = await sfetch(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": secrets.quixoticApiKey } });
+        await chooseEmbed(interaction, timeFrame, qxGearStats, type);
+    } catch (error: unknown) {
+        return Promise.reject(error);
     }
-    await chooseEmbed(interaction, timeFrame, qxGearStats, type);
 }
 
 const chooseEmbed = async (interaction: CommandInteraction, timeFrame: string, data: any, type: string): Promise<void> => {

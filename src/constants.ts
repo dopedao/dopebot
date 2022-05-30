@@ -1,5 +1,5 @@
 export const Constants = {
-    SALE_CHANNEL: "884178498518921286",
+    SALE_CHANNEL: "963389800080097330",
     DW_GRAPHQL_API: "http://api.dopewars.gg/query",
 
     OS_API: "https://api.opensea.io/api/v1",

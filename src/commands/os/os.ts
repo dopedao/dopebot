@@ -18,42 +18,59 @@ export default {
                     { name: "Monthly", value: "monthly" }
                 )),
     async execute(interaction: CommandInteraction) {
-        const fnMap: any  = {
-            "daily": dailyOsStats,
-            "weekly": weeklyOsStats,
-            "monthly": monthlyOsStats
+        try {
+            const fnMap: any = {
+                "daily": dailyOsStats,
+                "weekly": weeklyOsStats,
+                "monthly": monthlyOsStats
+            }
+            await fnMap[interaction.options.getString("timeframe")!](interaction);
+        } catch (error: unknown) {
+            return Promise.reject(error);
         }
-        await fnMap[interaction.options.getString("timeframe")!](interaction);
     }
 }
 
 const dailyOsStats = async (interaction: CommandInteraction): Promise<void> => {
-    const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
-    const dailyStatsEmbed = getDailyMarketStatsEmbed(osStats.stats)
-        .setTitle("⛵ **OpenSea Stats** - Dopes")
-        .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
-        .setColor(Constants.OS_BLUE as ColorResolvable);
+    try {
+        const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
+        const dailyStatsEmbed = getDailyMarketStatsEmbed(osStats.stats)
+            .setTitle("⛵ **OpenSea Stats** - Dopes")
+            .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
+            .setColor(Constants.OS_BLUE as ColorResolvable);
 
-    await interaction.reply({ embeds: [dailyStatsEmbed] });
+        await interaction.reply({ embeds: [dailyStatsEmbed] });
+
+    } catch (error: unknown) {
+        return Promise.reject(error);
+    }
 }
 
 
 const weeklyOsStats = async (interaction: CommandInteraction): Promise<void> => {
-    const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
-    const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(osStats.stats)
-        .setTitle("⛵ **OpenSea Stats** - Dopes")
-        .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
-        .setColor(Constants.OS_BLUE as ColorResolvable);
+    try {
+        const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
+        const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(osStats.stats)
+            .setTitle("⛵ **OpenSea Stats** - Dopes")
+            .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
+            .setColor(Constants.OS_BLUE as ColorResolvable);
 
-    await interaction.reply({ embeds: [weeklyStatsEmbed] });
+        await interaction.reply({ embeds: [weeklyStatsEmbed] });
+    } catch (error: unknown) {
+        return Promise.reject(error);
+    }
 }
 
 const monthlyOsStats = async (interaction: CommandInteraction): Promise<void> => {
-    const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
-    const monthlyStatsEmbed = getMonthlyStatsEmbed(osStats.stats)
-        .setTitle("⛵ **OpenSea Stats** - Dopes")
-        .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
-        .setColor(Constants.OS_BLUE as ColorResolvable);
+    try {
+        const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
+        const monthlyStatsEmbed = getMonthlyStatsEmbed(osStats.stats)
+            .setTitle("⛵ **OpenSea Stats** - Dopes")
+            .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
+            .setColor(Constants.OS_BLUE as ColorResolvable);
 
-    await interaction.reply({ embeds: [monthlyStatsEmbed] });
+        await interaction.reply({ embeds: [monthlyStatsEmbed] });
+    } catch (error: unknown) {
+        return Promise.reject(error);
+    }
 }

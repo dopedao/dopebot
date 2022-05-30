@@ -19,7 +19,7 @@ const logger = createLogger({
     transports: [new transports.Console()]
 });
 
-const getSells = async (client: Client): Promise<void> => {
+export const getSells = async (client: Client): Promise<void> => {
     let lastSellDate = moment.utc(moment()).unix();
     const cache: any = [];
 
@@ -87,15 +87,12 @@ const getSells = async (client: Client): Promise<void> => {
                     if (moment(cache[i].timestamp).unix() < lastSellDate) {
                         logger.info(`Old sell found ${cache[i].id}: deleting...`);
                         cache.splice(i, 1);
+                        logger.info(`New cache size: ${cache.length}`);
                     }
                 }
             }
         } catch (error: unknown) {
-            if (error instanceof Error) {
-                logger.error(error);
-            }
+            logger.error(error);
         }
     }, 10000);
 }
-
-module.exports = getSells;
