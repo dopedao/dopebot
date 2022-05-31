@@ -1,25 +1,33 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import { Constants } from "../../constants";
+import { CommandInteraction } from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
         .setName("links")
-        .setDescription("Collection of helpful links"),
+        .setDescription("Collection of helpful links")
+        .addStringOption(option =>
+            option.setName("link")
+            .setDescription("Link to send")
+            .setRequired(true)
+            .addChoices(
+                { name: "Tally", value: "https://www.tally.xyz/governance/eip155:1:0xDBd38F7e739709fe5bFaE6cc8eF67C3820830E0C" },
+                { name: "SnapShot", value: "https://snapshot.org/#/dopedao.eth" },
+                { name: "Treasury-Info", value: "https://dope-wars.notion.site/Treasury-Info-9e36498c9c7f46e9a2aca1e52c0a0863" },
+                { name: "Treasury-Contract", value: "https://etherscan.io/address/0xb57ab8767cae33be61ff15167134861865f7d22c"},
+                { name: "Wiki", value: "https://dope-wars.notion.site/dope-wars/Dope-Wiki-e237166bd7e6457babc964d1724befb2" },
+                { name: "Discord", value: "https://discord.com/invite/BhVrn4sWG2" },
+                { name: "Twitter", value: "https://twitter.com/TheDopeWars" },
+                { name: "Telegram", value: "https://t.me/DopeWarsPaper" },
+                { name: "SwapMeet", value: "https://dopewars.gg/swap-meet" },
+                { name: "Quixotic-Hustlers", value: "https://quixotic.io/collection/hustlers" },
+                { name: "Quixotic-Gear", value: "https://quixotic.io/collection/gear" },
+                { name: "OpenSea-Dope", value: "https://opensea.io/collection/dope-v4" },
+            )),
     async execute(interaction: CommandInteraction): Promise<void> {
-        const linkEmbed = new MessageEmbed()
-            .setTitle("Links")
-            .setColor("PURPLE")
-            .setFields(
-                { name: "👥 Community", value:"[Discord](https://discord.com/invite/BhVrn4sWG2)\n[Twitter](https://twitter.com/TheDopeWars?s=20)\n[Telegram](https://t.me/DopeWarsPaper)", inline: true},
-                { name: "\u200b", value: "\u200b", inline: true},
-                { name: "🏦 DAO", value:"[Treasury](https://dope-wars.notion.site/Treasury-Info-9e36498c9c7f46e9a2aca1e52c0a0863) | [Contract](https://etherscan.io/address/0xb57ab8767cae33be61ff15167134861865f7d22c)\n[Proposals](https://dope-wars.notion.site/Voting-Proposals-085127e6e317467e87602e3ad47469bb)", inline: true},
-                { name: "💸 Buy", value:"[$PAPER](https://www.coingecko.com/de/munze/dope-wars-paper)\n[Dope](https://dopewars.gg/swap-meet)\n[Hustlers](https://dopewars.gg/swap-meet/hustlers)\n[Gear](https://quixotic.io/collection/gear)", inline: true},
-                { name: "\u200b", value: "\u200b", inline: true},
-                { name: "📑 Guides", value:"[Dope](https://dope-wars.notion.site/DOPE-NFT-Rarity-Guide-aecf604653894d789899321cc7242775)\n[Hustlers](https://dope-wars.notion.site/Hustler-Guide-ad81eb1129c2405f8168177ba99774cf) | [OGs](https://dope-wars.notion.site/OG-Hustler-Guide-25c6dfb9dca64196aedf8def6297c51a)\n[Gear](https://dope-wars.notion.site/Dope-Gear-Guide-bab6001d5af2469f8790d8a1f156b3f4)\n[$PAPER](https://dope-wars.notion.site/PAPER-Token-Guide-beb98b5800404762968515b9b9aecf1e)\n[Swap Meet](https://dope-wars.notion.site/Swap-Meet-Guide-9d2f661813c44b1dbfe35c49eb89c59b)", inline: true},
-            )
-            .setThumbnail(Constants.DW_THUMBNAIL);
-
-        await interaction.reply({ embeds: [linkEmbed] });
+        try {
+            await interaction.reply(interaction.options.getString("link")!);
+        } catch(error: unknown) {
+            return Promise.reject(error);
+        }
     }
 };
