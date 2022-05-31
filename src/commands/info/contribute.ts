@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ColorResolvable, CommandInteraction, InteractionResponseType, MessageEmbed } from "discord.js";
+import { ColorResolvable, CommandInteraction, MessageEmbed } from "discord.js";
 import { Constants } from "../../constants";
 
 export default {

@@ -1,6 +1,5 @@
 import { Constants } from "../constants";
 import { sfetch } from "./sfetch";
-import { secrets } from "../secrets";
 import moment from "moment";
 import { MessageEmbed, MessageAttachment, Client, TextChannel } from "discord.js";
 import { svgRenderer } from "./svgRenderer";
@@ -33,7 +32,7 @@ export const getSells = async (client: Client): Promise<void> => {
             } as any), {
                 method: 'GET',
                 headers: {
-                    'X-API-KEY': secrets.openseaApiKey,
+                    'X-API-KEY': process.env.OS_API_KEY,
                 }
             });
 

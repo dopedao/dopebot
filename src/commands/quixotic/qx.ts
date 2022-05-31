@@ -1,5 +1,4 @@
 import { sfetch } from "../../util/sfetch";
-import { secrets } from "../../secrets";
 import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
 import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "@discordjs/builders";
@@ -54,7 +53,7 @@ export default {
 
 const getHustlerStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
     try {
-        const qxHustlerStats = await sfetch(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": secrets.quixoticApiKey } });
+        const qxHustlerStats = await sfetch(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
         await chooseEmbed(interaction, timeFrame, qxHustlerStats, type);
     } catch (error: unknown) {
         return Promise.reject(error);
@@ -63,7 +62,7 @@ const getHustlerStats = async (interaction: CommandInteraction, timeFrame: strin
 
 const getGearStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
     try {
-        const qxGearStats = await sfetch(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": secrets.quixoticApiKey } });
+        const qxGearStats = await sfetch(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
         await chooseEmbed(interaction, timeFrame, qxGearStats, type);
     } catch (error: unknown) {
         return Promise.reject(error);

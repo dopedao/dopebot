@@ -1,4 +1,4 @@
-secrets.ts
+.env
 node_modules
 .vscode
 .yarn/*

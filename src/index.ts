@@ -4,7 +4,6 @@ import { Client, Collection, GuildMemberRoleManager, Intents, Interaction, Voice
 import { getTwitterFollowers } from './util/twitterFollowers';
 import { getOsFloor } from './util/osFloor';
 import { createLogger, transports, format } from 'winston';
-import { secrets } from './secrets';
 const { combine, timestamp, label, json } = format;
 
 interface CommandCollectionClient extends Client {
@@ -71,4 +70,4 @@ client.once('ready', async (): Promise<void> => {
         }, 10000);
 });
 
-client.login(secrets.token);
+client.login(process.env.CLIENT_TOKEN);
