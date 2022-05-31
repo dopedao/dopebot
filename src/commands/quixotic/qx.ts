@@ -54,7 +54,7 @@ export default {
 
 const getHustlerStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
     try {
-        const qxHustlerStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
+        const qxHustlerStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.DBOT_QX_API_KEY } });
         await chooseEmbed(interaction, timeFrame, qxHustlerStats!, type);
     } catch (error: unknown) {
         return Promise.reject(error);
@@ -63,7 +63,7 @@ const getHustlerStats = async (interaction: CommandInteraction, timeFrame: strin
 
 const getGearStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
     try {
-        const qxGearStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
+        const qxGearStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.DBOT_QX_API_KEY } });
         await chooseEmbed(interaction, timeFrame, qxGearStats!, type);
     } catch (error: unknown) {
         return Promise.reject(error);

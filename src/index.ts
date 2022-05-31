@@ -70,4 +70,4 @@ client.once('ready', async (): Promise<void> => {
         }, 10000);
 });
 
-client.login(process.env.CLIENT_TOKEN);
+client.login(process.env.DBOT_CLIENT_TOKEN);

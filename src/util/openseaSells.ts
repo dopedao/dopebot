@@ -40,7 +40,7 @@ export const getSells = async (client: Client): Promise<void> => {
             } as {}), {
                 method: 'GET',
                 headers: {
-                    'X-API-KEY': process.env.OS_API_KEY,
+                    'X-API-KEY': process.env.DBOT_OS_API_KEY,
                 }
             });
 

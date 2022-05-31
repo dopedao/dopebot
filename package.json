@@ -9,7 +9,7 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "dev": " tsc --build && cd build/src/ && node ."
+    "dev": "tsc --build && cd build/src/ && node ."
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0",

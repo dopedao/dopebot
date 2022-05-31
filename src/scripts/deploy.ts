@@ -16,22 +16,22 @@ const logger = createLogger({
 
 const commands = [];
 
-const commandFolders = fs.readdirSync("../src/commands");
+const commandFolders = fs.readdirSync("../commands");
 for (const folder of commandFolders) {
-        for (const file of fs.readdirSync(`../src/commands/${folder}`).filter(file => file.endsWith(".js"))) {
-                const command = require(`../src/commands/${folder}/${file}`);
+        for (const file of fs.readdirSync(`../commands/${folder}`).filter(file => file.endsWith(".js"))) {
+                const command = require(`../commands/${folder}/${file}`);
                 commands.push(command.default.data.toJSON());
         }
 }
 
-const rest = new REST({ version: '9' }).setToken(process.env.BOT_TOKEN!);
+const rest = new REST({ version: '9' }).setToken(process.env.DBOT_CLIENT_TOKEN!);
 
 /* Delete slash commands (globally)
 rest.get(Routes.applicationCommands(clientId))
     .then(data => {
         const promises = [];
         for (const command of data) {
-            const delURL = `${Routes.applicationCommands(process.env.CLIENT_ID!)}/${command.id}`;
+            const delURL = `${Routes.applicationCommands(process.env.DBOT_CLIENT_ID!)}/${command.id}`;
             promises.push(rest.delete(delURL));
         }
         return Promise.all(promises)
@@ -43,12 +43,14 @@ rest.get(Routes.applicationCommands(clientId))
         logger.info("Refreshing slash commands");
         
 		await rest.put(
-			Routes.applicationGuildCommands(process.env.CLIENT_ID!, process.env.GUILD_ID!),
+			Routes.applicationGuildCommands(process.env.DBOT_CLIENT_ID!, process.env.DBOT_GUILD_ID!),
 			{ body: commands },
 		);
 
         logger.info("Successfully reloaded slash commands");
-	} catch (error) {
-        logger.error(error);
+	} catch (error: unknown) {
+                if (error instanceof Error) {
+                        logger.error(error.message);
+                }
 	}
 })();
