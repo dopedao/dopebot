@@ -1,6 +1,6 @@
 import { sfetch } from "./sfetch";
 import { Constants } from "../constants";
-import { secrets } from "../../secrets";
+import { secrets } from "../secrets";
 
 export const getTwitterFollowers = async (): Promise<number> => {
     try {

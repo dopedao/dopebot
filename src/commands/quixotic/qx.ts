@@ -1,5 +1,5 @@
 import { sfetch } from "../../util/sfetch";
-import { secrets } from "../../../secrets";
+import { secrets } from "../../secrets";
 import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
 import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "@discordjs/builders";

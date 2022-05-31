@@ -1,6 +1,6 @@
 import { Constants } from "../constants";
 import { sfetch } from "./sfetch";
-import { secrets } from "../../secrets";
+import { secrets } from "../secrets";
 import moment from "moment";
 import { MessageEmbed, MessageAttachment, Client, TextChannel } from "discord.js";
 import { svgRenderer } from "./svgRenderer";
