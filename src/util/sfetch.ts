@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-export const sfetch = async (url: string, payload?: {}): Promise<any> => {
+export const sfetch = async<T = any>(url: string, payload?: {}) => {
     try {
         const fetchRes = await fetch(url, payload);
         if (!fetchRes.ok) {
@@ -11,7 +11,7 @@ export const sfetch = async (url: string, payload?: {}): Promise<any> => {
         if (!result) {
             throw Error(`Parsing ${url}: ${result} -> ${result.message}`);
         } else {
-            return Promise.resolve(result);
+            return result as Promise<T>;
         }
     } catch (error: unknown) {
         if (error instanceof Error) {

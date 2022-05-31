@@ -3,6 +3,7 @@ import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
 import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import { ColorResolvable, CommandInteraction } from "discord.js";
+import { IMarketStats } from "../../interfaces/IMarketStats";
 
 const setContract = (type: string) => {
     return type == "Hustler" ? Constants.HUSTLER_CONTRACT : Constants.GEAR_CONTRACT;
@@ -39,7 +40,7 @@ export default {
                         ))),
     async execute(interaction: CommandInteraction): Promise<void> {
         try {
-            const fnMap: any = {
+            const fnMap: { [name: string]: Function } = {
                 "hustler": getHustlerStats,
                 "gear": getGearStats
             }
@@ -53,8 +54,8 @@ export default {
 
 const getHustlerStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
     try {
-        const qxHustlerStats = await sfetch(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
-        await chooseEmbed(interaction, timeFrame, qxHustlerStats, type);
+        const qxHustlerStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
+        await chooseEmbed(interaction, timeFrame, qxHustlerStats!, type);
     } catch (error: unknown) {
         return Promise.reject(error);
     }
@@ -62,15 +63,15 @@ const getHustlerStats = async (interaction: CommandInteraction, timeFrame: strin
 
 const getGearStats = async (interaction: CommandInteraction, timeFrame: string, type: string): Promise<void> => {
     try {
-        const qxGearStats = await sfetch(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
-        await chooseEmbed(interaction, timeFrame, qxGearStats, type);
+        const qxGearStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.QX_API_KEY } });
+        await chooseEmbed(interaction, timeFrame, qxGearStats!, type);
     } catch (error: unknown) {
         return Promise.reject(error);
     }
 }
 
-const chooseEmbed = async (interaction: CommandInteraction, timeFrame: string, data: any, type: string): Promise<void> => {
-    const embedToSend: any = {
+const chooseEmbed = async (interaction: CommandInteraction, timeFrame: string, data: IMarketStats, type: string): Promise<void> => {
+    const embedToSend: { [name: string]: Function }= {
         "daily": sendDailyStatsEmbed,
         "weekly": sendWeeklyStatsEmbed,
         "monthly": sendMonthlyStatsEmbed
@@ -80,7 +81,7 @@ const chooseEmbed = async (interaction: CommandInteraction, timeFrame: string, d
 }
 
 
-const sendDailyStatsEmbed = async (interaction: CommandInteraction, qxHustlerStats: any, type: string): Promise<void> => {
+const sendDailyStatsEmbed = async (interaction: CommandInteraction, qxHustlerStats: IMarketStats, type: string): Promise<void> => {
     const dailyStatsEmbed = getDailyMarketStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(`${Constants.QX_LINK}/collection/${setContract(type)}`)
@@ -89,7 +90,7 @@ const sendDailyStatsEmbed = async (interaction: CommandInteraction, qxHustlerSta
     await interaction.reply({ embeds: [dailyStatsEmbed] });
 }
 
-const sendWeeklyStatsEmbed = async (interaction: CommandInteraction, qxHustlerStats: any, type: string): Promise<void> => {
+const sendWeeklyStatsEmbed = async (interaction: CommandInteraction, qxHustlerStats: IMarketStats, type: string): Promise<void> => {
     const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(`${Constants.QX_LINK}/collection/${setContract(type)}`)
@@ -98,7 +99,7 @@ const sendWeeklyStatsEmbed = async (interaction: CommandInteraction, qxHustlerSt
     await interaction.reply({ embeds: [weeklyStatsEmbed] });
 }
 
-const sendMonthlyStatsEmbed = async (interaction: CommandInteraction, qxHustlerStats: any, type: string): Promise<void> => {
+const sendMonthlyStatsEmbed = async (interaction: CommandInteraction, qxHustlerStats: IMarketStats, type: string): Promise<void> => {
     const monthlyStatsEmbed = getMonthlyStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(`${Constants.QX_LINK}/collection/${setContract(type)}`)

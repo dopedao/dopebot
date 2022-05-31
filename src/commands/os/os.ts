@@ -3,6 +3,7 @@ import { ColorResolvable, CommandInteraction } from "discord.js";
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
+import { IMarketStats } from "../../interfaces/IMarketStats";
 
 export default {
     data: new SlashCommandBuilder()
@@ -33,8 +34,8 @@ export default {
 
 const dailyOsStats = async (interaction: CommandInteraction): Promise<void> => {
     try {
-        const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
-        const dailyStatsEmbed = getDailyMarketStatsEmbed(osStats.stats)
+        const osStats = await sfetch<IMarketStats>(`${Constants.OS_API}/collection/dope-v4/stats`);
+        const dailyStatsEmbed = getDailyMarketStatsEmbed(osStats?.stats)
             .setTitle("⛵ **OpenSea Stats** - Dopes")
             .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
             .setColor(Constants.OS_BLUE as ColorResolvable);
@@ -49,8 +50,8 @@ const dailyOsStats = async (interaction: CommandInteraction): Promise<void> => {
 
 const weeklyOsStats = async (interaction: CommandInteraction): Promise<void> => {
     try {
-        const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
-        const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(osStats.stats)
+        const osStats = await sfetch<IMarketStats>(`${Constants.OS_API}/collection/dope-v4/stats`);
+        const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(osStats?.stats)
             .setTitle("⛵ **OpenSea Stats** - Dopes")
             .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
             .setColor(Constants.OS_BLUE as ColorResolvable);
@@ -63,8 +64,8 @@ const weeklyOsStats = async (interaction: CommandInteraction): Promise<void> => 
 
 const monthlyOsStats = async (interaction: CommandInteraction): Promise<void> => {
     try {
-        const osStats = await sfetch(`${Constants.OS_API}/collection/dope-v4/stats`);
-        const monthlyStatsEmbed = getMonthlyStatsEmbed(osStats.stats)
+        const osStats = await sfetch<IMarketStats>(`${Constants.OS_API}/collection/dope-v4/stats`);
+        const monthlyStatsEmbed = getMonthlyStatsEmbed(osStats?.stats)
             .setTitle("⛵ **OpenSea Stats** - Dopes")
             .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
             .setColor(Constants.OS_BLUE as ColorResolvable);

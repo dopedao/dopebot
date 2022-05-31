@@ -14,7 +14,7 @@ export default {
                 .setDescription("Tells you wen game"))
     ,
     async execute(interaction: CommandInteraction<CacheType>): Promise<void> {
-        const fnMap: any = {
+        const fnMap: { [name: string]: Function }= {
             "moon": sendMoonEmbed,
             "game": sendGameEmbed
         }

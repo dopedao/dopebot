@@ -3,6 +3,7 @@ import { SlashCommandIntegerOption, SlashCommandSubcommandBuilder, SlashCommandB
 import { MessageEmbed, MessageAttachment, CacheType, CommandInteraction } from "discord.js";
 import { Constants } from "../../constants";
 import { dopeQueries } from "../../Queries/dopeQueries";
+import { IDope } from "../../interfaces/IDope";
 
 export default {
     data: new SlashCommandBuilder()
@@ -29,7 +30,7 @@ export default {
                         .setRequired(true))),
     async execute(interaction: CommandInteraction): Promise<void> {
         try {
-            const fnMap: any = {
+            const fnMap: { [name: string]: Function }= {
                 "inv": getDopeInvEmbed,
                 "check": getDopeCheckEmbed
             }
@@ -41,45 +42,16 @@ export default {
     }
 };
 
-interface Dope {
-    dopes: {
-        edges: Edges[]
-    }
-};
-
-interface Edges {
-    node: {
-        rank: number,
-        listings: Listing[],
-        items: Item[]
-    }
-};
-
-interface Item {
-    fullname: string,
-    type: string,
-    tier: string,
-    count: number
-}
-
-interface Input {
-    amount: number
-};
-
-interface Listing {
-    inputs: Input[]
-};
-
 const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: number): Promise<void> => {
     try {
-        const dope = await request(Constants.DW_GRAPHQL_API, dopeQueries.dopeInvQuery, { "where": { "id": id } }) as Dope;
+        const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeInvQuery, { "where": { "id": id } });
         const dopeRoot = dope.dopes.edges[0].node;
-        const lastSale = dopeRoot?.listings[0]?.inputs[0]?.amount;
-        const dopeMap = new Map(Object.entries(dopeRoot.items));
+        const lastSale = dopeRoot.listings![0].inputs![0].amount!;
+        const dopeMap = new Map(Object.entries(dopeRoot.items!));
         let dopeObject: { [key: string]: string } = {};
 
         for (const keypair of dopeMap) {
-            dopeObject[keypair[1].type.toLowerCase()] = keypair[1].fullname;
+            dopeObject[keypair[1].type!.toLowerCase()] = keypair[1].fullname!;
         }
 
         const dopeInventoryEmbed = new MessageEmbed()
@@ -145,25 +117,9 @@ const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: n
     }
 }
 
-interface DopeStatus {
-    dopes: {
-        edges: DopeStatusEdges[]
-    }
-};
-
-interface DopeStatusEdges {
-    node: {
-        claimed: boolean,
-        opened: boolean
-    }
-};
-
 const getDopeCheckEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
     try {
-        const dope = await request(Constants.DW_GRAPHQL_API, dopeQueries.dopeStatusQuery, { "where": { "id": id } }) as DopeStatus;
-        if (!dope) {
-            return Promise.reject()
-        }
+        const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeStatusQuery, { "where": { "id": id } });
         const dopeRoot = dope.dopes.edges[0].node;
 
         const claimed = !dopeRoot.claimed ? '✅' : '❌';

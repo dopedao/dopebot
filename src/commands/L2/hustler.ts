@@ -4,6 +4,7 @@ import { MessageEmbed, MessageAttachment, CommandInteraction } from "discord.js"
 import { Constants } from "../../constants";
 import request from "graphql-request";
 import { SlashCommandBuilder } from "@discordjs/builders";
+import { IHustler } from "../../interfaces/IHustler";
 
 export default {
     data: new SlashCommandBuilder()
@@ -38,7 +39,7 @@ export default {
                 return await interaction.reply({ embeds: [invalidIdEmbed] });
             }
 
-            const fnMap: any = {
+            const fnMap: { [name: string]: Function }= {
                 "inv": getHustlerInvEmbed,
                 "img": getHustlerImgEmbed
             }
@@ -52,7 +53,7 @@ export default {
 
 const getTotalHustlerCount = async (): Promise<number> => {
     try {
-        const hustlerCountRes = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerTotalCountQuery) as Hustler;
+        const hustlerCountRes = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerTotalCountQuery);
         return hustlerCountRes.hustlers.totalCount;
 
     } catch (error: unknown) {
@@ -62,7 +63,7 @@ const getTotalHustlerCount = async (): Promise<number> => {
 
 const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
     try {
-        const hustler = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerImageQuery, { "where": { "id": id } }) as Hustler;
+        const hustler = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerImageQuery, { "where": { "id": id } });
         if (!hustler?.hustlers?.edges[0]) {
             return Promise.reject();
         }
@@ -82,56 +83,9 @@ const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): 
     }
 }
 
-interface Hustler {
-    hustlers: {
-        totalCount: number,
-        edges: Edge[]
-    }
-};
-
-interface Edge {
-    node: {
-        name: string,
-        type: string,
-        title: string,
-        svg: string,
-        neck: {
-            fullname: string
-        },
-        ring: {
-            fullname: string
-        },
-        accessory: {
-            fullname: string
-        },
-        drug: {
-            fullname: string
-        },
-        hand: {
-            fullname: string
-        },
-        weapon: {
-            fullname: string
-        },
-        clothes: {
-            fullname: string
-        },
-        vehicle: {
-            fullname: string
-        },
-        waist: {
-            fullname: string
-        },
-        foot: {
-            fullname: string
-        }
-    }
-};
-
-
 const getHustlerInvEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
     try {
-        const hustler = await request(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerQuery, { "where": { "id": id } }) as Hustler;
+        const hustler = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerQuery, { "where": { "id": id } });
         const hustlerRoot = hustler.hustlers.edges[0].node;
 
         const hustlerInvEmbed = new MessageEmbed()
@@ -163,6 +117,5 @@ const getHustlerInvEmbed = async (interaction: CommandInteraction, id: number): 
         return Promise.reject(error);
     }
 }
-
 
 const setField = (name: string, obj: string): string => obj ? `${name} \`${obj}\`\n` : ''

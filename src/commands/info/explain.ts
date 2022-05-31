@@ -20,7 +20,7 @@ export default {
                 { name: "Paper", value: "paper"}
             )),
     async execute(interaction: CommandInteraction): Promise<void> {
-        const fnMap: any  = {
+        const fnMap: { [name: string]: Function }= {
             "dope": explainDope,
             "hustler": explainHustler,
             "gear": explainGear,
