@@ -24,10 +24,6 @@ export default {
                 { name: "OpenSea-Dope", value: "https://opensea.io/collection/dope-v4" },
             )),
     async execute(interaction: CommandInteraction): Promise<void> {
-        try {
             await interaction.reply(interaction.options.getString("link")!);
-        } catch(error: unknown) {
-            return Promise.reject(error);
-        }
     }
 };

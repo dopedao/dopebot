@@ -30,7 +30,7 @@ export default {
                         .setRequired(true))),
     async execute(interaction: CommandInteraction): Promise<void> {
         try {
-            const fnMap: { [name: string]: Function }= {
+            const fnMap: { [name: string]: Function } = {
                 "inv": getDopeInvEmbed,
                 "check": getDopeCheckEmbed
             }
@@ -46,12 +46,12 @@ const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: n
     try {
         const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeInvQuery, { "where": { "id": id } });
         const dopeRoot = dope.dopes.edges[0].node;
-        const lastSale = dopeRoot.listings![0].inputs![0].amount!;
-        const dopeMap = new Map(Object.entries(dopeRoot.items!));
+        const lastSale = dopeRoot.listings[0]?.inputs[0]?.amount / Constants.dwApiEthConvValue;
+        const dopeMap = new Map(Object.entries(dopeRoot.items));
         let dopeObject: { [key: string]: string } = {};
 
         for (const keypair of dopeMap) {
-            dopeObject[keypair[1].type!.toLowerCase()] = keypair[1].fullname!;
+            dopeObject[keypair[1].type.toLowerCase()] = keypair[1].fullname;
         }
 
         const dopeInventoryEmbed = new MessageEmbed()
@@ -71,7 +71,7 @@ const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: n
                 { name: "\u200b", value: "\u200b", inline: true },
                 { name: "🐊 Drugs", value: `${dopeObject.drugs}`, inline: true },
                 { name: "🚓 Vehicle", value: `${dopeObject.vehicle}`, inline: false },
-                { name: "💸 Last sale", value: `${lastSale ? `\`${lastSale / Constants.dwApiEthConvValue} ETH\`` : "none"}`, inline: true },
+                { name: "💸 Last sale", value: `${isNaN(lastSale) ? "none" : lastSale}`, inline: true },
                 { name: "\u200b", value: "\u200b", inline: true },
                 { name: "⛵ OpenSea", value: `[Listing](https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${id})`, inline: true },
             )

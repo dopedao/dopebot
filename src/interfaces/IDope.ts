@@ -6,27 +6,27 @@ interface Dope {
 
 interface Edges {
     node: {
-        rank?: number,
-        listings?: Listing[],
-        items?: Item[],
-        claimed?: boolean,
-        opened?: boolean
+        rank: number,
+        listings: Listing[],
+        items: Item[],
+        claimed: boolean,
+        opened: boolean
     }
 };
 
 interface Listing {
-    inputs?: Input[]
+    inputs: Input[]
 };
 
 interface Input {
-    amount?: number
+    amount: number
 };
 
 interface Item {
-    fullname?: string,
-    type?: string,
-    tier?: string,
-    count?: number
+    fullname: string,
+    type: string,
+    tier: string,
+    count: number
 }
 
 

@@ -55,7 +55,6 @@ const getTotalHustlerCount = async (): Promise<number> => {
     try {
         const hustlerCountRes = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerTotalCountQuery);
         return hustlerCountRes.hustlers.totalCount;
-
     } catch (error: unknown) {
         return Promise.reject(error);
     }
@@ -93,21 +92,21 @@ const getHustlerInvEmbed = async (interaction: CommandInteraction, id: number): 
             .setColor("#FF0420")
             .setDescription(`${setField("**Name:**", hustlerRoot.name)}${setField("**Title:**", hustlerRoot.title)}${setField("**Type:**", hustlerRoot.type)}`)
             .setFields(
-                { name: "⛓️ Neck", value: `${hustlerRoot.neck}`, inline: true },
+                { name: "⛓️ Neck", value: `${hustlerRoot.neck.fullname}`, inline: true },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "💍 Ring", value: `${hustlerRoot.ring}`, inline: true },
-                { name: "🦺 Clothes", value: `${hustlerRoot.clothes}`, inline: true },
+                { name: "💍 Ring", value: `${hustlerRoot.ring.fullname}`, inline: true },
+                { name: "🦺 Clothes", value: `${hustlerRoot.clothes.fullname}`, inline: true },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "🥊 Hand", value: `${hustlerRoot.hand}`, inline: true },
-                { name: "🩲 Waist", value: `${hustlerRoot.waist}`, inline: true },
+                { name: "🥊 Hand", value: `${hustlerRoot.hand.fullname}`, inline: true },
+                { name: "🩲 Waist", value: `${hustlerRoot.waist.fullname}`, inline: true },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "🗡️ Weapon", value: `${hustlerRoot.weapon}`, inline: true },
-                { name: "👞 Foot", value: `${hustlerRoot.foot}`, inline: true },
+                { name: "🗡️ Weapon", value: `${hustlerRoot.weapon.fullname}`, inline: true },
+                { name: "👞 Foot", value: `${hustlerRoot.foot.fullname}`, inline: true },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "🐊 Drug", value: `${hustlerRoot.drug}`, inline: true },
-                { name: "🚓 Vehicle", value: `${hustlerRoot.vehicle}`, inline: true },
+                { name: "🐊 Drug", value: `${hustlerRoot.drug.fullname}`, inline: true },
+                { name: "🚓 Vehicle", value: `${hustlerRoot.vehicle.fullname}`, inline: true },
                 { name: "\u200b", value: "\u200b", inline: true },
-                { name: "🎭 Accessory", value: `${hustlerRoot.accessory ?? 'none :('}`, inline: true },
+                { name: "🎭 Accessory", value: `${hustlerRoot?.accessory?.fullname ?? 'none :('}`, inline: true },
                 { name: "🔴✨ Quixotic", value: `[Listing](${Constants.QX_LINK}/asset/${Constants.HUSTLER_CONTRACT}/${id})`, inline: true }
             )
             .setThumbnail(Constants.DW_THUMBNAIL);
