@@ -19,6 +19,7 @@ const logger = createLogger({
     transports: [new transports.Console()]
 });
 
+
 const getSells = async (client) => {
     let lastSellDate = moment.utc(moment()).unix();
     const cache = [];
