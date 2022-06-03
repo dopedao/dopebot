@@ -1,4 +1,4 @@
-const { dwApiEthConvValue, ERROR_CHANNEL, DOPE_CONTRACT, OS_API, DW_GRAPHQL_API } = require("../constants")
+const { dwApiEthConvValue, SALE_CHANNEL, DOPE_CONTRACT, OS_API, DW_GRAPHQL_API } = require("../constants")
 const { sfetch } = require("./sfetch")
 const { openseaApiKey } = require("../config.json");
 const moment = require("moment");
@@ -17,7 +17,8 @@ const logger = createLogger({
         json()
     ),
     transports: [new transports.Console()]
-})
+});
+
 
 const getSells = async (client) => {
     let lastSellDate = moment.utc(moment()).unix();
@@ -45,17 +46,14 @@ const getSells = async (client) => {
                         price: sell.total_price
                     }
 
-                    if (cache.some(newSell => newSell.id == sellObj.id && newSell.timestamp == sellObj.timestamp && newSell.price == sellObj.price)) {
+                    if (moment(sellObj.timestamp).unix() < lastSellDate || cache.some(newSell => newSell.id == sellObj.id && newSell.timestamp == sellObj.timestamp && newSell.price == sellObj.price)) {
                         return;
                     }
 
-                    cache.push(sellObj);
-                    logger.info("Sell -> Cache");
-                    logger.info(`OpenSea sell cache size: ${cache.length}`)
-                    if (moment(sellObj.timestamp).unix() > lastSellDate) {
-                        lastSellDate = moment(sellObj.timestamp).unix() + 1;
-                    }
+                    lastSellDate = moment(sellObj.timestamp).unix();
                     logger.info(`LastSell: ${sellObj.timestamp}`);
+                    cache.push(sellObj);
+                    logger.info(`OpenSea sell cache size: ${cache.length}`)
 
                     const dope = await request(DW_GRAPHQL_API, dopeSellQuery, { "where": { "id": sellObj.id } });
                     const dopeRoot = dope.dopes.edges[0].node;
@@ -81,18 +79,20 @@ const getSells = async (client) => {
                             { name: `🔹 Claimed Paper ${claimed}`, value: "\u200b" }
                         );
 
-                    await client.channels.cache.get(ERROR_CHANNEL).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
+                    await client.channels.cache.get(SALE_CHANNEL).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
                 });
             }
-            cache.forEach(sale => {
-                console.log(`sale ${moment(sale.timestamp).unix} < ${lastSellDate}`)
-                if (moment(sale.timestamp).unix < lastSellDate) {
-                    logger.info(`Old sell found ${sale.id}, ${sale.timestamp}, ${sale.price}: deleting...`);
-                    delete cache[sale];
+
+            if (cache.length > 0) {
+                for (let i = cache.length - 1; i >= 0; i--) {
+                    if (moment(cache[i].timestamp).unix() < lastSellDate) {
+                        logger.info(`Old sell found ${cache[i].id}: deleting...`);
+                        cache.splice(i, 1);
+                    }
                 }
-            });
+            }
         } catch (error) {
-            logger.error(`${error}`);
+            logger.error(`${error.message}`);
         }
     }, 10000);
 }

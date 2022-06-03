@@ -2,19 +2,38 @@ const { MessageEmbed, MessageAttachment } = require('discord.js');
 const { DW_GRAPHQL_API, dwApiEthConvValue, DW_THUMBNAIL} = require('../../constants');
 const { dopeStatusQuery, dopeRarityQuery, dopeInvQuery } = require('../../Queries/dopeQueries');
 const { default: request } = require('graphql-request');
+const { SlashCommandBuilder } = require('@discordjs/builders');
 
 module.exports = {
-    name: "dope",
-    description: `\`inv\` - Outputs the dope's inv\n\`check\` - Checks the dope's status`,
-    args: "[inv | check] (1-8000)",
-    validator: ([option, id]) => !option || !["inv", "check"].includes(option) || !parseInt(id) || 0 > parseInt(id) || parseInt(id) > 8000,
-    async execute(message, [option, id]) {
+    data: new SlashCommandBuilder()
+        .setName("dope")
+        .setDescription("Dope commands")
+        .addSubcommand(subcommand =>
+            subcommand.setName("inv")
+            .setDescription("Outputs the inv")
+            .addIntegerOption(option =>
+                option.setName("dopeid")
+                .setDescription("Id of Dope to print inventory of")
+                .setMinValue(1)
+                .setMaxValue(8000)
+                .setRequired(true)))
+
+        .addSubcommand(subcommand =>
+            subcommand.setName("check")
+            .setDescription("Checks the claim status")
+            .addIntegerOption(option =>
+                option.setName("dopeid")
+                .setDescription("Id of Dope to check")
+                .setMinValue(1)
+                .setMaxValue(8000)
+                .setRequired(true))),
+    async execute(interaction) {
         const fnMap = {
             "inv": getDopeInvEmbed,
             "check": getDopeCheckEmbed
         }
-
-        await fnMap[option](message, id);
+        const id = interaction.options.getInteger("dopeid");
+        await fnMap[interaction.options.getSubcommand()](interaction, id);
     }
 };
 
@@ -30,7 +49,7 @@ dopeObject = {
     vehicle: null
 }
 
-const getDopeInvEmbed = async (message, id) => {
+const getDopeInvEmbed = async (interaction, id) => {
     const dope = await request(DW_GRAPHQL_API, dopeInvQuery, { "where": { "id": id } });
     if (!dope) {
         return Promise.reject()
@@ -66,7 +85,7 @@ const getDopeInvEmbed = async (message, id) => {
         )
         .setThumbnail(DW_THUMBNAIL);
 
-    await message.channel.send({ embeds: [dopeInventoryEmbed] });
+    await interaction.reply({ embeds: [dopeInventoryEmbed] });
 
     /*
     for (const keypair of dopeMap) {
@@ -102,7 +121,7 @@ const getDopeInvEmbed = async (message, id) => {
     */
 }
 
-const getDopeCheckEmbed = async (message, id) => {
+const getDopeCheckEmbed = async (interaction, id) => {
     const dope = await request(DW_GRAPHQL_API, dopeStatusQuery, { "where": { "id": id } });
     if (!dope) {
         return Promise.reject()
@@ -128,9 +147,9 @@ const getDopeCheckEmbed = async (message, id) => {
         dopeCheckEmbed.setImage("attachment://vote_female.png")
         dopeCheckEmbed.setDescription("This **Dope NFT** has been \`fully claimed\`.\nIt serves as a DAO voting token, and will be eligible for future airdrops.")
 
-        await message.channel.send({ embeds: [dopeCheckEmbed], files: [claimedImage] });
+        await interaction.reply({ embeds: [dopeCheckEmbed], files: [claimedImage] });
         return;
     }
 
-    await message.channel.send({ embeds: [dopeCheckEmbed] });
+    await interaction.reply({ embeds: [dopeCheckEmbed] });
 }

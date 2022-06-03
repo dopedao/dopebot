@@ -1,10 +1,12 @@
+const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 const { DW_THUMBNAIL } = require("../../constants");
 
 module.exports = {
-    name: "links",
-    description: "Collection of helpful links",
-    async execute(message) {
+    data: new SlashCommandBuilder()
+        .setName("links")
+        .setDescription("Collection of helpful links"),
+    async execute(interaction) {
         const linkEmbed = new MessageEmbed()
             .setTitle("Links")
             .setColor("PURPLE")
@@ -18,6 +20,6 @@ module.exports = {
             )
             .setThumbnail(DW_THUMBNAIL);
 
-        await message.channel.send({ embeds: [linkEmbed] });
+        await interaction.reply({ embeds: [linkEmbed] });
     }
 };

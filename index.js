@@ -1,8 +1,6 @@
 const fs = require('node:fs');
-const { Client, Collection, Intents, MessageEmbed } = require('discord.js');
+const { Client, Collection, Intents } = require('discord.js');
 const { token } = require("./config.json");
-const { BOT_PREFIX, DW_THUMBNAIL, ERROR_CHANNEL } = require("./constants");
-const { wrap } = require("./util/wrap");
 const { getTwitterFollowers } = require("./util/twitterFollowers");
 const { getOsFloor } = require("./util/osFloor");
 const { createLogger, transports, format } = require('winston');
@@ -26,9 +24,27 @@ const commandFolders = fs.readdirSync("./commands");
 for (const folder of commandFolders) {
         for (const file of fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith(".js"))) {
                 const command = require(`./commands/${folder}/${file}`);
-                client.commands.set(command.name, command)
+                client.commands.set(command.data.name, command)
         }
 }
+
+client.on('interactionCreate', async interaction => {
+        if (!interaction.isCommand()
+        || interaction.member.roles.cache.find(role => role.name === "packing heat")?.position > interaction.member.roles.highest.position) {
+                return;
+        }
+
+        const command = client.commands.get(interaction.commandName);
+        if (!command) return;
+
+        try {
+                await command.execute(interaction);
+                logger.info(`${interaction.user.username}#${interaction.user.discriminator} (ID: ${interaction.member.id}) executed ${interaction.commandName}`)
+        } catch(error) {
+                logger.error(`${error}`);
+                await interaction.reply("There was an error executing the command");
+        }
+});
 
 client.on('error', error => logger.error(error));
 client.on('warn', warn => logger.warn(warn));
@@ -43,7 +59,7 @@ client.once('ready', async () => {
                         const osFloor = await getOsFloor();
                         const twitterFollowers = await getTwitterFollowers();
 
-                        client.user.setActivity(`Floor: ${osFloor} ETH | !dw help`, { type: "WATCHING" });
+                        client.user.setActivity(`Floor: ${osFloor} ETH`, { type: "WATCHING" });
                         client.channels.cache.filter(channel => channel.name.includes("Discord:")).map(channel => channel.setName(`Discord: ${channel.guild.memberCount}`));
                         client.channels.cache.filter(channel => channel.name.includes("Twitter:")).map(channel => channel.setName(`Twitter: ${twitterFollowers}`));
                 } catch (error) {
@@ -52,45 +68,5 @@ client.once('ready', async () => {
         }, 10000);
 });
 
-client.on('messageCreate', async message => {
-        if (message.author.username === client.user.username
-                || !message.content.startsWith(BOT_PREFIX) 
-                || message.member.roles.cache.find(role => role.name === "packing heat")?.position > message.member.roles.highest.position
-                || !/^[a-zA-Z0-9- ]+$/.test(message.content.replace(BOT_PREFIX, ''))) return;
-
-        const command = client.commands.get(message.content.replace(BOT_PREFIX, '').toLowerCase().split(' ')[0]);
-        const args = message.content.split(' ').slice(1);
-        logger.info(`${message.author.tag}/${message.author.id}: ${message.content}`);
-
-        if (!command || !message.channel.permissionsFor(client.user.id).has(['SEND_MESSAGES', 'EMBED_LINKS'])) return;
-        if (command.validator && command.validator(args)) {
-                const invalidInvocationEmbed = new MessageEmbed()
-                        .setTitle("⚠️ Invalid arguments provided")
-                        .setColor("YELLOW")
-                        .setDescription(`\`${BOT_PREFIX}${command.name} ${command.args ?? ''}\`\n${command.description}`)
-                        .setThumbnail(DW_THUMBNAIL);
-
-                await message.reply({ embeds: [invalidInvocationEmbed] });
-                return;
-        }
-
-        try {
-                await command.execute(message, args);
-        } catch (error) {
-                logger.error(`${error}`);
-                const errorEmbed = new MessageEmbed()
-                        .setTitle("🚨 Error 🚨")
-                        .setFields(
-                                { name: `Error Message`, value: `${wrap(error)}` },
-                                { name: `Command`, value: `${wrap(command.name)}` },
-                                { name: `Arguments`, value: `${wrap(args.join(' '))}` },
-                                { name: `User`, value: `${wrap(message.author.tag)}` }
-                        )
-                        .setTimestamp();
-
-                await client.channels.cache.get(ERROR_CHANNEL).send({ embeds: [errorEmbed] });
-                await message.react("❌");
-        }
-})
 
 client.login(token);
