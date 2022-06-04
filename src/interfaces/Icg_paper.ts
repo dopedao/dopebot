@@ -1,7 +1,13 @@
-interface Cg_paper {
+interface ICg_marketData {
     prices: [
         [ number, number ]
+    ],
+    total_volumes: [
+        [number, number]
+    ],
+    total_marketcaps: [
+        [number, number]
     ]
 }
 
-export { Cg_paper as ICg_paper };
+export { ICg_marketData };
