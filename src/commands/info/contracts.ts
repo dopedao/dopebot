@@ -1,5 +1,6 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { CommandInteraction, InteractionResponseType } from "discord.js";
+import { Constants } from "../../constants";
 
 export default {
     data: new SlashCommandBuilder()
@@ -10,9 +11,11 @@ export default {
             .setDescription("Type of contract to show")
             .setRequired(true)
             .addChoices(
-                { name: "Gear (opt)" , value: "https://optimistic.etherscan.io/address/0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110" },
-                { name: "Hustler (opt)" , value: "https://optimistic.etherscan.io/address/0xDbfEaAe58B6dA8901a8a40ba0712bEB2EE18368E" },
-                { name: "Dope (eth)" , value: "https://etherscan.io/address/0x8707276df042e89669d69a177d3da7dc78bd8723" }
+                { name: "Gear (opt)" , value: `https://optimistic.etherscan.io/address/${Constants.GEAR_CONTRACT}` },
+                { name: "Hustler (opt)" , value: `https://optimistic.etherscan.io/address/${Constants.HUSTLER_CONTRACT}` },
+                { name: "Dope (eth)" , value: `https://etherscan.io/address/${Constants.DOPE_CONTRACT}` },
+                { name: "Paper (eth)", value: `https://etherscan.io/address/${Constants.PAPER_ETH_CONTRACT}` },
+                { name: "Paper (bsc)", value: `https://bscscan.com/address/${Constants.PAPER_BSC_CONTRACT}` },
             )),
     async execute(interaction: CommandInteraction): Promise<void> {
         await interaction.reply(interaction.options.getString("type") as InteractionResponseType);
