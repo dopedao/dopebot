@@ -4,6 +4,12 @@ import moment from "moment";
 import Sharp from "sharp";
 import { ICg_marketData } from "../interfaces/Icg_paper";
 
+const colors = {
+    price: "rgba(0, 160, 70, 0.8)",
+    volume: "rgba(230, 200, 20, 0.8)",
+    grid: "rgba(255, 255, 255, 0.6)",
+    title: "rgba(255, 255, 255, 0.87)"
+}
 
 export const createChart = async (price_data: ICg_marketData, pair_name: string, days: number): Promise<Sharp.Sharp> => {
         const dateFormat = setDateFormat(days);
@@ -36,15 +42,15 @@ export const createChart = async (price_data: ICg_marketData, pair_name: string,
                     {
                         type: "line",
                         data: prices,
-                        borderColor: "rgba(0, 160, 70, 0.8)",
+                        borderColor: colors.price,
                         borderWidth: 3,
                         yAxisID: "prices"
                     },
                     {
                         type: "line",
                         data: volumes,
-                        backgroundColor: "rgba(230, 200, 20, 0.8)",
-                        borderColor: "rgba(230, 200, 20, 0.8)",
+                        backgroundColor: colors.volume,
+                        borderColor: colors.volume,
                         borderWidth: 1,
                         yAxisID: "volumes",
                         
@@ -62,7 +68,7 @@ export const createChart = async (price_data: ICg_marketData, pair_name: string,
                         display: true,
                         position: "right",
                         grid: {
-                            color: "rgba(255, 255, 255, 0.6)"
+                            color: colors.grid
                         },
                         ticks: {
                             maxTicksLimit: 8,
@@ -94,7 +100,7 @@ export const createChart = async (price_data: ICg_marketData, pair_name: string,
                         align: "center",
                         display: true,
                         text: `${pair_name} | ${days} Day(s)`,
-                        color: "rgba(255, 255, 255, 0.87)"
+                        color: colors.title
                     }
                 },
                 animation: false
