@@ -5,20 +5,11 @@ import { MessageEmbed, MessageAttachment, Client, TextChannel } from "discord.js
 import { svgRenderer } from "./svgRenderer";
 import request from "graphql-request";
 import { dopeQueries } from "../Queries/dopeQueries";
-import { createLogger, transports, format } from "winston";
 import { IAsset_Event, IOpenSeaSells } from "../interfaces/IOpenSeaSell";
 import { IDope } from "../interfaces/IDope";
-const { combine, timestamp, label, json } = format;
+import { logger } from "./logger";
 
-const logger = createLogger({
-    level: "info",
-    format: combine(
-        timestamp(),
-        label({ label: "OpenSea Sells" }),
-        json()
-    ),
-    transports: [new transports.Console()]
-});
+const log = logger("OpenSea Sells");
 
 type OpenSeaSale = {
     id: number;
@@ -60,7 +51,7 @@ export const getSells = async (client: Client): Promise<void> => {
                     }
 
                     //lastSellDate = moment(sellObj.timestamp).unix();
-                    logger.info(`New sale: ${newSale.timestamp}`);
+                    log.info(`New sale: ${newSale.timestamp}`);
                     cache.push(newSale);
 
                     const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeSellQuery, { "where": { "id": newSale.id } });
@@ -94,16 +85,16 @@ export const getSells = async (client: Client): Promise<void> => {
             if (cache.length > 0) {
                 for (let i = cache.length - 1; i >= 0; i--) {
                     if (moment(cache[i].timestamp).unix() < lastSellDate) {
-                        logger.info(`Old sell found ${cache[i].id}: deleting...`);
+                        log.info(`Old sell found ${cache[i].id}: deleting...`);
                         cache.splice(i, 1);
-                        logger.info(`New cache size: ${cache.length}`);
+                        log.info(`New cache size: ${cache.length}`);
                     } else {
                         lastSellDate = moment(cache[i].timestamp).unix();
                     }
                 }
             }
         } catch (error: unknown) {
-            logger.error(error);
+            log.error(error);
         }
     }, 10000);
 }
