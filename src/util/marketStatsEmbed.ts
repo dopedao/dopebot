@@ -12,7 +12,7 @@ const changeDecimals = 3;
 export const getDailyMarketStatsEmbed = (stats: any): MessageEmbed => {
     return new MessageEmbed()
         .addFields(
-            { name: `🥇 Daily Volume`, value: wrap(`${stats.one_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.one_day_change)}(${stats.one_day_change?.toFixed(changeDecimals) ?? 0}%)`), inline: true },
+            { name: `🥇 Daily Volume`, value: wrap(`${stats.one_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.one_day_change)}(${stats.one_day_change?.toFixed(changeDecimals) ?? 0})`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.one_day_sales}`), inline: true },
             { name: "🚬 Average Price", value: wrap(`${stats.one_day_average_price.toFixed(ethDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${stats.total_sales}`), inline: true },
@@ -26,7 +26,7 @@ export const getDailyMarketStatsEmbed = (stats: any): MessageEmbed => {
 export const getWeeklyMarketStatsEmbed = (stats: any): MessageEmbed => {
     return new MessageEmbed()
         .addFields(
-            { name: `🥇 Weekly Volume`, value: wrap(`${stats.seven_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.seven_day_change)}(${stats.seven_day_change?.toFixed(changeDecimals) ?? 0}%)`), inline: true },
+            { name: `🥇 Weekly Volume`, value: wrap(`${stats.seven_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.seven_day_change)}(${stats.seven_day_change?.toFixed(changeDecimals) ?? 0})`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.seven_day_sales}`), inline: true },
             { name: "🚬 Average Price", value: wrap(`${stats.seven_day_average_price.toFixed(ethDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${stats.total_sales}`), inline: true },
@@ -40,7 +40,7 @@ export const getWeeklyMarketStatsEmbed = (stats: any): MessageEmbed => {
 export const getMonthlyStatsEmbed = (stats: any): MessageEmbed => {
     return new MessageEmbed()
         .addFields(
-            { name: `🥇 Monthly Volume`, value: wrap(`${stats.thirty_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.thirty_day_change)}(${stats.thirty_day_change?.toFixed(changeDecimals) ?? 0}%)`), inline: true },
+            { name: `🥇 Monthly Volume`, value: wrap(`${stats.thirty_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.thirty_day_change)}(${stats.thirty_day_change?.toFixed(changeDecimals) ?? 0})`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.thirty_day_sales}`), inline: true },
             { name: "🚬 Average Price", value: wrap(`${stats.thirty_day_average_price.toFixed(ethDecimals)} ETH`), inline: true },
             { name: "🍾 Total Sales", value: wrap(`${stats.total_sales}`), inline: true },
