@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { ChartConfiguration } from "chart.js";
-import { ChartCallback, ChartJSNodeCanvas } from "chartjs-node-canvas";
-import { CommandInteraction, MessageAttachment, MessageEmbed } from "discord.js";
+import { ColorResolvable, CommandInteraction, MessageAttachment, MessageEmbed } from "discord.js";
 import moment from "moment";
-import Sharp from "sharp";
-import { ICg_paper } from "../../interfaces/Icg_paper";
+import { Constants } from "../../constants";
+import { ICg_marketData } from "../../interfaces/Icg_paper";
+import { createChart } from "../../util/chartRenderer";
 import { sfetch } from "../../util/sfetch";
+import { wrap } from "../../util/wrap";
 
 export default {
     data: new SlashCommandBuilder()
@@ -19,7 +19,7 @@ export default {
                     { name: "ETH Paper", value: "eth" },
                     { name: "BSC Paper", value: "bsc" }
                 ))
-        .addIntegerOption(option =>
+        .addNumberOption(option =>
             option.setName("days")
             .setDescription("Specify how far back prices should be shown")),
     async execute(interaction: CommandInteraction): Promise<void> {
@@ -28,181 +28,83 @@ export default {
                 "eth": getEthChart,
                 "bsc": getBscChart
             }
-
-            await fnMap[interaction.options.getString("chain")!](interaction, interaction.options.getNumber("days"));
+            await fnMap[interaction.options.getString("chain")!](interaction, interaction.options.getNumber("days") ?? 0.25);
         } catch (error: unknown) {
-            console.log(error);
+            return Promise.reject(error)
         }
     }
 }
 
-const getEthChart = async (interaction: CommandInteraction, days: number = 1) => {
+const getEthChart = async (interaction: CommandInteraction, days: number) => {
     try {
-        const price_data = await sfetch<ICg_paper>(`https://api.coingecko.com/api/v3/coins/ethereum/contract/0x7ae1d57b58fa6411f32948314badd83583ee0e8c/market_chart/?vs_currency=usd&days=${days}`);
-        const times: string[] = [];
-        for (let i = 0; i < price_data?.prices.length!; i++) {
-            const timeStamp = price_data!.prices[i][0];
-            const date = moment(timeStamp);
-            times.push(date.format("DD-MM-YYYY-HH-MM-SS"));
-        };
-
-
-        const prices: number[] = [];
-        for (let i = 0; i < price_data?.prices.length!; i++) {
-            const price = price_data!.prices[i][1];
-            prices.push(price);
-        };
-
-        const width = 600;
-        const height = 300;
-        const config: ChartConfiguration = {
-            type: "line",
-            data: {
-                labels: times,
-                datasets: [
-                    {
-                        data: prices,
-                        backgroundColor: "rgba(255, 255, 255, 1)",
-                        borderColor: "rgba(147, 250, 165, 1)",
-                        borderWidth: 3,
-                    }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        ticks: {
-                            maxTicksLimit: 12
-                        }
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 0
-                    },
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: "BSC: PAPER/USD"
-                    }
-                },
-            },
-            plugins: [{
-                id: '-colour',
-                beforeDraw: (chart) => {
-                    const ctx = chart.ctx;
-                    ctx.save;
-                    ctx.fillStyle = 'black';
-                    ctx.fillRect(0, 0, width, height);
-                    ctx.restore();
-                },
-            }]
-        };
-
-        const chartCallback: ChartCallback = (ChartJS) => {
-            ChartJS.defaults.responsive = true;
-            ChartJS.defaults.maintainAspectRatio = false;
-            ChartJS.defaults.color = 'white';
-        }
-        const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback });
-        const chartFile = await chartJSNodeCanvas.renderToBuffer(config);
-        const chartImage = Sharp(chartFile).png();
+        const price_data = await sfetch<ICg_marketData>(`https://api.coingecko.com/api/v3/coins/ethereum/contract/${Constants.PAPER_ETH_CONTRACT}/market_chart/?vs_currency=usd&days=${days}`);
+        const tokenStats = await sfetch<IEthPaper>(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${Constants.PAPER_ETH_CONTRACT}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`);
+        const tokenStatsRoot = tokenStats?.["0x7ae1d57b58fa6411f32948314badd83583ee0e8c"];
+        const embedColor = tokenStatsRoot?.usd_24h_change! < 0 ? "RED" : tokenStatsRoot?.usd_24h_change! > 0 ? "GREEN" : "ORANGE";
+        const chartImage = await createChart(price_data!, "ETH $PAPER", days);
+        const embed = createChartEmbed(tokenStatsRoot, embedColor, "Paper-Eth / USD");
         const image = new MessageAttachment(chartImage, "chart.png");
-        const embed = new MessageEmbed()
-            .setTitle("Paper-ETH / USD")
-            .setImage("attachment://chart.png")
-
         await interaction.reply({ embeds: [embed], files: [image] });
 
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
     }
 }
 
-const getBscChart = async (interaction: CommandInteraction, days: number = 1) => {
+const getBscChart = async (interaction: CommandInteraction, days: number) => {
     try {
-        const price_data = await sfetch<ICg_paper>(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/0xc28ea768221f67b6a1fd33e6aa903d4e42f6b177/market_chart/?vs_currency=usd&days=${days}`);
-        const times: string[] = [];
-        for (let i = 0; i < price_data?.prices.length!; i++) {
-            const timeStamp = price_data!.prices[i][0];
-            const date = moment(timeStamp);
-            times.push(date.format("DD-MM-YYYY-HH-MM-SS"));
-        };
-
-
-        const prices: number[] = [];
-        for (let i = 0; i < price_data?.prices.length!; i++) {
-            const price = price_data!.prices[i][1];
-            prices.push(price);
-        };
-
-        const width = 600;
-        const height = 300;
-        const config: ChartConfiguration = {
-            type: "line",
-            data: {
-                labels: times,
-                datasets: [
-                    {
-                        data: prices,
-                        backgroundColor: "rgba(255, 255, 255, 1)",
-                        borderColor: "rgba(147, 250, 165, 1)",
-                        borderWidth: 3,
-                    }]
-            },
-            options: {
-                scales: {
-                    x: {
-                        ticks: {
-                            maxTicksLimit: 12
-                        }
-                    }
-                },
-                elements: {
-                    point: {
-                        radius: 0
-                    },
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    title: {
-                        display: true,
-                        text: "Eth: PAPER/USD"
-                    }
-                },
-            },
-            plugins: [{
-                id: '-colour',
-                beforeDraw: (chart) => {
-                    const ctx = chart.ctx;
-                    ctx.save;
-                    ctx.fillStyle = 'black';
-                    ctx.fillRect(0, 0, width, height);
-                    ctx.restore();
-                },
-            }]
-        };
-
-        const chartCallback: ChartCallback = (ChartJS) => {
-            ChartJS.defaults.responsive = true;
-            ChartJS.defaults.maintainAspectRatio = false;
-            ChartJS.defaults.color = 'white';
-        }
-        const chartJSNodeCanvas = new ChartJSNodeCanvas({ width, height, chartCallback });
-        const chartFile = await chartJSNodeCanvas.renderToBuffer(config);
-        const chartImage = Sharp(chartFile).png();
+        const price_data = await sfetch<ICg_marketData>(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/${Constants.PAPER_BSC_CONTRACT}/market_chart/?vs_currency=usd&days=${days}`);
+        const tokenStats = await sfetch<IBscPaper>(`https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?contract_addresses=${Constants.PAPER_BSC_CONTRACT}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`);
+        const tokenStatsRoot = tokenStats?.["0xc28ea768221f67b6a1fd33e6aa903d4e42f6b177"];
+        const embedColor = tokenStatsRoot?.usd_24h_change! < 0 ? "RED" : tokenStatsRoot?.usd_24h_change! > 0 ? "GREEN" : "ORANGE";
+        const chartImage = await createChart(price_data!, "BSC $PAPER", days);
+        const embed = createChartEmbed(tokenStatsRoot, embedColor, "Paper-BSC / USD");
         const image = new MessageAttachment(chartImage, "chart.png");
-        const embed = new MessageEmbed()
-            .setTitle("Paper-ETH / USD")
-            .setImage("attachment://chart.png")
-
         await interaction.reply({ embeds: [embed], files: [image] });
     } catch (error) {
-        console.log(error);
+        return Promise.reject(error);
+    }
+}
+
+const createChartEmbed = (tokenStatsRoot: any, embedColor: string, title: string): MessageEmbed => {
+        const embed = new MessageEmbed()
+            .setTitle(title)
+            .setImage("attachment://chart.png")
+            .setColor(embedColor as ColorResolvable)
+            .addFields(
+                { name: "💸 Price", value: `${wrap(`$${tokenStatsRoot?.usd!}`)}`, inline: true},
+                { name: "📊 24h Price Change", value: `${wrap(`${tokenStatsRoot?.usd_24h_change.toFixed(2)}%`)}`, inline: true},
+                // CG gives wrong vals? { name: "💰 Market Cap", value: `${wrap(`${currencyFormatter.format(tokenStatsRoot?.usd_market_cap!)}`)}`, inline: true},
+                { name: "🏷️ 24h Volume", value: `${wrap(`${currencyFormatter.format(tokenStatsRoot?.usd_24h_vol!)}`)}`, inline: true},
+                // Unnecessary? { name: "⏰ Last updated", value: `${wrap(`${moment.unix(tokenStatsRoot?.last_updated_at!).format("MM/DD/YYYY HH:mm:ss")}`)}`, inline: true}
+            )
+
+            return embed;
+}
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: "currency",
+    currency: "USD"
+})
+
+interface IEthPaper {
+    "0x7ae1d57b58fa6411f32948314badd83583ee0e8c": {
+        usd: number,
+        usd_market_cap: number,
+        usd_24h_vol: number,
+        usd_24h_change: number,
+        last_updated_at: number
+
+    }
+}
+
+interface IBscPaper {
+    "0xc28ea768221f67b6a1fd33e6aa903d4e42f6b177": {
+        usd: number,
+        usd_market_cap: number,
+        usd_24h_vol: number,
+        usd_24h_change: number,
+        last_updated_at: number
+
     }
 }
