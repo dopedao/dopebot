@@ -3,6 +3,7 @@ import { ColorResolvable, CommandInteraction, MessageAttachment, MessageEmbed } 
 import { Constants } from "../../constants";
 import { ICg_marketData } from "../../interfaces/Icg_paper";
 import { createChart } from "../../util/chartRenderer";
+import { handleErr } from "../../util/handleErr";
 import { sfetch } from "../../util/sfetch";
 import { wrap } from "../../util/wrap";
 
@@ -31,7 +32,7 @@ export default {
             }
             await fnMap[interaction.options.getString("chain")!](interaction, interaction.options.getNumber("days") ?? 0.25);
         } catch (error: unknown) {
-            return Promise.reject(error)
+            return handleErr(error);
         }
     }
 }
@@ -47,7 +48,7 @@ const getEthChart = async (interaction: CommandInteraction, days: number) => {
         await interaction.reply({ embeds: [embed], files: [image] });
 
     } catch (error) {
-        return Promise.reject(error);
+        handleErr(error);
     }
 }
 
@@ -61,7 +62,7 @@ const getBscChart = async (interaction: CommandInteraction, days: number) => {
         const image = new MessageAttachment(chartImage, "chart.png");
         await interaction.reply({ embeds: [embed], files: [image] });
     } catch (error) {
-        return Promise.reject(error);
+        handleErr(error);
     }
 }
 

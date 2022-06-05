@@ -1,4 +1,5 @@
 import { Client, VoiceChannel } from "discord.js";
+import { handleErr } from "../util/handleErr";
 import { logger } from "../util/logger";
 import { getSells } from "../util/openseaSells";
 import { getOsFloor } from "../util/osFloor";
@@ -23,7 +24,7 @@ export default {
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Discord:")).map(channel => (channel as VoiceChannel).setName(`Discord: ${(channel as VoiceChannel).guild.memberCount}`));
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
                 } catch(error: unknown) {
-                        log.error(error);
+                        handleErr(error);
                 }
         }, 10000);
     }

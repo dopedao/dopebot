@@ -94,7 +94,11 @@ export const getSells = async (client: Client): Promise<void> => {
                 }
             }
         } catch (error: unknown) {
-            log.error(error);
+            if (error instanceof Error) {
+                log.error(error.message);
+            } else {
+                log.error(error);
+            }
         }
     }, 10000);
 }

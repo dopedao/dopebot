@@ -5,6 +5,7 @@ import { Constants } from "../../constants";
 import request from "graphql-request";
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { IHustler } from "../../interfaces/IHustler";
+import { handleErr } from "../../util/handleErr";
 
 export default {
     data: new SlashCommandBuilder()
@@ -46,7 +47,7 @@ export default {
             const id = interaction.options.getInteger("hustlerid");
             await fnMap[interaction.options.getSubcommand()](interaction, id);
         } catch (error: unknown) {
-            return Promise.reject(error);
+            return handleErr(error);
         }
     }
 };
@@ -56,7 +57,7 @@ const getTotalHustlerCount = async (): Promise<number> => {
         const hustlerCountRes = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerTotalCountQuery);
         return hustlerCountRes.hustlers.totalCount;
     } catch (error: unknown) {
-        return Promise.reject(error);
+        return handleErr(error);
     }
 }
 
@@ -78,7 +79,7 @@ const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): 
 
         await interaction.reply({ embeds: [hustlerPictureEmbed], files: [discImage] });
     } catch (error) {
-        return Promise.reject(error);
+        return handleErr(error);
     }
 }
 
@@ -113,7 +114,7 @@ const getHustlerInvEmbed = async (interaction: CommandInteraction, id: number): 
 
         await interaction.reply({ embeds: [hustlerInvEmbed] });
     } catch (error: unknown) {
-        return Promise.reject(error);
+        return handleErr(error);
     }
 }
 

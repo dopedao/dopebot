@@ -4,6 +4,7 @@ import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmb
 import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "@discordjs/builders";
 import { ColorResolvable, CommandInteraction } from "discord.js";
 import { IMarketStats } from "../../interfaces/IMarketStats";
+import { handleErr } from "../../util/handleErr";
 
 const setContract = (type: string) => {
     return type == "Hustler" ? Constants.HUSTLER_CONTRACT : Constants.GEAR_CONTRACT;
@@ -47,7 +48,7 @@ export default {
 
             await fnMap[interaction.options.getSubcommand()!](interaction, interaction.options.getString("timeframe"), interaction.options.getSubcommand()[0].toUpperCase() + interaction.options.getSubcommand().slice(1));
         } catch (error: unknown) {
-            return Promise.reject(error);
+            return handleErr(error);
         }
     }
 };
@@ -57,7 +58,7 @@ const getHustlerStats = async (interaction: CommandInteraction, timeFrame: strin
         const qxHustlerStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.HUSTLER_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.DBOT_QX_API_KEY } });
         await chooseEmbed(interaction, timeFrame, qxHustlerStats!, type);
     } catch (error: unknown) {
-        return Promise.reject(error);
+        return handleErr(error);
     }
 }
 
@@ -66,7 +67,7 @@ const getGearStats = async (interaction: CommandInteraction, timeFrame: string, 
         const qxGearStats = await sfetch<IMarketStats>(`${Constants.QX_API}/collection/${Constants.GEAR_CONTRACT}/stats`, { headers: { "X-API-KEY": process.env.DBOT_QX_API_KEY } });
         await chooseEmbed(interaction, timeFrame, qxGearStats!, type);
     } catch (error: unknown) {
-        return Promise.reject(error);
+        return handleErr(error);
     }
 }
 
