@@ -1,8 +1,6 @@
 export const Constants = {
     SALE_CHANNEL: "963389800080097330",
     DW_GRAPHQL_API: "http://api.dopewars.gg/query",
-    DW_THUMBNAIL: "https://lh3.googleusercontent.com/3Y3ysx1pfeF7tCEa5FXzIXsaueN3DqQ97eQL9eGTsp0XtAU8tjSta0sK85xfJxyTN6JzjzofitdNgyRsVM-9f1VA4J92u1mGhtwVd-U=s120",
-    HUSTLER_GIF: "https://fanbase-1.s3.amazonaws.com/quixotic-collection-profile/ezgif.com-gif-maker.gif",
 
     OS_LINK: "https://opensea.io",
     OS_API: "https://api.opensea.io/api/v1",
