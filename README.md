@@ -7,6 +7,7 @@ A very dope bot for the DopeWars discord ;)
 ### Scopes
 
 - [x] bot
+- [x] application.commands
 
 ### Permission
 
@@ -18,17 +19,19 @@ A very dope bot for the DopeWars discord ;)
 - [x] Embed Links
 - [x] Attach Files
 - [x] Add Reactions
+- [x] Use Slash Commands
 
-## Config File
+## Environment Variables
 
-In order for the bot to work correctly, you need a `config.json` file as follows:
+In order for the bot to work correctly, you need to set the following environment variables:
 
-```json
-{
-  "botToken": "",
-  "twitterBearerToken": "",
-  "quixoticApiKey": ""
-}
+```
+DBOT_CLIENT_TOKEN=
+DBOT_TWITTER_BEARER_TOKEN=
+DBOT_QX_API_KEY=
+DBOT_OS_API_KEY=
+DBOT_CLIENT_ID=
+DBOT_GUILD_ID=
 ```
 
 ## Running the bot
@@ -42,37 +45,32 @@ Then run it with:
 ```docker run -d dopebot```
 
 
-## Adding Commands
+## Adding Commands/Events
 
-If your command does not match an existing command type, you can simply create a new `commandName.js` file and drop it into the commands folder. It does not matter where you put it, as long as it is in a sub directory of `commands`. Folder names are being ignored, so you can name them as you wish
+If your command does not match an existing command type, you can simply create a new `commandName.ts` file and drop it into the commands folder. It does not matter where you put it, as long as it is in a sub directory of `commands`. Folder names are being ignored, so you can name them as you wish. Events must be dropped into the `events` folder.
 
-For your new command to be correctly picked up, you should use an header like this:
 
-# ⚠️ DEPRECATED ⚠️
-```js
-module.exports = {
-    name: "qx",
-    description: "\`hustler\` - Quixotic Hustler stats\n\`gear\` - Quixotic Gear stats",
-    args: "[hustler | gear] (daily | weekly | monthly)",
-    validator: ([collection, timeFrame]) => !collection || !["hustler", "gear"].includes(collection) || !timeFrame || !["daily", "weekly", "monthly"].includes(timeFrame),
-    async execute(message, [collection, timeFrame]) {
-        const fnMap = {
-            "hustler": getHustlerStats,
-            "gear": getGearStats
-        }
-
-        await fnMap[collection](message, collection, timeFrame);
+# Command Template
+```ts
+export default {
+  data: new SlashCommandBuilder(),  /* https://discordjs.guide/interactions/slash-commands.html#options */
+  async execute(interaction: CommandInteraction): Promise<void> {
+    try {
+      await interaction.reply("Guten Morgen!");
+    } catch(error: unkown) {
+      return Promise.reject(error);
     }
-};
-
-...
+  }
+}
 ```
-`name` -> !name of command
 
-`description` -> Needed for the `!dw help` and wrong arguments embed
-
-`args` -> Same as above, but optional
-
-`validator` -> It validates the received arguments, which happens before the execute method is run (optional)
-
-`async execute(message, [args])` -> The actual method that gets executed, if valid arguments are provided
+# Event Template
+```ts
+export default {
+  name: "eventName",  /* https://discordjs.guide/creating-your-bot/event-handling.html#event-handling */
+  once: true/false, /* The bot logging in is a "once" event, users executing a command is not */
+  async execute(arg): Promise<void> { /* arg type depends on which event you chose, for e.g. "guildMemberAdd" will pass a "member: GuildMember" */
+    
+  }
+}
+```
