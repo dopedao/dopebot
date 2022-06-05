@@ -9,7 +9,8 @@
   "scripts": {
     "build": "tsc --build",
     "clean": "tsc --build --clean",
-    "dev": "tsc --build && cd build/src/ && node ."
+    "docker-build": "docker build -t dopebot .",
+    "docker-run": "docker run dopebot"
   },
   "dependencies": {
     "@discordjs/builders": "^0.13.0",

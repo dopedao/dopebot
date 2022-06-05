@@ -33,4 +33,8 @@ for (const file of eventFiles) {
 }
 log.info("Finished loading events");
 
+process.on("unhandledRejection", error => {
+        log.error(error)
+});
+
 client.login(process.env.DBOT_CLIENT_TOKEN);
