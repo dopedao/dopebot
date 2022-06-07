@@ -36,7 +36,13 @@ jobs:
           workload_identity_provider: 'projects/803405501117/locations/global/workloadIdentityPools/automation-pool/providers/automation-provider'
           service_account: 'automation@dopewars-live.iam.gserviceaccount.com'
           
-        # DEBUG: See if this is actually working
+      # DEBUG: See if this is actually working
       - name: DEBUG Auth
         run: |-
           gcloud iam service-accounts list
+          
+      # Deploy
+      - name: Deploy
+        uses: 'google-github-actions/deploy-appengine@v0'
+        with:
+          deliverables: 'app.yaml'
