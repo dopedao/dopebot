@@ -15,7 +15,7 @@ export const sfetch = async<T = any>(url: string, payload?: {}) => {
         }
     } catch (error: unknown) {
         if (error instanceof Error) {
-            return Promise.reject(error.message);
+            return Promise.reject(error.stack);
         } else {
             return Promise.reject(error);
         }

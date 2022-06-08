@@ -4,7 +4,6 @@ import { MessageEmbed, MessageAttachment, CacheType, CommandInteraction } from "
 import { Constants } from "../../constants";
 import { dopeQueries } from "../../Queries/dopeQueries";
 import { IDope } from "../../interfaces/IDope";
-import { handleErr } from "../../util/handleErr";
 
 export default {
     data: new SlashCommandBuilder()
@@ -38,7 +37,7 @@ export default {
             const id = interaction.options.getInteger("dopeid");
             await fnMap[interaction.options.getSubcommand()](interaction, id);
         } catch(error: unknown) {
-            return handleErr(error);
+            return Promise.reject(error);
         }
     }
 };
@@ -80,7 +79,7 @@ const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: n
 
         await interaction.reply({ embeds: [dopeInventoryEmbed] });
     } catch (error: unknown) {
-        return handleErr(error);
+        return Promise.reject(error);
     }
 }
 
@@ -114,6 +113,6 @@ const getDopeCheckEmbed = async (interaction: CommandInteraction, id: number): P
 
         await interaction.reply({ embeds: [dopeCheckEmbed] });
     } catch (error: unknown) {
-        return handleErr(error);
+        return Promise.reject(error);
     }
 }

@@ -23,11 +23,11 @@ export default {
                 await command.execute(interaction);
         } catch(error: unknown) {
                 if (error instanceof Error) {
-                        log.error(error.message);
+                        log.error(error.stack);
                 } else {
                         log.error(error);
                 }
-                await interaction.reply("There was an error executing the command");
+                await interaction.reply("There was an error executing the command.");
         }
     }
 }

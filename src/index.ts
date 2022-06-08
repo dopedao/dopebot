@@ -9,7 +9,7 @@ const log = logger("Startup");
 const client:  ICommandCollectionClient = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
 client.commands = new Collection();
 
-log.info("Loading commands");
+log.debug("Loading commands");
 const commandFolders = fs.readdirSync("./commands");
 for (const folder of commandFolders) {
         for (const file of fs.readdirSync(`./commands/${folder}`).filter(file => file.endsWith(".js"))) {
@@ -17,9 +17,9 @@ for (const folder of commandFolders) {
                 client.commands.set(command.default.data.name, command.default);
         }
 }
-log.info("Finished loading commands");
+log.debug("Finished loading commands");
 
-log.info("Loading events");
+log.debug("Loading events");
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
@@ -31,7 +31,7 @@ for (const file of eventFiles) {
                 client.on(event.name, (...args) => event.execute(...args));
         }
 }
-log.info("Finished loading events");
+log.debug("Finished loading events");
 
 process.on("unhandledRejection", error => {
         if (error instanceof Error) {
@@ -41,4 +41,11 @@ process.on("unhandledRejection", error => {
         }
 });
 
-client.login(process.env.DBOT_CLIENT_TOKEN);
+(async () => client.login(process.env.DBOT_CLIENT_TOKEN))().catch(error => {
+	if (error instanceof Error) {
+		log.error(error.message);
+	} else {
+		log.error(error);
+	}
+};
+

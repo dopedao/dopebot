@@ -1,21 +1,13 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from 'discord-api-types/v9';
 import fs from 'node:fs';
-import { createLogger, transports, format } from "winston";
-const { combine, timestamp, label, json } = format;
+import { logger } from "../util/logger";
 
-const logger = createLogger({
-        level: "info",
-        format: combine(
-                timestamp(),
-                label({ label: "command-deployer"}),
-                json()
-                ),
-        transports: [ new transports.Console() ]
-})
+const log = logger("command-deployer");
 
 const commands = [];
 
+log.debug("Loading commands...")
 const commandFolders = fs.readdirSync("../commands");
 for (const folder of commandFolders) {
         for (const file of fs.readdirSync(`../commands/${folder}`).filter(file => file.endsWith(".js"))) {
@@ -23,6 +15,7 @@ for (const folder of commandFolders) {
                 commands.push(command.default.data.toJSON());
         }
 }
+log.debug("Finished loading commands")
 
 const rest = new REST({ version: '9' }).setToken(process.env.DBOT_CLIENT_TOKEN!);
 
@@ -40,17 +33,17 @@ rest.get(Routes.applicationCommands(clientId))
 
 (async () => {
 	try {
-        logger.info("Refreshing slash commands");
+        log.info("Registering slash commands");
         
 		await rest.put(
 			Routes.applicationGuildCommands(process.env.DBOT_CLIENT_ID!, process.env.DBOT_GUILD_ID!),
 			{ body: commands },
 		);
 
-        logger.info("Successfully reloaded slash commands");
+        log.info("Successfully registered slash commands");
 	} catch (error: unknown) {
                 if (error instanceof Error) {
-                        logger.error(error.message);
+                        log.error(error.stack);
                 }
 	}
 })();

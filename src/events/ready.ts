@@ -37,7 +37,11 @@ export default {
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Discord:")).map(channel => (channel as VoiceChannel).setName(`Discord: ${(channel as VoiceChannel).guild.memberCount}`));
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
                 } catch(error: unknown) {
-                        handleErr(error);
+                        if (error instanceof Error) {
+                                log.error(error.stack);
+                        } else {
+                                log.error(error);
+                        }
                 }
         }, 10000);
     }
