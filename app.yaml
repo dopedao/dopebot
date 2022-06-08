@@ -1,3 +1,11 @@
 service: dopebot
 runtime: custom
 env: flex
+
+env_variables:
+  DBOT_CLIENT_ID: secret://projects/803405501117/secrets/DBOT_CLIENT_ID/versions/1
+  DBOT_CLIENT_TOKEN: secret://projects/803405501117/secrets/DBOT_CLIENT_TOKEN/versions/1
+  DBOT_GUILD_ID: secret://projects/803405501117/secrets/DBOT_GUILD_ID/versions/1
+  DBOT_TWITTER_BEARER_TOKEN: secret://projects/803405501117/secrets/DBOT_TWITTER_BEARER_TOKEN/versions/1
+  DBOT_QX_API_KEY: secret://projects/803405501117/secrets/DBOT_QX_API_KEY/versions/1
+  DBOT_OS_API_KEY: secret://projects/803405501117/secrets/DBOT_OS_API_KEY/versions/1
