@@ -11,7 +11,7 @@ export default {
     async execute(interaction: CommandInteraction): Promise<void> {
         try {
                 if (!interaction.isCommand()) return;
-                if ((interaction.member?.roles as GuildMemberRoleManager).cache.find((role: Role) => role.name === minRole)!.position > (interaction.member?.roles as GuildMemberRoleManager)?.highest.position) {
+                if (interaction.guild!.roles.cache.find((role: Role) => role.name === minRole)!.position > (interaction.member?.roles as GuildMemberRoleManager)?.highest.position) {
                         await interaction.reply(`You are missing the required role: ${minRole}`)
                         return;
                 }
@@ -23,11 +23,11 @@ export default {
                 await command.execute(interaction);
         } catch(error: unknown) {
                 if (error instanceof Error) {
-                        log.error(error.message);
+                        log.error(error.stack);
                 } else {
                         log.error(error);
                 }
-                await interaction.reply("There was an error executing the command");
+                await interaction.reply("There was an error executing the command.");
         }
     }
 }

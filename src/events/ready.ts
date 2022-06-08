@@ -1,5 +1,4 @@
 import { Client, VoiceChannel } from "discord.js";
-import { handleErr } from "../util/handleErr";
 import { logger } from "../util/logger";
 import { getSells } from "../util/openseaSells";
 import { getOsFloor } from "../util/osFloor";
@@ -11,8 +10,8 @@ export default {
     name: "ready",
     once: true,
     async execute(client: Client) {
-        log.info(`${client!.user!.username}@${client!.user!.discriminator} is online`);
-        client!.user!.setStatus("idle");
+        log.info(`${client.user!.username}@${client.user!.discriminator} is online`);
+        client.user!.setStatus("idle");
         await getSells(client);
 
         setInterval(async () => {
@@ -24,7 +23,11 @@ export default {
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Discord:")).map(channel => (channel as VoiceChannel).setName(`Discord: ${(channel as VoiceChannel).guild.memberCount}`));
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
                 } catch(error: unknown) {
-                        handleErr(error);
+                        if (error instanceof Error) {
+                                log.error(error.stack);
+                        } else {
+                                log.error(error);
+                        }
                 }
         }, 10000);
     }

@@ -50,8 +50,7 @@ export const getSells = async (client: Client): Promise<void> => {
                         return;
                     }
 
-                    //lastSellDate = moment(sellObj.timestamp).unix();
-                    log.info(`New sale: ${newSale.timestamp}`);
+                    log.debug(`New sale: ${newSale.timestamp}`);
                     cache.push(newSale);
 
                     const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeSellQuery, { "where": { "id": newSale.id } });
@@ -85,17 +84,18 @@ export const getSells = async (client: Client): Promise<void> => {
             if (cache.length > 0) {
                 for (let i = cache.length - 1; i >= 0; i--) {
                     if (moment(cache[i].timestamp).unix() < lastSellDate) {
-                        log.info(`Old sell found ${cache[i].id}: deleting...`);
+                        log.debug(`Old sell found ${cache[i].id}: deleting...`);
                         cache.splice(i, 1);
-                        log.info(`New cache size: ${cache.length}`);
+                        log.debug(`New cache size: ${cache.length}`);
                     } else {
                         lastSellDate = moment(cache[i].timestamp).unix();
+                        log.debug(`LastSellDate: ${lastSellDate}`)
                     }
                 }
             }
         } catch (error: unknown) {
             if (error instanceof Error) {
-                log.error(error.message);
+                log.error(error.stack);
             } else {
                 log.error(error);
             }

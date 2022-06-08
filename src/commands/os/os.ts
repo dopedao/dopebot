@@ -4,7 +4,6 @@ import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builde
 import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
 import { IMarketStats } from "../../interfaces/IMarketStats";
-import { handleErr } from "../../util/handleErr";
 
 export default {
     data: new SlashCommandBuilder()
@@ -28,7 +27,7 @@ export default {
             }
             await fnMap[interaction.options.getString("timeframe")!](interaction);
         } catch (error: unknown) {
-            return handleErr(error);
+            return Promise.reject(error);
         }
     }
 }
@@ -44,7 +43,7 @@ const dailyOsStats = async (interaction: CommandInteraction): Promise<void> => {
         await interaction.reply({ embeds: [dailyStatsEmbed] });
 
     } catch (error: unknown) {
-        return handleErr(error);
+        return Promise.reject(error);
     }
 }
 
@@ -59,7 +58,7 @@ const weeklyOsStats = async (interaction: CommandInteraction): Promise<void> => 
 
         await interaction.reply({ embeds: [weeklyStatsEmbed] });
     } catch (error: unknown) {
-        return handleErr(error);
+        return Promise.reject(error);
     }
 }
 
@@ -73,6 +72,6 @@ const monthlyOsStats = async (interaction: CommandInteraction): Promise<void> =>
 
         await interaction.reply({ embeds: [monthlyStatsEmbed] });
     } catch (error: unknown) {
-        return handleErr(error);
+        return Promise.reject(error);
     }
 }

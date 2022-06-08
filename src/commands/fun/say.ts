@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { CacheType, CommandInteraction, InteractionReplyOptions } from "discord.js";
 
-const maxLength = 8;
+const maxLength = 10;
 
 export default {
     data: new SlashCommandBuilder()
