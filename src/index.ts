@@ -6,7 +6,7 @@ import { logger } from './util/logger';
 
 const log = logger("Startup");
 
-const client:  ICommandCollectionClient = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const client:  ICommandCollectionClient = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
 client.commands = new Collection();
 
 log.info("Loading commands");
@@ -34,7 +34,11 @@ for (const file of eventFiles) {
 log.info("Finished loading events");
 
 process.on("unhandledRejection", error => {
-        log.error(error)
+        if (error instanceof Error) {
+                log.error(error.message);
+        } else {
+                log.error(error);
+        }
 });
 
 client.login(process.env.DBOT_CLIENT_TOKEN);
