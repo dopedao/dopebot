@@ -53,6 +53,41 @@ const getPaperRole = (paperCount: number): (DopeRoles| null) => {
             return DopeRoles.Hopper;
         case paperCount < 50000 && paperCount >= 12500:
             return DopeRoles.Prospect;
+
+interface IDiscordUser {
+    username: string,
+    discriminator: string,
+    id: string,
+    // Email?
+    email: string,
+    paperCount: number,
+    dopeCount: number,
+    hustlerCount: number,
+    isOg: boolean
+}
+
+const getPaperRole = (paperCount: number): (string | null) => {
+    switch(true) {
+        case paperCount >= 5000000:
+            return "Drug Lord";
+        case paperCount < 5000000 && paperCount >= 2000000:
+            return "Kingpin";
+        case paperCount < 2000000 && paperCount >= 1000000:
+            return "Fixer";
+        case paperCount < 1000000 && paperCount >= 750000:
+            return "Lieutenant";
+        case paperCount < 750000 && paperCount >= 500000:
+            return "Hitman";
+        case paperCount < 500000 && paperCount >= 350000:
+            return "Enforcer";
+        case paperCount < 350000 && paperCount >= 200000:
+            return "Supplier";
+        case paperCount < 200000 && paperCount >= 100000:
+            return "Dealer";
+        case paperCount < 100000 && paperCount >= 50000:
+            return "Hopper";
+        case paperCount < 50000 && paperCount >= 12500:
+            return "Prospect"
         default:
             return null;
     }
