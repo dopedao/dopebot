@@ -36,15 +36,10 @@ process.on("unhandledRejection", error => {
         log.error(`Uncaught: ${error}`);
 });
 
-(async () => {
-        try {
-                client.login(process.env.DBOT_CLIENT_TOKEN);
-        } catch (error: unknown) {
-                if (error instanceof Error) {
-                        log.error(error.stack);
-                } else {
-                        log.error(error);
-                }
+(async () => client.login(process.env.DBOT_CLIENT_TOKEN))().catch(err => {
+        if (err instanceof Error) {
+                log.error(err.stack);
+        } else {
+                log.error(err);
         }
-})();
-
+});
