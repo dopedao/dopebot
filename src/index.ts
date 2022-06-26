@@ -41,11 +41,10 @@ process.on("unhandledRejection", error => {
         }
 });
 
-(async () => client.login(process.env.DBOT_CLIENT_TOKEN))().catch(error => {
-	if (error instanceof Error) {
-		log.error(error.message);
-	} else {
-		log.error(error);
-	}
-};
-
+(async () => client.login(process.env.DBOT_CLIENT_TOKEN))().catch(err => {
+        if (err instanceof Error) {
+                log.error(err.stack);
+        } else {
+                log.error(err);
+        }
+});
