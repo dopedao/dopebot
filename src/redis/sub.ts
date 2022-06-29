@@ -72,21 +72,27 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
             log.info(`Verifying ${verifData.Id} - ${verifData.DopeCount} - ${verifData.HustlerCount} - ${verifData.PaperCount} - ${verifData.IsOg}`);
 
             const guild = discClient.guilds.cache.get(process.env.DBOT_GUILD_ID!);
+            log.info("Got guild.")
             const guildMember = guild?.members.cache.get(verifData.Id);
+            log.info("Found member.")
 
             const role = getPaperRole(verifData.PaperCount);
             guildMember?.roles.add(String(role));
+            log.info("Adding paper role")
 
             if (verifData.IsOg) {
                 guildMember?.roles.add(String(ogRole));
+            log.info("Adding og role")
             }
 
             if (verifData.DopeCount > 0) {
                 guildMember?.roles.add(String(dopeHolderRole));
+            log.info("Adding dope role")
             }
 
             if (verifData.HustlerCount> 0) {
                 guildMember?.roles.add(String(hustlerHolderRole));
+            log.info("Adding hustler role")
             }
         });
     } catch (error: unknown) {
