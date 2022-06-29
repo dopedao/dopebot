@@ -58,18 +58,6 @@ const getPaperRole = (paperCount: number): (DopeRoles| null) => {
     }
 }
 
-interface IDiscordUser {
-    username: string,
-    discriminator: string,
-    id: string,
-    // Email?
-    email: string,
-    paperCount: number,
-    dopeCount: number,
-    hustlerCount: number,
-    isOg: boolean
-}
-
 export const startRedisSub = async (discClient: Client): Promise<void> => {
     //throw new Error("\n\n\n\n\n\n\n\n\n\nYou are running the wrong bot mane...");
 
