@@ -56,5 +56,5 @@ const linkButton = new MessageActionRow()
         new MessageButton()
             .setStyle("LINK")
             .setLabel("Get started")
-            .setURL(Constants.DW_AUTH_LINK)
+            .setURL(process.env.DBOT_REDIRECT_URI!)
     );
