@@ -13,10 +13,6 @@ interface IDopeBotData {
     IsOg: boolean,
 }
 
-const ogRole = 2623462346;
-const dopeHolderRole = 124353253;
-const hustlerHolderRole = 124353253;
-
 enum DopeRoles {
     "Drug_Lord" = 234215,
     "Kingpin",
@@ -63,7 +59,6 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
 
     try {
         const client = createClient();
-
         client.on('error', (err) => log.error(err));
 
         await client.subscribe("discord", async (message) => {
@@ -77,22 +72,24 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
             log.info("Found member.")
 
             const role = getPaperRole(verifData.PaperCount);
-            guildMember?.roles.add(String(role));
-            log.info("Adding paper role")
+            if (role) {
+                guildMember?.roles.add(String(role));
+                log.info("Adding paper role")
+            }
 
             if (verifData.IsOg) {
-                guildMember?.roles.add(String(ogRole));
-            log.info("Adding og role")
+                //guildMember?.roles.add(String(ogRole));
+                log.info("Adding og role")
             }
 
             if (verifData.DopeCount > 0) {
-                guildMember?.roles.add(String(dopeHolderRole));
-            log.info("Adding dope role")
+                //guildMember?.roles.add(String(dopeHolderRole));
+                log.info("Adding dope role")
             }
 
             if (verifData.HustlerCount> 0) {
-                guildMember?.roles.add(String(hustlerHolderRole));
-            log.info("Adding hustler role")
+                //guildMember?.roles.add(String(hustlerHolderRole));
+                log.info("Adding hustler role")
             }
         });
     } catch (error: unknown) {
