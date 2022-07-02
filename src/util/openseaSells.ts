@@ -89,7 +89,6 @@ export const getSells = async (client: Client): Promise<void> => {
                         log.debug(`New cache size: ${cache.length}`);
                     } else {
                         lastSellDate = moment(cache[i].timestamp).unix();
-                        log.debug(`LastSellDate: ${lastSellDate}`)
                     }
                 }
             }
