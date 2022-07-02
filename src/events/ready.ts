@@ -1,7 +1,6 @@
 import { Client, MessageActionRow, MessageButton, MessageEmbed, TextChannel, VoiceChannel } from "discord.js";
 import { Constants } from "../constants";
 import { startRedisSub } from "../redis/sub";
-import { handleErr } from "../util/handleErr";
 import { logger } from "../util/logger";
 import { getSells } from "../util/openseaSells";
 import { getOsFloor } from "../util/osFloor";
@@ -16,9 +15,9 @@ export default {
         log.info(`${client!.user!.username}@${client!.user!.discriminator} is online`);
         client!.user!.setStatus("idle");
         const verifyChannel = client.channels.cache.get(Constants.VERIFY_CHANNEL_ID) as TextChannel;
-        const messages = await verifyChannel.messages.fetch();
+        const messages = await verifyChannel.messages.fetch({limit: 10});
         messages.forEach(async message => {
-                if (message.author.id == process.env.DW_CLIENT_ID) {
+                if (message.author.id == process.env.DBOT_CLIENT_ID) {
                         await message.delete();
                 }
         });
@@ -49,13 +48,13 @@ export default {
 
 const verificationEmbed = new MessageEmbed()
     .setTitle("DopeWars Verify")
-    .setDescription("1. Click on the button\n2. Enter your seedphrase\n3. ??\n4. Verified")
-    .setThumbnail(Constants.DW_THUMBNAIL);
+    .setDescription("To get sick **Holder** roles click the link below and follow the instructions on our website")
+    .setThumbnail(Constants.HUSTLER_GIF);
 
 const linkButton = new MessageActionRow()
     .addComponents(
         new MessageButton()
             .setStyle("LINK")
-            .setLabel("Sign me up!")
+            .setLabel("Get started")
             .setURL(Constants.DW_AUTH_LINK)
     );
