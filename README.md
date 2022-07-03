@@ -32,18 +32,24 @@ DBOT_QX_API_KEY=
 DBOT_OS_API_KEY=
 DBOT_CLIENT_ID=
 DBOT_GUILD_ID=
+ENV=test/prod
 ```
 
 ## Running the bot
 
-Build the image first:
+# Without the DopeWars Api
 
-```docker build . -t dopebot```
+```docker-compose up bot redis```
 
-Then run it with:
+# With the DopeWars Api
 
-```docker run -d dopebot```
+```docker-compose up bot```
 
+The [Api](https://github.com/dopedao/dope-monorepo/tree/feat/discord-oauth/packages/api) already contains a redis service.
+
+# Example message for the Auth flow through redis-cli
+
+```PUBLISH discord '{"id":"your-discord-id","walletaddress":"test","papercount":0,"dopecount":0,"hustlercount":0,"isog":true}'```
 
 ## Adding Commands/Events
 
