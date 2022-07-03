@@ -5,12 +5,12 @@ import { logger } from "../util/logger";
 const log = logger("redis");
 
 interface IDopeBotData {
-    Id: string,
-    WalletAddress: string,
-    PaperCount: number,
-    DopeCount: number,
-    HustlerCount: number,
-    IsOg: boolean,
+    id: string,
+    walletaddress: string,
+    papercount: number,
+    dopecount: number,
+    hustlercount: number,
+    isog: boolean,
 }
 
 const PaperRoles = {
@@ -63,15 +63,14 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
     try {
         const client = createClient();
         client.on('error', (err) => log.error(err));
+        const subscriber = client.duplicate();
+        subscriber.connect();
 
-        const sub = client.duplicate();
-        sub.connect();
-
-        await sub.subscribe("discord", async (message) => {
+        await subscriber.subscribe("discord", async (message) => {
             log.info(message)
             const verifData = JSON.parse(message) as IDopeBotData;
 
-            log.info(`Verifying ${verifData.Id} - ${verifData.DopeCount} - ${verifData.HustlerCount} - ${verifData.PaperCount} - ${verifData.IsOg}`);
+            log.info(`Verifying ${verifData.id} - ${verifData.dopecount} - ${verifData.hustlercount} - ${verifData.papercount} - ${verifData.isog}`);
 
             const guild = discClient.guilds.cache.get(process.env.DBOT_GUILD_ID!);
             if (!guild) {
@@ -79,7 +78,7 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
                 return;
             }
 
-            const guildMember = (await guild.members.fetch()).get(verifData.Id);
+            const guildMember = (await guild.members.fetch()).get(verifData.id);
             if (guildMember == undefined) {
                 log.error(`Could not find member.`);
                 return;
@@ -91,7 +90,7 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
                 return;
             }
 
-            const paperRole = getPaperRole(verifData.PaperCount);
+            const paperRole = getPaperRole(verifData.papercount);
             const setPaperRoles = getPaperRolesOf(guildMember);
             if (paperRole) {
                 const highestRole = guildRoles.get(paperRole)?.position!;
@@ -108,9 +107,9 @@ export const startRedisSub = async (discClient: Client): Promise<void> => {
             }
 
 
-            await addOrRmRole(guildMember, ogRole, verifData.IsOg, "Og");
-            await addOrRmRole(guildMember, dopeHolderRole, verifData.DopeCount > 0, "Dope");
-            await addOrRmRole(guildMember, hustlerHolderRole, verifData.HustlerCount > 0, "hustler");
+            await addOrRmRole(guildMember, ogRole, verifData.isog, "Og");
+            await addOrRmRole(guildMember, dopeHolderRole, verifData.dopecount> 0, "Dope");
+            await addOrRmRole(guildMember, hustlerHolderRole, verifData.hustlercount> 0, "hustler");
         });
     } catch (error: unknown) {
         if (error instanceof Error) {
