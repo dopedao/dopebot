@@ -37,11 +37,11 @@ ENV=test/prod
 
 ## Running the bot
 
-# Without the DopeWars Api
+### Without the DopeWars Api
 
 ```docker-compose up bot redis```
 
-# With the DopeWars Api
+### With the DopeWars Api
 
 ```docker-compose up bot```
 
@@ -51,7 +51,7 @@ The [Api](https://github.com/dopedao/dope-monorepo/tree/feat/discord-oauth/packa
 
 ```PUBLISH discord '{"id":"your-discord-id","walletaddress":"test","papercount":0,"dopecount":0,"hustlercount":0,"isog":true}'```
 
-## Adding Commands/Events
+# Adding Commands/Events
 
 If your command does not match an existing command type, you can simply create a new `commandName.ts` file and drop it into the commands folder. It does not matter where you put it, as long as it is in a sub directory of `commands`. Folder names are being ignored, so you can name them as you wish. Events must be dropped into the `events` folder.
 
