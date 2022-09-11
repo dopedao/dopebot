@@ -22,7 +22,6 @@ export default {
                 }
         });
         verifyChannel.send({ embeds: [verificationEmbed], components: [linkButton] });
-
         await getSells(client);
         await startRedisSub(client);
 

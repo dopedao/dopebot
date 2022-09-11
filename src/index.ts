@@ -7,6 +7,7 @@ import { logger } from './util/logger';
 const log = logger("Startup");
 
 const client:  ICommandCollectionClient = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
+
 client.commands = new Collection();
 
 log.debug("Loading commands");
