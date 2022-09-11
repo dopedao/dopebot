@@ -4,8 +4,10 @@ import path from 'path/posix';
 import { ICommandCollectionClient } from './interfaces/ICommandCollectionClient';
 import { logger } from './util/logger';
 
-const log = logger("startup");
-const client: ICommandCollectionClient = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
+const log = logger("Startup");
+
+const client:  ICommandCollectionClient = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
+
 client.commands = new Collection();
 
 log.debug("Loading commands");
@@ -33,7 +35,11 @@ for (const file of eventFiles) {
 log.debug("Finished loading events");
 
 process.on("unhandledRejection", error => {
-        log.error(`Uncaught: ${error}`);
+        if (error instanceof Error) {
+                log.error(error.message);
+        } else {
+                log.error(error);
+        }
 });
 
 (async () => client.login(process.env.DBOT_CLIENT_TOKEN))().catch(err => {

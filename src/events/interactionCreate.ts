@@ -11,7 +11,7 @@ export default {
     async execute(interaction: CommandInteraction): Promise<void> {
         try {
                 if (!interaction.isCommand()) return;
-                if (interaction.guild!.roles.cache.find((role: Role) => role.name === minRole)!.position > (interaction.member?.roles as GuildMemberRoleManager)?.highest.position) {
+                if ((interaction.member?.roles as GuildMemberRoleManager).highest.position < interaction.guild?.roles.cache.find(roles => roles.name == minRole)?.position!) {
                         await interaction.reply(`You are missing the required role: ${minRole}`)
                         return;
                 }

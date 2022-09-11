@@ -77,7 +77,7 @@ export const getSells = async (client: Client): Promise<void> => {
                             { name: `🔹 Claimed Paper ${claimed}`, value: "\u200b" }
                         );
 
-                    await (client.channels.cache.get(Constants.SALE_CHANNEL)! as TextChannel).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
+                    await (client.channels.cache.get(Constants.SALE_CHANNEL_ID)! as TextChannel).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
                 });
             }
 

@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    network_mode: "host"
+    env_file: .env.test
+
+  redis:
+      image: redis:7.0.2
+      ports:
+        - '6379:6379'
+      network_mode: "host"

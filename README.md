@@ -32,20 +32,26 @@ DBOT_QX_API_KEY=
 DBOT_OS_API_KEY=
 DBOT_CLIENT_ID=
 DBOT_GUILD_ID=
+ENV=test/prod
 ```
 
 ## Running the bot
 
-Build the image first:
+### Without the DopeWars Api
 
-```docker build . -t dopebot```
+```docker-compose up bot redis```
 
-Then run it with:
+### With the DopeWars Api
 
-```docker run -d dopebot```
+```docker-compose up bot```
 
+The [Api](https://github.com/dopedao/dope-monorepo/tree/feat/discord-oauth/packages/api) already contains a redis service.
 
-## Adding Commands/Events
+# Example message for the Auth flow through redis-cli
+
+```PUBLISH discord '{"id":"your-discord-id","walletaddress":"test","papercount":0,"dopecount":0,"hustlercount":0,"isog":true}'```
+
+# Adding Commands/Events
 
 If your command does not match an existing command type, you can simply create a new `commandName.ts` file and drop it into the commands folder. It does not matter where you put it, as long as it is in a sub directory of `commands`. Folder names are being ignored, so you can name them as you wish. Events must be dropped into the `events` folder.
 
