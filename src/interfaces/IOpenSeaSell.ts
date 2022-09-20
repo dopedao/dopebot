@@ -12,6 +12,8 @@ interface Asset_Events {
     transaction: {
         timestamp: string,
     },
+    created_date: string,
+    starting_price: number,
     payment_token: {
         eth_price: number,
         usd_price: number
