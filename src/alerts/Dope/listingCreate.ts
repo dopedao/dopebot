@@ -1,5 +1,4 @@
 import { Constants } from "../../constants";
-import { sfetch } from "../../util/sfetch";
 import moment from "moment";
 import {
   MessageEmbed,
@@ -7,12 +6,10 @@ import {
   Client,
   TextChannel,
 } from "discord.js";
-import { svgRenderer } from "../../util/svgRenderer";
-import request from "graphql-request";
-import { dopeQueries } from "../../Queries/dopeQueries";
-import { IAsset_Event, IOpenSeaSells } from "../../interfaces/IOpenSeaSell";
-import { IDope } from "../../interfaces/IDope";
+import { AssetEvent, OpenSeaEvent } from "../../interfaces/OpenSeaEvent";
 import { logger } from "../../util/logger";
+import getDope from "../getDope";
+import osEventFetcher from "../osEventFetcher";
 
 const log = logger("OpenSea listing create");
 
@@ -28,24 +25,10 @@ export const getListingCreate = async (client: Client): Promise<void> => {
 
   setInterval(async () => {
     try {
-      const data = await sfetch<IOpenSeaSells>(
-        `${Constants.OS_API}/events?` +
-          new URLSearchParams({
-            only_opensea: "false",
-            asset_contract_address: Constants.DOPE_CONTRACT,
-            event_type: "created",
-            occurred_after: lastSellDate,
-          } as {}),
-        {
-          method: "GET",
-          headers: {
-            "X-API-KEY": process.env.DBOT_OS_API_KEY,
-          },
-        }
-      );
+      const data = await osEventFetcher<OpenSeaEvent>("created", lastSellDate);
 
       if (data?.asset_events) {
-        data.asset_events.forEach(async (sell: IAsset_Event) => {
+        data.asset_events.forEach(async (sell: AssetEvent) => {
           const newSale: OpenSeaListingCreate = {
             id: sell.asset.token_id,
             timestamp: sell.created_date,
@@ -67,23 +50,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
           log.debug(`New listing: ${newSale.timestamp}`);
           cache.push(newSale);
 
-          const dope = await request<IDope>(
-            Constants.DW_GRAPHQL_API,
-            dopeQueries.dopeSellQuery,
-            { where: { id: newSale.id } }
-          );
-          const dopeRoot = dope.dopes.edges[0].node;
-          const claimed = dopeRoot.claimed ? "✅" : "❌";
-          const opened = dopeRoot.opened ? "✅" : "❌";
-          const dopeRank = dopeRoot.rank;
-          const metadataString = sell.asset.token_metadata.split(",")[1];
-          const decodedMetadataString = Buffer.from(
-            metadataString,
-            "base64"
-          ).toString("utf-8");
-          const metadataObject = JSON.parse(decodedMetadataString);
-          const base64ImageString = metadataObject.image.split(",")[1];
-          const dopeSVG = await svgRenderer(base64ImageString);
+          const { dopeSVG, dopeRank, opened, claimed } = await getDope(newSale.id, sell.asset.token_metadata);
 
           const usdSellPrice =
             sell.payment_token.usd_price *
