@@ -1,8 +1,8 @@
-interface OpenSeaSells {
-    asset_events: Asset_Events[]
+interface OpenSeaEvent {
+    asset_events: AssetEvent[]
 }
 
-interface Asset_Events {
+interface AssetEvent {
     asset: {
         name: string,
         token_metadata: string,
@@ -21,5 +21,4 @@ interface Asset_Events {
     total_price: number
 }
 
-export { OpenSeaSells as IOpenSeaSells };
-export { Asset_Events as IAsset_Event };
+export { OpenSeaEvent, AssetEvent };
