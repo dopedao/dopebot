@@ -10,18 +10,13 @@ import { AssetEvent, OpenSeaEvent } from "../../interfaces/OpenSeaEvent";
 import { logger } from "../../util/logger";
 import getDope from "../getDope";
 import osEventFetcher from "../osEventFetcher";
+import { OpenSeaCache } from "../cache";
 
 const log = logger("OpenSea listing create");
 
-type OpenSeaListingCreate = {
-  id: number;
-  timestamp: string;
-  price: number;
-};
-
 export const getListingCreate = async (client: Client): Promise<void> => {
   let lastSellDate: number = moment.utc(moment()).unix();
-  const cache: OpenSeaListingCreate[] = [];
+  const cache = new OpenSeaCache();
 
   setInterval(async () => {
     try {
@@ -29,7 +24,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
 
       if (data?.asset_events) {
         data.asset_events.forEach(async (sell: AssetEvent) => {
-          const newSale: OpenSeaListingCreate = {
+          const newSale = {
             id: sell.asset.token_id,
             timestamp: sell.created_date,
             price: sell.starting_price,
@@ -37,18 +32,12 @@ export const getListingCreate = async (client: Client): Promise<void> => {
 
           if (
             moment(newSale.timestamp).unix() < lastSellDate ||
-            cache.some(
-              (oldSale: OpenSeaListingCreate) =>
-                oldSale.id == newSale.id &&
-                oldSale.timestamp == newSale.timestamp &&
-                oldSale.price == newSale.price
-            )
-          ) {
+            cache.some(newSale)) {
             return;
           }
 
           log.debug(`New listing: ${newSale.timestamp}`);
-          cache.push(newSale);
+          cache.add(newSale);
 
           const { dopeSVG, dopeRank, opened, claimed } = await getDope(newSale.id, sell.asset.token_metadata);
 
@@ -81,17 +70,8 @@ export const getListingCreate = async (client: Client): Promise<void> => {
         });
       }
 
-      if (cache.length > 0) {
-        for (let i = cache.length - 1; i >= 0; i--) {
-          if (moment(cache[i].timestamp).unix() < lastSellDate) {
-            log.debug(`Old listing found ${cache[i].id}: deleting...`);
-            cache.splice(i, 1);
-            log.debug(`New cache size: ${cache.length}`);
-          } else {
-            lastSellDate = moment(cache[i].timestamp).unix();
-            log.debug(`LastListingDate: ${lastSellDate}`);
-          }
-        }
+      if (cache.len() > 0) {
+        cache.clean(lastSellDate);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {
