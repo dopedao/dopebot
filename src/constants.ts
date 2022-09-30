@@ -1,6 +1,5 @@
 export const Constants = {
-    VERIFY_CHANNEL_ID: "983440484162752602",
-    SALE_CHANNEL_ID: "963389800080097330",
+    SALE_CHANNEL_ID: "1015568400992436254",
     DW_GRAPHQL_API: "http://api.dopewars.gg/query",
 
     OS_LINK: "https://opensea.io",
