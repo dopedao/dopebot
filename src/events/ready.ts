@@ -33,11 +33,11 @@ export default {
         setInterval(async () => {
                 try {
                         const osFloor = await getOsFloor();
-                        //const twitterFollowers = await getTwitterFollowers();
+                        const twitterFollowers = await getTwitterFollowers();
 
                         client!.user!.setActivity(`Floor: ${osFloor} ETH`, { type: "WATCHING" });
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Discord:")).map(channel => (channel as VoiceChannel).setName(`Discord: ${(channel as VoiceChannel).guild.memberCount}`));
-                        //client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
+                        client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
                 } catch(error: unknown) {
                         if (error instanceof Error) {
                                 log.error(error.stack);
