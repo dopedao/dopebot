@@ -2,7 +2,7 @@ import { ChartConfiguration } from "chart.js"
 import { ChartJSNodeCanvas } from "chartjs-node-canvas";
 import moment from "moment";
 import Sharp from "sharp";
-import { ICg_marketData } from "../interfaces/Icg_paper";
+import ICgMarketData from "../interfaces/ICgMarketData";
 import { logger } from "./logger";
 
 const log = logger("chart-render");
@@ -14,7 +14,7 @@ const colors = {
     title: "rgba(255, 255, 255, 0.87)"
 }
 
-export const createChart = async (price_data: ICg_marketData, pair_name: string, days: number): Promise<Sharp.Sharp> => {
+export const createChart = async (price_data: ICgMarketData, pair_name: string, days: number): Promise<Sharp.Sharp> => {
     log.debug("Rendering chart...");
     const dateFormat = setDateFormat(days);
     const times: string[] = [];

@@ -8,38 +8,43 @@ import {
 } from "discord.js";
 import { AssetEvent, OpenSeaEvent } from "../../interfaces/OpenSeaEvent";
 import { logger } from "../../util/logger";
-import getDope from "../getDope";
 import osEventFetcher from "../osEventFetcher";
-import { OpenSeaCache } from "../cache";
+import getParsedDope from "./getParsedDope";
 
 const log = logger("OpenSea listing create");
 
 export const getListingCreate = async (client: Client): Promise<void> => {
   let lastSellDate: number = moment.utc(moment()).unix();
-  const cache = new OpenSeaCache();
 
   setInterval(async () => {
     try {
-      const data = await osEventFetcher<OpenSeaEvent>("created", lastSellDate);
+      const data = await osEventFetcher<OpenSeaEvent>(
+        "created",
+        lastSellDate,
+        Constants.DOPE_CONTRACT
+      );
 
-      if (data?.asset_events) {
-        data.asset_events.forEach(async (sell: AssetEvent) => {
+      if (data.asset_events) {
+        const sortedEvents = data.asset_events.sort((x, y) => moment(x.created_date).unix() - moment(y.created_date).unix());
+
+        sortedEvents.forEach(async (sell: AssetEvent) => {
           const newSale = {
             id: sell.asset.token_id,
             timestamp: sell.created_date,
             price: sell.starting_price,
           };
 
-          if (
-            moment(newSale.timestamp).unix() < lastSellDate ||
-            cache.some(newSale)) {
+          const sellDateUnix = moment(newSale.timestamp).unix();
+          if (sellDateUnix <= lastSellDate) {
             return;
           }
-
+          lastSellDate = sellDateUnix;
           log.debug(`New listing: ${newSale.timestamp}`);
-          cache.add(newSale);
 
-          const { dopeSVG, dopeRank, opened, claimed } = await getDope(newSale.id, sell.asset.token_metadata);
+          const { dopeSVG, dopeRank, opened, claimed } = await getParsedDope(
+            newSale.id,
+            sell.asset.token_metadata
+          );
 
           const usdSellPrice =
             sell.payment_token.usd_price *
@@ -65,13 +70,9 @@ export const getListingCreate = async (client: Client): Promise<void> => {
             );
 
           await (
-            client.channels.cache.get("1021577538486669381") as TextChannel
+            client.channels.cache.get("963389800080097330") as TextChannel
           ).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
         });
-      }
-
-      if (cache.len() > 0) {
-        cache.clean(lastSellDate);
       }
     } catch (error: unknown) {
       if (error instanceof Error) {

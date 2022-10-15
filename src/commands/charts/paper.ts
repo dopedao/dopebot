@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { ColorResolvable, CommandInteraction, MessageAttachment, MessageEmbed } from "discord.js";
 import { Constants } from "../../constants";
-import { ICg_marketData } from "../../interfaces/Icg_paper";
+import ICgMarketData from "../../interfaces/ICgMarketData";
 import { createChart } from "../../util/chartRenderer";
 import { sfetch } from "../../util/sfetch";
 import { wrap } from "../../util/wrap";
@@ -38,7 +38,7 @@ export default {
 
 const getEthChart = async (interaction: CommandInteraction, days: number) => {
     try {
-        const price_data = await sfetch<ICg_marketData>(`https://api.coingecko.com/api/v3/coins/ethereum/contract/${Constants.PAPER_ETH_CONTRACT}/market_chart/?vs_currency=usd&days=${days}`);
+        const price_data = await sfetch<ICgMarketData>(`https://api.coingecko.com/api/v3/coins/ethereum/contract/${Constants.PAPER_ETH_CONTRACT}/market_chart/?vs_currency=usd&days=${days}`);
         const tokenStats = await sfetch<IEthPaper>(`https://api.coingecko.com/api/v3/simple/token_price/ethereum?contract_addresses=${Constants.PAPER_ETH_CONTRACT}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`);
         const tokenStatsRoot = tokenStats?.["0x7ae1d57b58fa6411f32948314badd83583ee0e8c"]
         const chartImage = await createChart(price_data!, "ETH $PAPER", days);
@@ -53,7 +53,7 @@ const getEthChart = async (interaction: CommandInteraction, days: number) => {
 
 const getBscChart = async (interaction: CommandInteraction, days: number) => {
     try {
-        const price_data = await sfetch<ICg_marketData>(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/${Constants.PAPER_BSC_CONTRACT}/market_chart/?vs_currency=usd&days=${days}`);
+        const price_data = await sfetch<ICgMarketData>(`https://api.coingecko.com/api/v3/coins/binance-smart-chain/contract/${Constants.PAPER_BSC_CONTRACT}/market_chart/?vs_currency=usd&days=${days}`);
         const tokenStats = await sfetch<IBscPaper>(`https://api.coingecko.com/api/v3/simple/token_price/binance-smart-chain?contract_addresses=${Constants.PAPER_BSC_CONTRACT}&vs_currencies=usd&include_market_cap=true&include_24hr_vol=true&include_24hr_change=true&include_last_updated_at=true`);
         const tokenStatsRoot = tokenStats?.["0xc28ea768221f67b6a1fd33e6aa903d4e42f6b177"];
         const chartImage = await createChart(price_data!, "BSC $PAPER", days);

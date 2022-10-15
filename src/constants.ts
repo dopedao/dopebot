@@ -1,5 +1,5 @@
 export const Constants = {
-    SALE_CHANNEL_ID: "1015568400992436254",
+    SALE_CHANNEL_ID: "963389800080097330",
     DW_GRAPHQL_API: "http://api.dopewars.gg/query",
 
     OS_LINK: "https://opensea.io",
@@ -16,6 +16,7 @@ export const Constants = {
     GEAR_CONTRACT: "0x0E55e1913C50e015e0F60386ff56A4Bfb00D7110",
     PAPER_ETH_CONTRACT: "0x7ae1d57b58fa6411f32948314badd83583ee0e8c",
     PAPER_BSC_CONTRACT: "0xc28ea768221f67b6a1fd33e6aa903d4e42f6b177",
+    PAPER_OPTI_CONTRACT: "0x00F932F0FE257456b32dedA4758922E56A4F4b42",
 
     qxApiEthConvValue: 1000000000,
     dwApiEthConvValue: 1000000000000000000,
