@@ -18,7 +18,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
 
   setInterval(async () => {
     try {
-      const data = await osEventFetcher<OpenSeaEvent>(
+      const data = await osEventFetcher(
         "created",
         lastSellDate,
         Constants.DOPE_CONTRACT

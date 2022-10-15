@@ -17,7 +17,7 @@ export const getSells = async (client: Client): Promise<void> => {
   let lastSellDate: number = moment.utc(moment()).unix();
   setInterval(async () => {
     try {
-      const data = await osEventFetcher<OpenSeaEvent>(
+      const data = await osEventFetcher(
         "successful",
         lastSellDate,
         Constants.DOPE_CONTRACT
