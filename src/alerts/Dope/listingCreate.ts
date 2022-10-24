@@ -6,7 +6,7 @@ import {
   Client,
   TextChannel,
 } from "discord.js";
-import { AssetEvent, OpenSeaEvent } from "../../interfaces/OpenSeaEvent";
+import { AssetEvent } from "../../interfaces/OpenSeaEvent";
 import { logger } from "../../util/logger";
 import osEventFetcher from "../osEventFetcher";
 import getParsedDope from "./getParsedDope";
@@ -52,7 +52,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
 
           const dopePNG = new MessageAttachment(dopeSVG, "dope.png");
           const openseaSellEmbed = new MessageEmbed()
-            .setImage("attachment://dope.png")
+            .setThumbnail("attachment://dope.png")
             .setTitle(`⛵ Dope #${newSale.id} (Rank: ${dopeRank}) listed!`)
             .setColor("GREEN")
             .setURL(
@@ -70,7 +70,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
             );
 
           await (
-            client.channels.cache.get("963389800080097330") as TextChannel
+            client.channels.cache.get(Constants.TEST_CHANNEL_ID) as TextChannel
           ).send({ embeds: [openseaSellEmbed], files: [dopePNG] });
         });
       }
