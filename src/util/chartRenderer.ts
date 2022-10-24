@@ -30,12 +30,6 @@ export const createChart = async (price_data: ICgMarketData, pair_name: string, 
         prices.push(price);
     };
 
-    const volumes: number[] = [];
-    for (let i = 0; i < price_data?.total_volumes.length!; i++) {
-        const volume = price_data!.total_volumes[i][1];
-        volumes.push(volume);
-    };
-
     const width = 600;
     const height = 300;
     const config: ChartConfiguration = {
@@ -49,16 +43,8 @@ export const createChart = async (price_data: ICgMarketData, pair_name: string, 
                     borderColor: colors.price,
                     borderWidth: 3,
                     yAxisID: "prices"
-                },
-                {
-                    type: "line",
-                    data: volumes,
-                    backgroundColor: colors.volume,
-                    borderColor: colors.volume,
-                    borderWidth: 1,
-                    yAxisID: "volumes",
-
-                }]
+                }
+            ]
         },
         options: {
             scales: {
@@ -78,17 +64,6 @@ export const createChart = async (price_data: ICgMarketData, pair_name: string, 
                         maxTicksLimit: 8,
                         precision: 6
                     }
-                },
-                volumes: {
-                    beginAtZero: true,
-                    type: "linear",
-                    display: false,
-                    position: "left",
-                    suggestedMin: 0,
-                    suggestedMax: 500000,
-                    grid: {
-                        drawOnChartArea: false
-                    },
                 }
             },
             elements: {
@@ -122,7 +97,7 @@ const setDateFormat = (days: number): string => {
     switch (true) {
         case days < 1:
             return "HH:mm";
-        case days > 1 && days <= 10:
+        case days >= 1 && days <= 10:
             return "MM/DD";
         default:
             return "MM/DD/YYYY";
