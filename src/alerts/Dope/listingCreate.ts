@@ -52,7 +52,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
 
           const dopePNG = new MessageAttachment(dopeSVG, "dope.png");
           const openseaSellEmbed = new MessageEmbed()
-            .setThumbnail("attachment://dope.png")
+            .setImage("attachment://dope.png")
             .setTitle(`⛵ Dope #${newSale.id} (Rank: ${dopeRank}) listed!`)
             .setColor("GREEN")
             .setURL(
