@@ -2,9 +2,10 @@ import { Client, MessageActionRow, MessageButton, MessageEmbed, TextChannel, Voi
 import { Constants } from "../constants";
 import { startRedisSub } from "../redis/sub";
 import { logger } from "../util/logger";
-import { getSells } from "../util/openseaSells";
+import { getSells } from "../alerts/Dope/sales";
 import { getOsFloor } from "../util/osFloor";
 import { getTwitterFollowers } from "../util/twitterFollowers";
+import { getListingCreate } from "../alerts/Dope/listingCreate";
 
 const log = logger("client");
 
@@ -14,6 +15,8 @@ export default {
     async execute(client: Client) {
         log.info(`${client!.user!.username}@${client!.user!.discriminator} is online`);
         client!.user!.setStatus("idle");
+
+            /*
         const verifyChannel = client.channels.cache.get(Constants.VERIFY_CHANNEL_ID) as TextChannel;
         const messages = await verifyChannel.messages.fetch({limit: 10});
         messages.forEach(async message => {
@@ -22,9 +25,10 @@ export default {
                 }
         });
         verifyChannel.send({ embeds: [verificationEmbed], components: [linkButton] });
-        await getSells(client);
         await startRedisSub(client);
-
+        */
+        await getSells(client);
+        await getListingCreate(client);
 
         setInterval(async () => {
                 try {
@@ -55,5 +59,5 @@ const linkButton = new MessageActionRow()
         new MessageButton()
             .setStyle("LINK")
             .setLabel("Get started")
-            .setURL(process.env.DBOT_REDIRECT_URI!)
+            .setURL(process.env.DBOT_REDIRECT_URI! ?? "http://localhost:5000")
     );

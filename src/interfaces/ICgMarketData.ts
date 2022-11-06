@@ -1,4 +1,4 @@
-interface ICg_marketData {
+interface ICgMarketData {
     prices: [
         [ number, number ]
     ],
@@ -10,4 +10,4 @@ interface ICg_marketData {
     ]
 }
 
-export { ICg_marketData };
+export default ICgMarketData;
