@@ -7,6 +7,7 @@ export const Constants = {
     OS_API: "https://api.opensea.io/api/v1",
     OS_BLUE: "#2081E2",
     OS_SLUG: "dope-v4",
+    OS_DOPE_LINK: "https://opensea.io/assets/ethereum/0x8707276df042e89669d69a177d3da7dc78bd8723",
 
     QX_LINK: "https://quixotic.io",
     QX_API: "https://api.quixotic.io/api/v1/opt",

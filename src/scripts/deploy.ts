@@ -43,6 +43,7 @@ rest.get(Routes.applicationCommands(clientId))
         log.info("Successfully registered slash commands");
 	} catch (error: unknown) {
                 if (error instanceof Error) {
+                    log.error(error.message)
                         log.error(error.stack);
                 }
 	}

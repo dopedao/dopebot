@@ -10,6 +10,8 @@ import { AssetEvent } from "../../interfaces/OpenSeaEvent";
 import { logger } from "../../util/logger";
 import osEventFetcher from "../osEventFetcher";
 import getParsedDope from "./getParsedDope";
+import { isMuted } from "../../commands/listings/listings";
+import { constants } from "ethers";
 
 const log = logger("OpenSea listing create");
 
@@ -35,7 +37,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
           };
 
           const sellDateUnix = moment(newSale.timestamp).unix();
-          if (sellDateUnix <= lastSellDate) {
+          if (sellDateUnix <= lastSellDate || isMuted(newSale.id)) {
             return;
           }
           lastSellDate = sellDateUnix;
@@ -56,7 +58,7 @@ export const getListingCreate = async (client: Client): Promise<void> => {
             .setTitle(`⛵ Dope #${newSale.id} (Rank: ${dopeRank}) listed!`)
             .setColor("GREEN")
             .setURL(
-              `https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${newSale.id}`
+              `${Constants.OS_DOPE_LINK}/${newSale.id}`
             )
             .setFields(
               {

@@ -57,7 +57,7 @@ export const getSells = async (client: Client): Promise<void> => {
             .setTitle(`⛵ Dope #${newSale.id} (Rank: ${dopeRank}) sold!`)
             .setColor("ORANGE")
             .setURL(
-              `https://opensea.io/assets/0x8707276df042e89669d69a177d3da7dc78bd8723/${newSale.id}`
+              `${Constants.OS_DOPE_LINK}/${newSale.id}`
             )
             .setFields(
               {
