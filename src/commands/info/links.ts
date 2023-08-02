@@ -1,5 +1,5 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction } from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -23,7 +23,7 @@ export default {
                 { name: "Quixotic-Gear", value: "https://quixotic.io/collection/gear" },
                 { name: "OpenSea-Dope", value: "https://opensea.io/collection/dope-v4" },
             )),
-    async execute(interaction: CommandInteraction): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
             await interaction.reply(interaction.options.getString("link")!);
     }
 };

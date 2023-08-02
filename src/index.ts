@@ -1,12 +1,13 @@
 import fs from 'node:fs';
-import { Client, Collection, Intents } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import path from 'path/posix';
 import { ICommandCollectionClient } from './interfaces/ICommandCollectionClient';
 import { logger } from './util/logger';
 
 const log = logger("Startup");
-
-const client:  ICommandCollectionClient = new Client({ intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
+ 
+//Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
+const client:  ICommandCollectionClient = new Client({ intents: [ GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages ]});
 
 client.commands = new Collection();
 

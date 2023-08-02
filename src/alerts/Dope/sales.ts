@@ -1,15 +1,16 @@
 import { Constants } from "../../constants";
 import moment from "moment";
 import {
-  MessageEmbed,
-  MessageAttachment,
+    AttachmentBuilder,
   Client,
+  Colors,
   TextChannel,
 } from "discord.js";
 import { AssetEvent } from "../../interfaces/OpenSeaEvent";
 import { logger } from "../../util/logger";
 import osEventFetcher from "../osEventFetcher";
 import getParsedDope from "./getParsedDope";
+import { EmbedBuilder } from "@discordjs/builders";
 
 const log = logger("OpenSea Sells");
 
@@ -51,11 +52,12 @@ export const getSells = async (client: Client): Promise<void> => {
             sell.payment_token.usd_price *
             (sell.total_price / Constants.dwApiEthConvValue);
 
-          const dopePNG = new MessageAttachment(dopeSVG, "dope.png");
-          const openseaSellEmbed = new MessageEmbed()
+          const dopePNG = new AttachmentBuilder(dopeSVG)
+            .setName("dope.png");
+          const openseaSellEmbed = new EmbedBuilder()
             .setImage("attachment://dope.png")
             .setTitle(`⛵ Dope #${newSale.id} (Rank: ${dopeRank}) sold!`)
-            .setColor("ORANGE")
+            .setColor(Colors.Orange)
             .setURL(
               `${Constants.OS_DOPE_LINK}/${newSale.id}`
             )

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, CacheType, GuildMemberRoleManager } from "discord.js";
-import moment, { Duration } from "moment";
+import { CommandInteraction, CacheType, GuildMemberRoleManager, ChatInputCommandInteraction } from "discord.js";
+import moment from "moment";
 
 export default {
     data: new SlashCommandBuilder()
@@ -35,7 +35,7 @@ export default {
         .addSubcommand((subcommand: SlashCommandSubcommandBuilder) =>
             subcommand.setName("view")
                 .setDescription("Shows all muted dopes")),
-    async execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         if ((interaction.member?.roles as GuildMemberRoleManager)
             .highest.position < interaction.guild?.roles.cache.find(roles => roles.name == "facilitator")?.position!) {
                 interaction.reply("Insufficient permissions.")

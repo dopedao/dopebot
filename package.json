@@ -11,27 +11,27 @@
     "clean": "tsc --build --clean"
   },
   "dependencies": {
-    "@discordjs/builders": "^0.13.0",
-    "@discordjs/rest": "^0.4.1",
-    "@types/sharp": "^0.30.2",
+    "@discordjs/builders": "^1.6.4",
+    "@discordjs/rest": "^2.0.0",
+    "@types/sharp": "^0.32.0",
     "chart.js": "^3.8.0",
     "chartjs-node-canvas": "^4.1.6",
-    "discord-api-types": "^0.32.1",
-    "discord.js": "^13.6.0",
-    "ethers": "^5.7.1",
+    "discord-api-types": "^0.37.51",
+    "discord.js": "^14.12.1",
+    "ethers": "^6.6.7",
     "graphql": "^16.3.0",
-    "graphql-request": "^4.2.0",
+    "graphql-request": "^6.1.0",
     "moment": "^2.29.3",
-    "node-fetch": "2.0",
+    "node-fetch": "3.3.2",
     "path": "^0.12.7",
     "redis": "^4.1.0",
-    "sharp": "^0.30.3",
+    "sharp": "^0.32.4",
     "ts-node": "^10.8.1",
-    "typescript": "^4.7.2",
-    "web3": "^1.8.0",
+    "typescript": "^5.1.6",
+    "web3": "^4.0.3",
     "winston": "^3.7.2"
   },
   "devDependencies": {
-    "@types/node": "^18.7.16"
+    "@types/node": "^20.4.5"
   }
 }

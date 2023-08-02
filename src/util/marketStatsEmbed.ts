@@ -1,5 +1,5 @@
+import { EmbedBuilder } from "@discordjs/builders";
 import { wrap } from "./wrap";
-import { MessageEmbed } from "discord.js";
 
 const getChangeEmoji = (num: number) => {
     return num == 0 || !num ? "🔸" : num < 0 ? "🔻" : "🔺";
@@ -9,8 +9,8 @@ const ethDecimals = 4;
 const volumeDecimals = 2;
 const changeDecimals = 3;
 
-export const getDailyMarketStatsEmbed = (stats: any): MessageEmbed => {
-    return new MessageEmbed()
+export const getDailyMarketStatsEmbed = (stats: any) => {
+    return new EmbedBuilder()
         .addFields(
             { name: `🥇 Daily Volume`, value: wrap(`${stats.one_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.one_day_change)}(${stats.one_day_change?.toFixed(changeDecimals) ?? 0})`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.one_day_sales}`), inline: true },
@@ -23,8 +23,8 @@ export const getDailyMarketStatsEmbed = (stats: any): MessageEmbed => {
         .setTimestamp();
 }
 
-export const getWeeklyMarketStatsEmbed = (stats: any): MessageEmbed => {
-    return new MessageEmbed()
+export const getWeeklyMarketStatsEmbed = (stats: any) => {
+    return new EmbedBuilder()
         .addFields(
             { name: `🥇 Weekly Volume`, value: wrap(`${stats.seven_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.seven_day_change)}(${stats.seven_day_change?.toFixed(changeDecimals) ?? 0})`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.seven_day_sales}`), inline: true },
@@ -37,8 +37,8 @@ export const getWeeklyMarketStatsEmbed = (stats: any): MessageEmbed => {
         .setTimestamp();
 }
 
-export const getMonthlyStatsEmbed = (stats: any): MessageEmbed => {
-    return new MessageEmbed()
+export const getMonthlyStatsEmbed = (stats: any) => {
+    return new EmbedBuilder()
         .addFields(
             { name: `🥇 Monthly Volume`, value: wrap(`${stats.thirty_day_volume.toFixed(ethDecimals)} ETH${getChangeEmoji(stats.thirty_day_change)}(${stats.thirty_day_change?.toFixed(changeDecimals) ?? 0})`), inline: true },
             { name: "💸 Sales", value: wrap(`${stats.thirty_day_sales}`), inline: true },

@@ -1,5 +1,5 @@
 import { sfetch } from "../../util/sfetch";
-import { ColorResolvable, CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable, CommandInteraction, Interaction } from "discord.js";
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
 import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
@@ -18,7 +18,7 @@ export default {
                     { name: "Weekly", value: "weekly" },
                     { name: "Monthly", value: "monthly" }
                 )),
-    async execute(interaction: CommandInteraction) {
+    async execute(interaction: ChatInputCommandInteraction) {
         try {
             const fnMap: any = {
                 "daily": dailyOsStats,
@@ -38,7 +38,7 @@ const dailyOsStats = async (interaction: CommandInteraction): Promise<void> => {
         const dailyStatsEmbed = getDailyMarketStatsEmbed(osStats?.stats)
             .setTitle("⛵ **OpenSea Stats** - Dopes")
             .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
-            .setColor(Constants.OS_BLUE as ColorResolvable);
+            .setColor(Constants.OS_BLUE);
 
         await interaction.reply({ embeds: [dailyStatsEmbed] });
 
@@ -54,7 +54,7 @@ const weeklyOsStats = async (interaction: CommandInteraction): Promise<void> => 
         const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(osStats?.stats)
             .setTitle("⛵ **OpenSea Stats** - Dopes")
             .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
-            .setColor(Constants.OS_BLUE as ColorResolvable);
+            .setColor(Constants.OS_BLUE);
 
         await interaction.reply({ embeds: [weeklyStatsEmbed] });
     } catch (error: unknown) {
@@ -68,7 +68,7 @@ const monthlyOsStats = async (interaction: CommandInteraction): Promise<void> =>
         const monthlyStatsEmbed = getMonthlyStatsEmbed(osStats?.stats)
             .setTitle("⛵ **OpenSea Stats** - Dopes")
             .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
-            .setColor(Constants.OS_BLUE as ColorResolvable);
+            .setColor(Constants.OS_BLUE);
 
         await interaction.reply({ embeds: [monthlyStatsEmbed] });
     } catch (error: unknown) {

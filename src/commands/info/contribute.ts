@@ -1,15 +1,15 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { ColorResolvable, CommandInteraction, MessageEmbed } from "discord.js";
+import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
+import { ChatInputCommandInteraction } from "discord.js";
 import { Constants } from "../../constants";
 
 export default {
     data: new SlashCommandBuilder()
     .setName("contribute")
     .setDescription("Helpful resources on contributing"),
-    async execute(interaction: CommandInteraction): Promise<void> {
-        const contributeEmbed = new MessageEmbed()
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+        const contributeEmbed = new EmbedBuilder()
             .setTitle("How to contribute")
-            .setColor(Constants.OS_BLUE as ColorResolvable)
+            .setColor(Constants.OS_BLUE)
             .setDescription("The thing that makes the \`Dope\` community so amazing is that the entire project is being built by the community. The \`Dope DAO's\` design intention was that anyone can build freely on top of it. It's an open ecosystem, by the people, for the people.")
             .setFields(
                 { name: "Objectives 🎯", value: "[Link](https://dope-wars.notion.site/0ff426feb38d4bfa88c756f63d59f8f7?v=2cef1361705640d3a196d66a9d8c60b8)", inline: true},

@@ -1,6 +1,6 @@
 interface ICgMarketData {
     prices: [
-        [ number, number ]
+        [number, number]
     ],
     total_volumes: [
         [number, number]

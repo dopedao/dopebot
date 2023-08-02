@@ -1,4 +1,4 @@
-import { CommandInteraction, GuildMemberRoleManager, Role } from "discord.js";
+import { CommandInteraction, GuildMemberRoleManager } from "discord.js";
 import { ICommandCollectionClient } from "../interfaces/ICommandCollectionClient";
 import { logger } from "../util/logger";
 

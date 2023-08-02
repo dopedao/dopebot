@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
-import { CommandInteraction, InteractionResponseType } from "discord.js";
 import { Constants } from "../../constants";
+import { ChatInputCommandInteraction } from "discord.js";
 
 export default {
     data: new SlashCommandBuilder()
@@ -18,7 +18,7 @@ export default {
                 { name: "Paper (bsc)", value: `https://bscscan.com/address/${Constants.PAPER_BSC_CONTRACT}` },
                 { name: "Paper (opti)", value: `https://optimistic.etherscan.io/address/${Constants.PAPER_OPTI_CONTRACT}` }
             )),
-    async execute(interaction: CommandInteraction): Promise<void> {
-        await interaction.reply(interaction.options.getString("type") as InteractionResponseType);
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+        await interaction.reply(interaction.options.getString("type")!);
     }
 }

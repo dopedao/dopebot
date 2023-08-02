@@ -1,9 +1,9 @@
 import { hustlerQueries } from "../../Queries/hustlerQueries";
 import { svgRenderer } from "../../util/svgRenderer";
-import { MessageEmbed, MessageAttachment, CommandInteraction } from "discord.js";
+import { AttachmentBuilder, ChatInputCommandInteraction, Colors } from "discord.js";
 import { Constants } from "../../constants";
 import request from "graphql-request";
-import { SlashCommandBuilder } from "@discordjs/builders";
+import { EmbedBuilder, SlashCommandBuilder } from "@discordjs/builders";
 import { IHustler } from "../../interfaces/IHustler";
 
 export default {
@@ -27,16 +27,17 @@ export default {
                         .setDescription("Id of the Hustler")
                         .setMinValue(0)
                         .setRequired(true))),
-    async execute(interaction: CommandInteraction): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         try {
             const hustlerCount = await getTotalHustlerCount();
             if (interaction.options.getInteger("hustlerid")! > hustlerCount - 1) {
-                const invalidIdEmbed = new MessageEmbed()
+                const invalidIdEmbed = new EmbedBuilder()
                     .setTitle("⚠️")
-                    .setColor("YELLOW")
+                    .setColor(Colors.Yellow)
                     .setDescription(`Please provide an id between 0 - ${hustlerCount - 1}`);
 
-                return await interaction.reply({ embeds: [invalidIdEmbed] });
+                await interaction.reply({ embeds: [invalidIdEmbed] });
+                return;
             }
 
             const fnMap: { [name: string]: Function }= {
@@ -60,7 +61,7 @@ const getTotalHustlerCount = async (): Promise<number> => {
     }
 }
 
-const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
+const getHustlerImgEmbed = async (interaction: ChatInputCommandInteraction, id: number): Promise<void> => {
     try {
         const hustler = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerImageQuery, { "where": { "id": id } });
         if (!hustler?.hustlers?.edges[0]) {
@@ -68,12 +69,13 @@ const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): 
         }
         const hustlerRoot = hustler.hustlers.edges[0].node;
         const hustlerPng = await svgRenderer(hustlerRoot.svg);
-        const discImage = new MessageAttachment(hustlerPng, "hustler.png");
+        const discImage = new AttachmentBuilder(hustlerPng)
+            .setName("hustler.png");
 
-        const hustlerPictureEmbed = new MessageEmbed()
+        const hustlerPictureEmbed = new EmbedBuilder()
             .setTitle(`${hustlerRoot.name} : ${hustlerRoot.title}`)
             .setImage("attachment://hustler.png")
-            .setColor("#FF0420")
+            .setColor(0xFF0420)
             .setTimestamp();
 
         await interaction.reply({ embeds: [hustlerPictureEmbed], files: [discImage] });
@@ -82,14 +84,14 @@ const getHustlerImgEmbed = async (interaction: CommandInteraction, id: number): 
     }
 }
 
-const getHustlerInvEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
+const getHustlerInvEmbed = async (interaction: ChatInputCommandInteraction, id: number): Promise<void> => {
     try {
         const hustler = await request<IHustler>(Constants.DW_GRAPHQL_API, hustlerQueries.hustlerQuery, { "where": { "id": id } });
         const hustlerRoot = hustler.hustlers.edges[0].node;
 
-        const hustlerInvEmbed = new MessageEmbed()
+        const hustlerInvEmbed = new EmbedBuilder()
             .setTitle(`Hustler #${id} Inventory`)
-            .setColor("#FF0420")
+            .setColor(0xFF0420)
             .setDescription(`${setField("**Name:**", hustlerRoot.name)}${setField("**Title:**", hustlerRoot.title)}${setField("**Type:**", hustlerRoot.type)}`)
             .setFields(
                 { name: "⛓️ Neck", value: `${hustlerRoot.neck.fullname}`, inline: true },

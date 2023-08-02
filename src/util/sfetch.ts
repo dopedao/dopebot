@@ -9,7 +9,7 @@ export const sfetch = async<T = any>(url: string, payload?: {}) => {
 
         const result = await fetchRes.json();
         if (!result) {
-            throw Error(`Parsing ${url}: ${result} -> ${result.message}`);
+            throw Error(`Parsing ${url}: ${result}`);
         } else {
             return result as Promise<T>;
         }

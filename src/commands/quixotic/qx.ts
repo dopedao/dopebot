@@ -2,7 +2,7 @@ import { sfetch } from "../../util/sfetch";
 import { Constants } from "../../constants";
 import { getDailyMarketStatsEmbed, getWeeklyMarketStatsEmbed, getMonthlyStatsEmbed } from "../../util/marketStatsEmbed";
 import { SlashCommandBuilder, SlashCommandStringOption, SlashCommandSubcommandBuilder } from "@discordjs/builders";
-import { ColorResolvable, CommandInteraction } from "discord.js";
+import { ChatInputCommandInteraction, ColorResolvable, CommandInteraction } from "discord.js";
 import { IMarketStats } from "../../interfaces/IMarketStats";
 
 const setContract = (type: string) => {
@@ -38,7 +38,7 @@ export default {
                             { name: "Weekly", value: "weekly" },
                             { name: "Monthly", value: "monthly" }
                         ))),
-    async execute(interaction: CommandInteraction): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         try {
             const fnMap: { [name: string]: Function } = {
                 "hustler": getHustlerStats,
@@ -85,7 +85,7 @@ const sendDailyStatsEmbed = async (interaction: CommandInteraction, qxHustlerSta
     const dailyStatsEmbed = getDailyMarketStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(`${Constants.QX_LINK}/collection/${setContract(type)}`)
-        .setColor(Constants.QX_RED as ColorResolvable)
+        .setColor(Constants.QX_RED)
 
     await interaction.reply({ embeds: [dailyStatsEmbed] });
 }
@@ -94,7 +94,7 @@ const sendWeeklyStatsEmbed = async (interaction: CommandInteraction, qxHustlerSt
     const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(`${Constants.QX_LINK}/collection/${setContract(type)}`)
-        .setColor(Constants.QX_RED as ColorResolvable)
+        .setColor(Constants.QX_RED)
 
     await interaction.reply({ embeds: [weeklyStatsEmbed] });
 }
@@ -103,7 +103,7 @@ const sendMonthlyStatsEmbed = async (interaction: CommandInteraction, qxHustlerS
     const monthlyStatsEmbed = getMonthlyStatsEmbed(qxHustlerStats.stats)
         .setTitle(`🔴✨ **Quixotic Stats** - ${type}`)
         .setURL(`${Constants.QX_LINK}/collection/${setContract(type)}`)
-        .setColor(Constants.QX_RED as ColorResolvable)
+        .setColor(Constants.QX_RED)
 
     await interaction.reply({ embeds: [monthlyStatsEmbed] });
 }

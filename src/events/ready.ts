@@ -1,6 +1,4 @@
-import { Client, MessageActionRow, MessageButton, MessageEmbed, TextChannel, VoiceChannel } from "discord.js";
-import { Constants } from "../constants";
-import { startRedisSub } from "../redis/sub";
+import { ActivityType, Client, VoiceChannel } from "discord.js";
 import { logger } from "../util/logger";
 import { getSells } from "../alerts/Dope/sales";
 import { getOsFloor } from "../util/osFloor";
@@ -16,17 +14,6 @@ export default {
         log.info(`${client!.user!.username}@${client!.user!.discriminator} is online`);
         client!.user!.setStatus("idle");
 
-            /*
-        const verifyChannel = client.channels.cache.get(Constants.VERIFY_CHANNEL_ID) as TextChannel;
-        const messages = await verifyChannel.messages.fetch({limit: 10});
-        messages.forEach(async message => {
-                if (message.author.id == process.env.DBOT_CLIENT_ID) {
-                        await message.delete();
-                }
-        });
-        verifyChannel.send({ embeds: [verificationEmbed], components: [linkButton] });
-        await startRedisSub(client);
-        */
         await getSells(client);
         await getListingCreate(client);
 
@@ -35,7 +22,7 @@ export default {
                         const osFloor = await getOsFloor();
                         const twitterFollowers = await getTwitterFollowers();
 
-                        client!.user!.setActivity(`Floor: ${osFloor} ETH`, { type: "WATCHING" });
+                        client!.user!.setActivity(`Floor: ${osFloor} ETH`, { type: ActivityType.Watching });
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Discord:")).map(channel => (channel as VoiceChannel).setName(`Discord: ${(channel as VoiceChannel).guild.memberCount}`));
                         client.channels.cache.filter(channel => (channel as VoiceChannel).name.includes("Twitter:")).map(channel => (channel as VoiceChannel).setName(`Twitter: ${twitterFollowers}`));
                 } catch(error: unknown) {
@@ -49,15 +36,3 @@ export default {
     }
 }
 
-const verificationEmbed = new MessageEmbed()
-    .setTitle("DopeWars Verify")
-    .setDescription("To get sick **Holder** roles click the link below and follow the instructions on our website")
-    .setThumbnail(Constants.HUSTLER_GIF);
-
-const linkButton = new MessageActionRow()
-    .addComponents(
-        new MessageButton()
-            .setStyle("LINK")
-            .setLabel("Get started")
-            .setURL(process.env.DBOT_REDIRECT_URI! ?? "http://localhost:5000")
-    );

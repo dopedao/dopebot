@@ -1,9 +1,9 @@
 import { Constants } from "../../constants";
 import moment from "moment";
 import {
-  MessageEmbed,
-  MessageAttachment,
+    AttachmentBuilder,
   Client,
+  Colors,
   TextChannel,
 } from "discord.js";
 import { AssetEvent } from "../../interfaces/OpenSeaEvent";
@@ -11,7 +11,7 @@ import { logger } from "../../util/logger";
 import osEventFetcher from "../osEventFetcher";
 import getParsedDope from "./getParsedDope";
 import { isMuted } from "../../commands/listings/listings";
-import { constants } from "ethers";
+import { EmbedBuilder } from "@discordjs/builders";
 
 const log = logger("OpenSea listing create");
 
@@ -52,11 +52,12 @@ export const getListingCreate = async (client: Client): Promise<void> => {
             sell.payment_token.usd_price *
             (sell.starting_price / Constants.dwApiEthConvValue);
 
-          const dopePNG = new MessageAttachment(dopeSVG, "dope.png");
-          const openseaSellEmbed = new MessageEmbed()
+          const dopePNG = new AttachmentBuilder(dopeSVG)
+            .setName("dope.png");
+          const openseaSellEmbed = new EmbedBuilder()
             .setImage("attachment://dope.png")
             .setTitle(`⛵ Dope #${newSale.id} (Rank: ${dopeRank}) listed!`)
-            .setColor("GREEN")
+            .setColor(Colors.Green)
             .setURL(
               `${Constants.OS_DOPE_LINK}/${newSale.id}`
             )

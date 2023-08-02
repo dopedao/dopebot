@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, SlashCommandStringOption } from "@discordjs/builders";
-import { CacheType, CommandInteraction, InteractionReplyOptions } from "discord.js";
+import { ChatInputCommandInteraction, InteractionReplyOptions } from "discord.js";
 
 const maxLength = 10;
 
@@ -11,7 +11,7 @@ export default {
             option.setName("text")
             .setDescription("Text to repeat")
             .setRequired(true)),
-    async execute(interaction: CommandInteraction<CacheType>): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         const text = interaction.options.getString("text")!;
         if (text.length > maxLength) {
             await interaction.reply({ content: `Message is too long! Max length: ${maxLength}`, ephmeral: true } as InteractionReplyOptions);

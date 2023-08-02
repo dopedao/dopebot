@@ -1,6 +1,6 @@
 import request from "graphql-request";
-import { SlashCommandIntegerOption, SlashCommandSubcommandBuilder, SlashCommandBuilder } from "@discordjs/builders";
-import { MessageEmbed, MessageAttachment, CacheType, CommandInteraction } from "discord.js";
+import { SlashCommandIntegerOption, SlashCommandSubcommandBuilder, SlashCommandBuilder, EmbedBuilder } from "@discordjs/builders";
+import { AttachmentBuilder, CacheType, ChatInputCommandInteraction, Colors, CommandInteraction } from "discord.js";
 import { Constants } from "../../constants";
 import { dopeQueries } from "../../Queries/dopeQueries";
 import { IDope } from "../../interfaces/IDope";
@@ -28,7 +28,7 @@ export default {
                         .setMinValue(1)
                         .setMaxValue(8000)
                         .setRequired(true))),
-    async execute(interaction: CommandInteraction): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
         try {
             const fnMap: { [name: string]: Function } = {
                 "inv": getDopeInvEmbed,
@@ -42,7 +42,7 @@ export default {
     }
 };
 
-const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: number): Promise<void> => {
+const getDopeInvEmbed = async (interaction: ChatInputCommandInteraction, id: number): Promise<void> => {
     try {
         const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeInvQuery, { "where": { "id": id } });
         const dopeRoot = dope.dopes.edges[0].node;
@@ -54,9 +54,9 @@ const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: n
             dopeObject[keypair[1].type.toLowerCase()] = keypair[1].fullname;
         }
 
-        const dopeInventoryEmbed = new MessageEmbed()
+        const dopeInventoryEmbed = new EmbedBuilder()
             .setTitle(`Dope #${id} Inventory (Rank: ${dopeRoot.rank})`)
-            .setColor("#2081E2")
+            .setColor(0x2081E2)
             .setFields(
                 { name: `⛓️ Neck | ${dopeRoot.items[7].tier}`, value: `${dopeObject.neck}`, inline: true },
                 { name: `\u200b`, value: "\u200b", inline: true },
@@ -83,7 +83,7 @@ const getDopeInvEmbed = async (interaction: CommandInteraction<CacheType>, id: n
     }
 }
 
-const getDopeCheckEmbed = async (interaction: CommandInteraction, id: number): Promise<void> => {
+const getDopeCheckEmbed = async (interaction: ChatInputCommandInteraction, id: number): Promise<void> => {
     try {
         const dope = await request<IDope>(Constants.DW_GRAPHQL_API, dopeQueries.dopeStatusQuery, { "where": { "id": id } });
         const dopeRoot = dope.dopes.edges[0].node;
@@ -91,9 +91,9 @@ const getDopeCheckEmbed = async (interaction: CommandInteraction, id: number): P
         const claimed = !dopeRoot.claimed ? '✅' : '❌';
         const opened = !dopeRoot.opened ? '✅' : '❌';
         const fullyClaimed = dopeRoot.claimed && dopeRoot.opened;
-        const color = fullyClaimed ? "GREEN" : !dopeRoot.claimed && !dopeRoot.opened ? "RED" : "ORANGE";
+        const color = fullyClaimed ? Colors.Green : !dopeRoot.claimed && !dopeRoot.opened ? Colors.Red : Colors.Orange;
 
-        const dopeCheckEmbed = new MessageEmbed()
+        const dopeCheckEmbed = new EmbedBuilder()
             .setTitle(`Dope #${id} Status`)
             .setColor(color)
             .setDescription(
@@ -103,7 +103,8 @@ const getDopeCheckEmbed = async (interaction: CommandInteraction, id: number): P
             .setTimestamp()
 
         if (fullyClaimed) {
-            const claimedImage = new MessageAttachment("./images/vote_female.png", "vote_female.png")
+            const claimedImage = new AttachmentBuilder("./images/vote_female.png")
+                .setName("vote_female.png")
             dopeCheckEmbed.setImage("attachment://vote_female.png")
             dopeCheckEmbed.setDescription("This **Dope NFT** has been \`fully claimed\`.\nIt serves as a DAO voting token, and will be eligible for future airdrops.")
 
