@@ -1,12 +1,12 @@
-import { GuildMember } from "discord.js";
-import { logger } from "../util/logger";
+import { GuildMember } from 'discord.js';
+import { logger } from '../util/logger';
 
-const log = logger("GuildJoin");
+const log = logger('GuildJoin');
 
 export default {
-    name: "guildMemberAdd",
+    name: 'guildMemberAdd',
     once: false,
     async execute(member: GuildMember): Promise<void> {
         log.info(`${member.id} - ${member.displayName} joined the disc!`);
     }
-}
+};

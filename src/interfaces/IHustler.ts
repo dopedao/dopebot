@@ -1,46 +1,46 @@
 interface Hustler {
     hustlers: {
-        totalCount: number,
-        edges: Edge[]
-    }
-};
+        totalCount: number;
+        edges: Edge[];
+    };
+}
 
 interface Edge {
     node: {
-        name: string,
-        type: string,
-        title: string,
-        svg: string,
+        name: string;
+        type: string;
+        title: string;
+        svg: string;
         neck: {
-            fullname: string
-        },
+            fullname: string;
+        };
         ring: {
-            fullname: string
-        },
+            fullname: string;
+        };
         accessory: {
-            fullname: string
-        },
+            fullname: string;
+        };
         drug: {
-            fullname: string
-        },
+            fullname: string;
+        };
         hand: {
-            fullname: string
-        },
+            fullname: string;
+        };
         weapon: {
-            fullname: string
-        },
+            fullname: string;
+        };
         clothes: {
-            fullname: string
-        },
+            fullname: string;
+        };
         vehicle: {
-            fullname: string
-        },
+            fullname: string;
+        };
         waist: {
-            fullname: string
-        },
+            fullname: string;
+        };
         foot: {
-            fullname: string
-        }
-    }
-};
+            fullname: string;
+        };
+    };
+}
 export { Hustler as IHustler };

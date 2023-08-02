@@ -1,10 +1,12 @@
-import fetch from "node-fetch";
+import fetch from 'node-fetch';
 
-export const sfetch = async<T = any>(url: string, payload?: {}) => {
+export const sfetch = async <T = any>(url: string, payload?: {}) => {
     try {
         const fetchRes = await fetch(url, payload);
         if (!fetchRes.ok) {
-            throw Error(`Fetching ${url}: ${fetchRes.status} -> ${fetchRes.statusText}`);
+            throw Error(
+                `Fetching ${url}: ${fetchRes.status} -> ${fetchRes.statusText}`
+            );
         }
 
         const result = await fetchRes.json();
@@ -20,4 +22,4 @@ export const sfetch = async<T = any>(url: string, payload?: {}) => {
             return Promise.reject(error);
         }
     }
-}
+};

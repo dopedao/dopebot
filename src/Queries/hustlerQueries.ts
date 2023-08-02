@@ -1,65 +1,71 @@
-import { gql } from "graphql-request";
+import { gql } from 'graphql-request';
 
-const hustlerQuery = gql`query Hustler($where: HustlerWhereInput) {
-                    hustlers(where: $where) {
-                      edges {
-                        node {
-                          name
-                          type
-                          title
-                          neck {
-                            fullname
-                          }
-                          ring {
-                            fullname
-                          }
-                          accessory {
-                            fullname
-                          }
-                          drug {
-                            fullname
-                          }
-                          hand {
-                            fullname
-                          }
-                          weapon {
-                            fullname
-                          }
-                          clothes {
-                            fullname
-                          }
-                          vehicle {
-                            fullname
-                          }
-                          waist {
-                            fullname
-                          }
-                          foot {
-                            fullname
-                          }
-                        }
-                      }
+const hustlerQuery = gql`
+    query Hustler($where: HustlerWhereInput) {
+        hustlers(where: $where) {
+            edges {
+                node {
+                    name
+                    type
+                    title
+                    neck {
+                        fullname
                     }
-                  }`;
-const hustlerImageQuery = gql`query Hustler($where: HustlerWhereInput) {
-                    hustlers(where: $where) {
-                      edges {
-                        node {
-                          title
-                          name
-                          svg
-                        }
-                      }
+                    ring {
+                        fullname
                     }
-                  }`;
-const hustlerTotalCountQuery = gql`query Hustler {
-            hustlers {
-              totalCount
+                    accessory {
+                        fullname
+                    }
+                    drug {
+                        fullname
+                    }
+                    hand {
+                        fullname
+                    }
+                    weapon {
+                        fullname
+                    }
+                    clothes {
+                        fullname
+                    }
+                    vehicle {
+                        fullname
+                    }
+                    waist {
+                        fullname
+                    }
+                    foot {
+                        fullname
+                    }
+                }
             }
-          }`;
+        }
+    }
+`;
+const hustlerImageQuery = gql`
+    query Hustler($where: HustlerWhereInput) {
+        hustlers(where: $where) {
+            edges {
+                node {
+                    title
+                    name
+                    svg
+                }
+            }
+        }
+    }
+`;
+const hustlerTotalCountQuery = gql`
+    query Hustler {
+        hustlers {
+            totalCount
+        }
+    }
+`;
 
 export const hustlerQueries = {
-  hustlerQuery: hustlerQuery,
-  hustlerImageQuery: hustlerImageQuery,
-  hustlerTotalCountQuery: hustlerTotalCountQuery
-}
+    hustlerQuery: hustlerQuery,
+    hustlerImageQuery: hustlerImageQuery,
+    hustlerTotalCountQuery: hustlerTotalCountQuery
+};

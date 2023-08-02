@@ -8,14 +8,12 @@
   "private": true,
   "scripts": {
     "build": "tsc --build",
-    "clean": "tsc --build --clean",
     "lint": "eslint",
     "format": "prettier --ignore-path .gitignore --write \"src/**/*.+(js|json|ts)\""
   },
   "dependencies": {
     "@discordjs/builders": "^1.6.4",
     "@discordjs/rest": "^2.0.0",
-    "@types/sharp": "^0.32.0",
     "chart.js": "^3.8.0",
     "chartjs-node-canvas": "^4.1.6",
     "discord-api-types": "^0.37.51",
@@ -26,14 +24,13 @@
     "moment": "^2.29.3",
     "node-fetch": "3.3.2",
     "path": "^0.12.7",
-    "redis": "^4.1.0",
     "sharp": "^0.32.4",
-    "ts-node": "^10.8.1",
     "typescript": "^5.1.6",
     "web3": "^4.0.3",
     "winston": "^3.7.2"
   },
   "devDependencies": {
+    "@types/sharp": "^0.32.0",
     "@types/node": "^20.4.5",
     "@typescript-eslint/eslint-plugin": "^6.2.1",
     "@typescript-eslint/parser": "^6.2.1",
