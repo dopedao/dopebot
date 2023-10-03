@@ -1,3 +1,12 @@
-node_modules
-.gitignore
 .env*
+node_modules
+.git
+.gitignore
+.github
+*.md
+.husky
+*.yaml
+README.md
+dist
+build
+Dockerfile

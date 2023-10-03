@@ -1,17 +1,28 @@
-FROM node:17 AS builder
+FROM node:20-slim AS base
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable
+
 WORKDIR /usr/src/app
+COPY . .
+
+FROM base as prod-deps
 COPY package*.json ./
-COPY yarn.lock ./
-RUN yarn install
+RUN pnpm install --prod --frozen-lockfile
+
+
+FROM base as build
 COPY tsconfig*.json ./
-COPY src src
-RUN yarn build
+RUN pnpm install --frozen-lockfile
+RUN pnpm tsc
+
 COPY src/images build/images/
 
-FROM node:17
-WORKDIR /usr/src/app
-COPY package*.json ./
-RUN yarn install
-COPY --from=builder /usr/src/app/build build
+
+FROM base
+COPY --from=prod-deps /usr/src/app/node_modules node_modules
+COPY --from=build /usr/src/app/build build
+
 WORKDIR /usr/src/app/build
 CMD ["node", "index.js"]
+
