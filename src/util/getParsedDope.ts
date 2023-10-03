@@ -1,8 +1,8 @@
 import request from 'graphql-request';
-import { Constants } from '../../constants';
-import { IDope } from '../../interfaces/IDope';
-import { dopeQueries } from '../../Queries/dopeQueries';
-import { svgRenderer } from '../../util/svgRenderer';
+import { Constants } from '../constants';
+import { IDope } from '../interfaces/IDope';
+import { dopeQueries } from '../Queries/dopeQueries';
+import { svgRenderer } from './svgRenderer';
 
 const getParsedDope = async (dopeId: number, tokenMeta: string) => {
     const dope = await request<IDope>(

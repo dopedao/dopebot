@@ -2,11 +2,10 @@ import fs from 'node:fs';
 import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import path from 'path/posix';
 import { ICommandCollectionClient } from './interfaces/ICommandCollectionClient';
-import { logger } from './util/logger';
+import { logger } from './util/logger.js';
 
 const log = logger('Startup');
 
-//Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS ] });
 const client: ICommandCollectionClient = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -23,8 +22,9 @@ for (const folder of commandFolders) {
     for (const file of fs
         .readdirSync(`./commands/${folder}`)
         .filter((file) => file.endsWith('.js'))) {
-        const command = require(`./commands/${folder}/${file}`);
-        client.commands.set(command.default.data.name, command.default);
+        import(`./commands/${folder}/${file}`).then((x) =>
+            client.commands!.set(x.default.data.name, x.default)
+        );
     }
 }
 log.debug('Finished loading commands');
@@ -36,12 +36,14 @@ const eventFiles = fs
     .filter((file) => file.endsWith('.js'));
 for (const file of eventFiles) {
     const filePath = path.join(eventsPath, file);
-    const { default: event } = require(filePath);
-    if (event.once) {
-        client.once(event.name, (...args) => event.execute(...args));
-    } else {
-        client.on(event.name, (...args) => event.execute(...args));
-    }
+    import(filePath).then((x) => {
+        const { default: event } = x;
+        if (event.once) {
+            client.once(event.name, (...args) => event.execute(...args));
+        } else {
+            client.on(event.name, (...args) => event.execute(...args));
+        }
+    });
 }
 log.debug('Finished loading events');
 

@@ -123,7 +123,6 @@ const createChartEmbed = (tokenStatsRoot: any, title: string) => {
                 )}`,
                 inline: true
             }
-            // Unnecessary? { name: "⏰ Last updated", value: `${wrap(`${moment.unix(tokenStatsRoot?.last_updated_at!).format("MM/DD/YYYY HH:mm:ss")}`)}`, inline: true}
         );
 };
 

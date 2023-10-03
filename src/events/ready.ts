@@ -1,9 +1,10 @@
-import { ActivityType, Client, VoiceChannel } from 'discord.js';
+import { Client, VoiceChannel } from 'discord.js';
 import { logger } from '../util/logger';
-import { getSells } from '../alerts/Dope/sales';
-import { getOsFloor } from '../util/osFloor';
-import { getTwitterFollowers } from '../util/twitterFollowers';
-import { getListingCreate } from '../alerts/Dope/listingCreate';
+import { Network, OpenSeaStreamClient } from '@opensea/stream-js';
+import { Constants } from '../constants';
+import WebSocket from 'ws';
+import handleSale from '../handlers/sale';
+import handleListing from '../handlers/listing';
 
 const log = logger('client');
 
@@ -16,17 +17,17 @@ export default {
         );
         client!.user!.setStatus('idle');
 
-        await getSells(client);
-        await getListingCreate(client);
+        const osStreamClient = createOsStreamClient();
+
+        osStreamClient.onItemSold(Constants.OS_SLUG, (e) =>
+            handleSale(e, client)
+        );
+        osStreamClient.onItemListed(Constants.OS_SLUG, (e) =>
+            handleListing(e, client)
+        );
 
         setInterval(async () => {
             try {
-                const osFloor = await getOsFloor();
-                const twitterFollowers = await getTwitterFollowers();
-
-                client!.user!.setActivity(`Floor: ${osFloor} ETH`, {
-                    type: ActivityType.Watching
-                });
                 client.channels.cache
                     .filter((channel) =>
                         (channel as VoiceChannel).name.includes('Discord:')
@@ -36,15 +37,6 @@ export default {
                             `Discord: ${
                                 (channel as VoiceChannel).guild.memberCount
                             }`
-                        )
-                    );
-                client.channels.cache
-                    .filter((channel) =>
-                        (channel as VoiceChannel).name.includes('Twitter:')
-                    )
-                    .map((channel) =>
-                        (channel as VoiceChannel).setName(
-                            `Twitter: ${twitterFollowers}`
                         )
                     );
             } catch (error: unknown) {
@@ -57,3 +49,13 @@ export default {
         }, 10000);
     }
 };
+
+const createOsStreamClient = () =>
+    new OpenSeaStreamClient({
+        token: String(process.env.DBOT_OS_API_KEY),
+        network: Network.MAINNET,
+        connectOptions: {
+            transport: WebSocket
+        },
+        onError: (err) => log.error(err)
+    });

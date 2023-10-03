@@ -1,9 +1,9 @@
 import { ChartConfiguration } from 'chart.js';
 import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
-import moment from 'moment';
 import Sharp from 'sharp';
 import ICgMarketData from '../interfaces/ICgMarketData';
 import { logger } from './logger';
+import dayjs from 'dayjs';
 
 const log = logger('chart-render');
 
@@ -24,7 +24,7 @@ export const createChart = async (
     const times: string[] = [];
     for (let i = 0; i < price_data?.prices.length!; i++) {
         const timeStamp = price_data!.prices[i][0];
-        const date = moment(timeStamp);
+        const date = dayjs(timeStamp);
         times.push(date.format(dateFormat));
     }
 

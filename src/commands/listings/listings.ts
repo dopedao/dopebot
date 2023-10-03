@@ -2,13 +2,16 @@ import {
     SlashCommandBuilder,
     SlashCommandSubcommandBuilder
 } from '@discordjs/builders';
+import duration from 'dayjs/plugin/duration';
+import dayjs from 'dayjs';
 import {
     CommandInteraction,
     CacheType,
     GuildMemberRoleManager,
     ChatInputCommandInteraction
 } from 'discord.js';
-import moment from 'moment';
+
+dayjs.extend(duration);
 
 export default {
     data: new SlashCommandBuilder()
@@ -94,7 +97,7 @@ export const isMuted = (dopeId: number) => {
     if (mutedDopes.some((x) => x.id == dopeId)) {
         const possiblyMutedIndex = mutedDopes.findIndex((x) => x.id == dopeId);
         const possiblyMutedDope = mutedDopes[possiblyMutedIndex];
-        const now = moment.now();
+        const now = dayjs().unix();
 
         if (now - possiblyMutedDope.endDate > 0) {
             return true;
@@ -113,7 +116,7 @@ const muteDope = async (
         return;
     }
 
-    const dur = moment.duration(duration, 'days');
+    const dur = dayjs.duration(duration, 'days');
     mutedDopes.push({
         id: dopeId,
         endDate: dur.asMilliseconds()
@@ -124,8 +127,7 @@ const muteDope = async (
 
 const unmuteDope = async (
     interaction: CommandInteraction<CacheType>,
-    dopeId: number,
-    duration: number
+    dopeId: number
 ) => {
     if (!mutedDopes.some((x) => x.id == dopeId)) {
         await interaction.reply('Dope #' + dopeId + ' not found');
@@ -136,11 +138,7 @@ const unmuteDope = async (
     await interaction.reply('Unmuted dope#' + dopeId);
 };
 
-const viewMutedDopes = async (
-    interaction: CommandInteraction<CacheType>,
-    dopeId: number,
-    duration: number
-) => {
+const viewMutedDopes = async (interaction: CommandInteraction<CacheType>) => {
     if (mutedDopes.length <= 0) {
         await interaction.reply('No dopes muted');
         return;
