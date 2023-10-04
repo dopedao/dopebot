@@ -5,7 +5,6 @@ node_modules
 .github
 *.md
 .husky
-*.yaml
 README.md
 dist
 build

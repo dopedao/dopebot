@@ -2,17 +2,16 @@ FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
+RUN apt-get update && apt-get install -y fontconfig && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /usr/src/app
 COPY . .
 
 FROM base as prod-deps
-COPY package*.json ./
 RUN pnpm install --prod --frozen-lockfile
 
 
 FROM base as build
-COPY tsconfig*.json ./
 RUN pnpm install --frozen-lockfile
 RUN pnpm tsc
 
