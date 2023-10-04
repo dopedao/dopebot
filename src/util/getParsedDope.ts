@@ -3,18 +3,21 @@ import { Constants } from '../constants';
 import { IDope } from '../interfaces/IDope';
 import { dopeQueries } from '../Queries/dopeQueries';
 import { svgRenderer } from './svgRenderer';
+import { HasClaimedGear, HasClaimedPaper } from '..';
 
 const getParsedDope = async (dopeId: number, tokenMeta: string) => {
+    const hasClaimedGear = await HasClaimedGear(dopeId);
+    const hasClaimedPaper = await HasClaimedPaper(dopeId);
+
     const dope = await request<IDope>(
         Constants.DW_GRAPHQL_API,
         dopeQueries.dopeSellQuery,
         { where: { id: dopeId } }
     );
 
-    const dopeRoot = dope.dopes.edges[0].node;
-    const claimed = dopeRoot.claimed ? '✅' : '❌';
-    const opened = dopeRoot.opened ? '✅' : '❌';
-    const dopeRank = dopeRoot.rank;
+    const claimed = !hasClaimedPaper ? '✅' : '❌';
+    const opened = !hasClaimedGear ? '✅' : '❌';
+    const dopeRank = dope.dopes.edges[0].node.rank;
     const metadataString = tokenMeta.split(',')[1];
     const decodedMetadataString = Buffer.from(
         metadataString,

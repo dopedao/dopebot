@@ -4,10 +4,13 @@ export const Constants = {
     DW_GRAPHQL_API: 'http://api.dopewars.gg/query',
 
     DBOT_OS_API_KEY: String(process.env.DBOT_OS_API_KEY),
+    DBOT_ALCHEMY_API_URL: String(process.env.DBOT_ALCHEMY_API_URL),
     OS_LINK: 'https://opensea.io',
     OS_API: 'https://api.opensea.io/api/v1',
     OS_BLUE: 0x2081e2,
-    OS_SLUG: 'dope-v4',
+    HUSTLER_OS_SLUG: 'hustlers',
+    GEAR_OS_SLUG: 'dope-wars-gear',
+    DOPE_OS_SLUG: 'dope-v4',
     OS_DOPE_LINK:
         'https://opensea.io/assets/ethereum/0x8707276df042e89669d69a177d3da7dc78bd8723',
 
@@ -21,9 +24,9 @@ export const Constants = {
     PAPER_ETH_CONTRACT: '0x7ae1d57b58fa6411f32948314badd83583ee0e8c',
     PAPER_BSC_CONTRACT: '0xc28ea768221f67b6a1fd33e6aa903d4e42f6b177',
     PAPER_OPTI_CONTRACT: '0x00F932F0FE257456b32dedA4758922E56A4F4b42',
+    INITIATOR_ETH_CONTRACT: '0x7aa8e897d712CFB9C7cb6B37634A1C4d21181c8B',
 
     qxApiEthConvValue: 1000000000,
-    dwApiEthConvValue: 1000000000000000000,
 
     TWITTER_METRICS_LINK:
         'https://api.twitter.com/2/users/1433092276843057154?user.fields=public_metrics',

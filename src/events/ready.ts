@@ -19,10 +19,10 @@ export default {
 
         const osStreamClient = createOsStreamClient();
 
-        osStreamClient.onItemSold(Constants.OS_SLUG, (e) =>
+        osStreamClient.onItemSold(Constants.DOPE_OS_SLUG, (e) =>
             handleSale(e, client)
         );
-        osStreamClient.onItemListed(Constants.OS_SLUG, (e) =>
+        osStreamClient.onItemListed(Constants.DOPE_OS_SLUG, (e) =>
             handleListing(e, client)
         );
 

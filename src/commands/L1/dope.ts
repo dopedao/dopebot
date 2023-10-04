@@ -7,14 +7,14 @@ import {
 } from '@discordjs/builders';
 import {
     AttachmentBuilder,
-    CacheType,
     ChatInputCommandInteraction,
-    Colors,
-    CommandInteraction
+    Colors
 } from 'discord.js';
 import { Constants } from '../../constants';
 import { dopeQueries } from '../../Queries/dopeQueries';
 import { IDope } from '../../interfaces/IDope';
+import { HasClaimedGear, HasClaimedPaper } from '../..';
+import { ethers } from 'ethers';
 
 export default {
     data: new SlashCommandBuilder()
@@ -72,9 +72,11 @@ const getDopeInvEmbed = async (
             { where: { id: id } }
         );
         const dopeRoot = dope.dopes.edges[0].node;
+        const lastListing = dopeRoot.listings[0]?.inputs[0]?.amount;
         const lastSale =
-            dopeRoot.listings[0]?.inputs[0]?.amount /
-            Constants.dwApiEthConvValue;
+            lastListing != undefined
+                ? ethers.formatUnits(lastListing, 'ether')
+                : undefined;
         const dopeMap = new Map(Object.entries(dopeRoot.items));
         let dopeObject: { [key: string]: string } = {};
 
@@ -137,7 +139,7 @@ const getDopeInvEmbed = async (
                 },
                 {
                     name: `💸 Last sale`,
-                    value: `${isNaN(lastSale) ? 'none' : lastSale}`,
+                    value: `${lastSale === undefined ? 'none' : lastSale}`,
                     inline: true
                 },
                 { name: `\u200b`, value: '\u200b', inline: true },
@@ -160,19 +162,15 @@ const getDopeCheckEmbed = async (
     id: number
 ): Promise<void> => {
     try {
-        const dope = await request<IDope>(
-            Constants.DW_GRAPHQL_API,
-            dopeQueries.dopeStatusQuery,
-            { where: { id: id } }
-        );
-        const dopeRoot = dope.dopes.edges[0].node;
+        const hasClaimedGear = await HasClaimedGear(id);
+        const hasClaimedPaper = await HasClaimedPaper(id);
 
-        const claimed = !dopeRoot.claimed ? '✅' : '❌';
-        const opened = !dopeRoot.opened ? '✅' : '❌';
-        const fullyClaimed = dopeRoot.claimed && dopeRoot.opened;
+        const claimed = !hasClaimedPaper ? '✅' : '❌';
+        const opened = !hasClaimedGear ? '✅' : '❌';
+        const fullyClaimed = hasClaimedPaper && hasClaimedGear;
         const color = fullyClaimed
             ? Colors.Green
-            : !dopeRoot.claimed && !dopeRoot.opened
+            : !hasClaimedPaper && !hasClaimedGear
             ? Colors.Red
             : Colors.Orange;
 

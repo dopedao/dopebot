@@ -1,23 +1,25 @@
 import { ItemListedEvent } from '@opensea/stream-js';
 import { Client, TextChannel } from 'discord.js';
-import { embedBuilder, getPrices, isVeryOldSale } from './utils';
+import { EmbedType, embedBuilder, getPrices, isVeryOldSale } from './utils';
 import { Constants } from '../constants';
 
 const handleListing = async (listing: ItemListedEvent, client: Client) => {
     if (isVeryOldSale(listing.sent_at, listing.payload.event_timestamp)) return;
 
     const nftId = Number(listing.payload.item.nft_id.split('/')[2]);
-    const { ethValue, nftPriceInUsd } = getPrices(
-        listing.payload.payment_token.usd_price,
-        listing.payload.payment_token.eth_price,
+    const { ethPrice, nftUsdPrice } = getPrices(
+        Number(listing.payload.payment_token.usd_price),
+        Number(listing.payload.payment_token.eth_price),
         listing.payload.base_price
     );
 
     const embed = await embedBuilder(
         nftId,
-        ethValue.toString(),
-        nftPriceInUsd.toFixed(2),
-        String(listing.payload.item.metadata.name)
+        ethPrice.toFixed(3),
+        nftUsdPrice.toFixed(2),
+        String(listing.payload.item.metadata.metadata_url),
+        EmbedType.LISTING,
+        listing.payload.maker.address
     );
 
     await (
