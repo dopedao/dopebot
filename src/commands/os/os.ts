@@ -1,10 +1,5 @@
 import { sfetch } from '../../util/sfetch';
-import {
-    ChatInputCommandInteraction,
-    ColorResolvable,
-    CommandInteraction,
-    Interaction
-} from 'discord.js';
+import { ChatInputCommandInteraction, CommandInteraction } from 'discord.js';
 import {
     SlashCommandBuilder,
     SlashCommandStringOption
@@ -55,7 +50,7 @@ const dailyOsStats = async (interaction: CommandInteraction): Promise<void> => {
         );
         const dailyStatsEmbed = getDailyMarketStatsEmbed(osStats?.stats)
             .setTitle('⛵ **OpenSea Stats** - Dopes')
-            .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
+            .setURL(`${Constants.OS_LINK}/collection/${Constants.DOPE_OS_SLUG}`)
             .setColor(Constants.OS_BLUE);
 
         await interaction.reply({ embeds: [dailyStatsEmbed] });
@@ -73,7 +68,7 @@ const weeklyOsStats = async (
         );
         const weeklyStatsEmbed = getWeeklyMarketStatsEmbed(osStats?.stats)
             .setTitle('⛵ **OpenSea Stats** - Dopes')
-            .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
+            .setURL(`${Constants.OS_LINK}/collection/${Constants.DOPE_OS_SLUG}`)
             .setColor(Constants.OS_BLUE);
 
         await interaction.reply({ embeds: [weeklyStatsEmbed] });
@@ -91,7 +86,7 @@ const monthlyOsStats = async (
         );
         const monthlyStatsEmbed = getMonthlyStatsEmbed(osStats?.stats)
             .setTitle('⛵ **OpenSea Stats** - Dopes')
-            .setURL(`${Constants.OS_LINK}/collection/${Constants.OS_SLUG}`)
+            .setURL(`${Constants.OS_LINK}/collection/${Constants.DOPE_OS_SLUG}`)
             .setColor(Constants.OS_BLUE);
 
         await interaction.reply({ embeds: [monthlyStatsEmbed] });
