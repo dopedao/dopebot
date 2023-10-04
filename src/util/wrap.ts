@@ -4,4 +4,4 @@ export const wrap = (text: string, format?: string) => {
     }
 
     return `\`\`\`${format}\n${text}\`\`\``;
-}
+};
